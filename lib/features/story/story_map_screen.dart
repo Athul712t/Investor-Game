@@ -1,17 +1,19 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/profile.dart';
+import '../../core/sfx.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import 'chapter_screen.dart';
+import 'story_art.dart';
 import 'story_data.dart';
 
-/// Story Mode home: a winding board-game path of chapter medallions. Route /story.
+/// Story Mode home: a board of stepping tiles with a chapter stop at each bend. Route /story.
 class StoryMapScreen extends ConsumerWidget {
   const StoryMapScreen({super.key});
 
@@ -23,11 +25,7 @@ class StoryMapScreen extends ConsumerWidget {
     );
     if (finished == true && context.mounted && i + 1 < story.chapters.length) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: AppColors.paperDeep,
-          content: Text('🔓  ${story.chapters[i + 1].title} unlocked!', style: context.text.titleMedium),
-        ),
+        SnackBar(behavior: SnackBarBehavior.floating, content: Text('🔓  ${story.chapters[i + 1].title} unlocked!')),
       );
     }
   }
@@ -52,17 +50,10 @@ class StoryMapScreen extends ConsumerWidget {
       body: story.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Could not load the story', style: context.text.bodyLarge)),
-        // Map scrolls under a soft fade instead of sliding behind the app bar title.
+        // The board is clipped at the toolbar so it never slides under the title.
         data: (s) => Padding(
           padding: const EdgeInsets.only(top: kToolbarHeight),
-          child: ShaderMask(
-            blendMode: BlendMode.dstIn,
-            shaderCallback: (r) => LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.ink.withValues(alpha: 0), AppColors.ink],
-              stops: [0, AppSpace.lg / r.height],
-            ).createShader(r),
+          child: ClipRect(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.xl),
               children: [
@@ -77,8 +68,8 @@ class StoryMapScreen extends ConsumerWidget {
                   textAlign: TextAlign.center,
                   style: context.text.bodyMedium,
                 ),
-                const SizedBox(height: AppSpace.md),
-                _MapPath(story: s, done: profile.storyDone, onOpen: (i) => _open(context, s, i)),
+                const SizedBox(height: AppSpace.sm),
+                _Board(story: s, done: profile.storyDone, onOpen: (i) => _open(context, s, i)),
               ],
             ),
           ),
@@ -88,52 +79,61 @@ class StoryMapScreen extends ConsumerWidget {
   }
 }
 
-class _MapPath extends StatelessWidget {
-  const _MapPath({required this.story, required this.done, required this.onOpen});
+class _Board extends StatelessWidget {
+  const _Board({required this.story, required this.done, required this.onOpen});
   final Story story;
   final Set<String> done;
   final ValueChanged<int> onOpen;
 
-  static const _row = 210.0, _top = 40.0, _medal = 108.0;
+  static const _row = 236.0, _top = 40.0;
+  static const _pieces = [
+    (SetPiece.tree, SetPiece.stall),
+    (SetPiece.bank, SetPiece.bush),
+    (SetPiece.stall, SetPiece.tree),
+    (SetPiece.bush, SetPiece.bank),
+  ];
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, c) {
       final w = c.maxWidth;
       final n = story.chapters.length;
-      // Stops: start flag, one per chapter (zig-zag), then the "coming soon" sign.
+      // Stops: start tile, one per chapter (zig-zag), then the construction sign.
       final points = [
         Offset(w * 0.5, _top),
-        for (var i = 0; i < n; i++) Offset(w * (i.isEven ? 0.24 : 0.76), _top + (i + 1) * _row),
-        Offset(w * 0.5, _top + (n + 1) * _row - 30),
+        for (var i = 0; i < n; i++) Offset(w * (i.isEven ? 0.25 : 0.75), _top + (i + 1) * _row),
+        Offset(w * 0.5, _top + (n + 1) * _row - 40),
       ];
       final unlocked = [for (var i = 0; i < n; i++) story.isUnlocked(i, done)];
       final current = unlocked.lastIndexWhere((u) => u);
       final allDone = story.chapters.last.isComplete(done);
+      final colors = [for (final ch in story.chapters) ch.color, AppColors.green];
+      // The pawn stands on the front-right of the stop's plinth top.
+      Offset stand(int i) => i < 0 ? points.first + const Offset(0, 22) : points[i + 1] + const Offset(32, 8);
       return SizedBox(
-        height: points.last.dy + 90,
+        height: points.last.dy + 120,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
             Positioned.fill(
-              child: CustomPaint(
-                painter: _PathPainter(points: points, litSegments: unlocked.where((u) => u).length + (allDone ? 1 : 0)),
+              child: ExcludeSemantics(
+                child: CustomPaint(
+                  painter: _TilePainter(points: points, colors: colors, lit: current + 1 + (allDone ? 1 : 0)),
+                ),
               ),
             ),
-            for (var i = 0; i < n + 1; i++) _scenery(i, w, points),
+            for (var i = 0; i <= n; i++) ..._scenery(i, w, points),
             Positioned(
               left: 0,
               right: 0,
-              top: points.first.dy - 20,
-              child: Center(
-                child: _Flag(emoji: '🏁', text: 'Start: first job'),
-              ),
+              top: points.first.dy - 26,
+              child: const Center(child: _StartTile()),
             ),
             for (var i = 0; i < n; i++)
               Positioned(
                 left: 0,
                 right: 0,
-                top: points[i + 1].dy - _medal / 2,
+                top: points[i + 1].dy - _Stop.lift,
                 child: _ChapterStop(
                   index: i,
                   chapter: story.chapters[i],
@@ -149,87 +149,198 @@ class _MapPath extends StatelessWidget {
             Positioned(
               left: 0,
               right: 0,
-              top: points.last.dy - 24,
-              child: Center(
-                child: _Flag(emoji: '🚧', text: 'More chapters coming soon', dim: true),
-              ),
+              top: points.last.dy - 30,
+              child: const Center(child: _ComingSoonSign()),
             ),
+            _Pawn(from: stand(current - 1), to: stand(current)),
           ],
         ),
       );
     },
   );
 
-  // Little decorations on the empty side of each bend.
-  Widget _scenery(int i, double w, List<Offset> points) {
-    const items = ['🌴', '🏙️', '☁️', '🌳', '🪙', '🏦'];
-    final y = (points[i].dy + points[i + 1].dy) / 2;
-    final left = i.isOdd;
-    return Positioned(
-      top: y - 18,
-      left: left ? w * 0.04 : null,
-      right: left ? null : w * 0.04,
-      child: ExcludeSemantics(
-        child: Opacity(opacity: 0.55, child: Text(items[i % items.length], style: const TextStyle(fontSize: 30))),
-      ),
+  // Two standees at the outer edges halfway along each stretch, where the path runs through the middle.
+  // The one under the previous plinth sits higher; the other sits lower, clear of that stop's text.
+  List<Widget> _scenery(int i, double w, List<Offset> points) {
+    final mid = (points[i].dy + points[i + 1].dy) / 2;
+    final (a, b) = _pieces[i % _pieces.length];
+    final size = min(72.0, w * 0.19);
+    final leftHigh = (i - 1).isEven;
+    Widget stand(SetPiece p) => ExcludeSemantics(
+      child: CustomPaint(size: Size.square(size), painter: SetPiecePainter(p)),
     );
+    return [
+      Positioned(top: mid + (leftHigh ? -70 : -20), left: w * 0.02, child: stand(a)),
+      Positioned(top: mid + (leftHigh ? -20 : -70), right: w * 0.02, child: stand(b)),
+    ];
   }
 }
 
-class _Flag extends StatelessWidget {
-  const _Flag({required this.emoji, required this.text, this.dim = false});
-  final String emoji, text;
-  final bool dim;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-    decoration: BoxDecoration(
-      color: AppColors.paperDeep,
-      borderRadius: BorderRadius.circular(999),
-      border: Border.all(color: dim ? AppColors.track : AppColors.teal.withValues(alpha: 0.5), width: 1.5),
-      boxShadow: const [BoxShadow(color: AppColors.ink, offset: Offset(0, 4))],
-    ),
-    child: Text('$emoji  $text', style: context.text.titleSmall!.copyWith(color: dim ? AppColors.inkDim : null)),
-  );
-}
-
-class _PathPainter extends CustomPainter {
-  _PathPainter({required this.points, required this.litSegments});
+/// Stepping tiles along the winding path. The first [lit] stretches are coloured, the rest paperDeep.
+class _TilePainter extends CustomPainter {
+  _TilePainter({required this.points, required this.colors, required this.lit});
   final List<Offset> points;
-  final int litSegments;
+  final List<Color> colors;
+  final int lit;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = AppSpace.outline
+      ..color = AppColors.ink;
+    final shadow = Paint()..color = AppColors.ink;
+    const tile = RRect.fromLTRBXY(-13, -11, 13, 11, 5, 5);
     for (var i = 0; i < points.length - 1; i++) {
       final a = points[i], b = points[i + 1];
       final dy = (b.dy - a.dy) * 0.6;
       final path = Path()
         ..moveTo(a.dx, a.dy)
         ..cubicTo(a.dx, a.dy + dy, b.dx, b.dy - dy, b.dx, b.dy);
-      final lit = i < litSegments;
-      final last = i == points.length - 2;
-      // Soft road underneath, then dots on top.
-      canvas.drawPath(
-        path,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 26
-          ..strokeCap = StrokeCap.round
-          ..color = (lit ? AppColors.green : AppColors.paperDeep).withValues(alpha: lit ? 0.10 : 0.6),
-      );
-      final dot = Paint()
-        ..color = lit ? AppColors.green : (last ? AppColors.track : AppColors.inkDim.withValues(alpha: 0.5));
+      final on = i < lit;
+      // Leave room for the start tile and stops at both ends.
+      final skipStart = i == 0 ? 40.0 : 58.0;
+      final skipEnd = i == points.length - 2 ? 50.0 : 78.0;
       for (final m in path.computeMetrics()) {
-        for (var d = 0.0; d < m.length; d += 16) {
-          canvas.drawCircle(m.getTangentForOffset(d)!.position, lit ? 4 : 3, dot);
+        final usable = m.length - skipStart - skipEnd;
+        final count = max(2, (usable / 34).floor());
+        for (var k = 0; k <= count; k++) {
+          final t = m.getTangentForOffset(skipStart + usable * k / count)!;
+          final fill = !on
+              ? AppColors.paperDeep
+              : k.isEven
+              ? colors[i]
+              : AppColors.card;
+          canvas
+            ..save()
+            ..translate(t.position.dx, t.position.dy + 4)
+            ..rotate(-t.angle)
+            ..drawRRect(tile, shadow)
+            ..restore()
+            ..save()
+            ..translate(t.position.dx, t.position.dy)
+            ..rotate(-t.angle)
+            ..drawRRect(tile, Paint()..color = fill)
+            ..drawRRect(tile, stroke)
+            ..restore();
         }
       }
     }
   }
 
   @override
-  bool shouldRepaint(_PathPainter old) => old.litSegments != litSegments || old.points != points;
+  bool shouldRepaint(_TilePainter old) => old.lit != lit || old.points != points || old.colors != colors;
+}
+
+class _StartTile extends StatelessWidget {
+  const _StartTile();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.fromLTRB(6, 6, 14, 6),
+    decoration: pieceDecoration(fill: AppColors.card, radius: 14),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: pieceDecoration(fill: AppColors.green, radius: 9, depth: 0),
+          child: const Icon(Icons.flag_rounded, size: 20, color: AppColors.ink),
+        ),
+        const SizedBox(width: AppSpace.sm),
+        Text('START', style: context.text.titleLarge),
+        Flexible(
+          child: Text('  first job', maxLines: 1, overflow: TextOverflow.ellipsis, style: context.text.bodyMedium),
+        ),
+      ],
+    ),
+  );
+}
+
+/// A construction sign on two legs with a striped barrier.
+class _ComingSoonSign extends StatelessWidget {
+  const _ComingSoonSign();
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 220,
+    child: Stack(
+      children: [
+        // Legs behind the board.
+        const Positioned(left: 40, top: 30, bottom: 0, child: _Leg()),
+        const Positioned(right: 40, top: 30, bottom: 0, child: _Leg()),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: double.infinity,
+              clipBehavior: Clip.antiAlias,
+              decoration: pieceDecoration(fill: AppColors.card, radius: 12),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 14,
+                    width: double.infinity,
+                    child: CustomPaint(painter: _StripePainter()),
+                  ),
+                  Container(height: AppSpace.outline, color: AppColors.ink),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+                    child: Text(
+                      'More chapters coming soon',
+                      textAlign: TextAlign.center,
+                      style: context.text.titleMedium,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 26),
+            Container(
+              height: 18,
+              clipBehavior: Clip.antiAlias,
+              decoration: pieceDecoration(fill: AppColors.card, radius: 4, depth: 3),
+              child: const SizedBox.expand(child: CustomPaint(painter: _StripePainter())),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+class _Leg extends StatelessWidget {
+  const _Leg();
+
+  @override
+  Widget build(BuildContext context) =>
+      Container(width: 12, decoration: pieceDecoration(fill: AppColors.paperDeep, radius: 3, depth: 0));
+}
+
+class _StripePainter extends CustomPainter {
+  const _StripePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(Offset.zero & size, Paint()..color = AppColors.yellow);
+    final ink = Paint()..color = AppColors.ink;
+    for (var x = -size.height; x < size.width; x += 22) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(x, size.height)
+          ..lineTo(x + 10, size.height)
+          ..lineTo(x + 10 + size.height, 0)
+          ..lineTo(x + size.height, 0)
+          ..close(),
+        ink,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_) => false;
 }
 
 class _ChapterStop extends StatelessWidget {
@@ -257,52 +368,49 @@ class _ChapterStop extends StatelessWidget {
     final count = chapter.doneCount(done);
     final total = chapter.nodes.length;
     final complete = count == total;
+    final c = chapter.color;
     final status = !unlocked
         ? 'Finish $prevTitle to unlock'
         : complete
         ? 'Complete · tap to replay'
         : '$count of $total steps';
-    final medal = _Medallion(
-      emoji: chapter.emoji,
-      color: chapter.color,
-      progress: count / total,
-      unlocked: unlocked,
-      current: current,
-      complete: complete,
-    );
+    final align = leftSide ? CrossAxisAlignment.start : CrossAxisAlignment.end;
+    final textAlign = leftSide ? TextAlign.left : TextAlign.right;
     final text = Column(
-      crossAxisAlignment: leftSide ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+      crossAxisAlignment: align,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'CHAPTER ${index + 1}',
-          style: context.text.labelSmall!.copyWith(
-            color: unlocked ? chapter.color : AppColors.inkDim,
-            letterSpacing: 1.2,
+        Ribbon(
+          color: unlocked ? c : AppColors.paperDeep,
+          child: Column(
+            crossAxisAlignment: align,
+            children: [
+              Text(
+                'CHAPTER ${index + 1}',
+                style: context.text.labelSmall!.copyWith(
+                  color: unlocked ? AppColors.on(c) : AppColors.inkDim,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              Text(
+                chapter.title,
+                textAlign: textAlign,
+                style: context.text.titleLarge!.copyWith(color: unlocked ? AppColors.on(c) : AppColors.inkDim),
+              ),
+            ],
           ),
         ),
-        Text(
-          chapter.title,
-          textAlign: leftSide ? TextAlign.left : TextAlign.right,
-          style: context.text.titleLarge!.copyWith(color: unlocked ? null : AppColors.inkDim),
-        ),
-        Text(chapter.subtitle, textAlign: leftSide ? TextAlign.left : TextAlign.right, style: context.text.bodySmall),
+        const SizedBox(height: 6),
+        Text(chapter.subtitle, textAlign: textAlign, style: context.text.bodySmall),
         const SizedBox(height: 6),
         if (current)
           Container(
-            padding: const EdgeInsets.fromLTRB(12, 5, 8, 5),
-            decoration: BoxDecoration(
-              color: chapter.color,
-              borderRadius: BorderRadius.circular(999),
-              boxShadow: [BoxShadow(color: Color.lerp(chapter.color, AppColors.ink, 0.5)!, offset: const Offset(0, 3))],
-            ),
+            padding: const EdgeInsets.fromLTRB(12, 3, 8, 3),
+            decoration: pieceDecoration(fill: AppColors.green, radius: 999, depth: 3),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  count == 0 ? 'START' : 'CONTINUE',
-                  style: context.text.labelSmall!.copyWith(color: AppColors.ink, letterSpacing: 1),
-                ),
+                Text(count == 0 ? 'START' : 'CONTINUE', style: context.text.labelSmall!.copyWith(color: AppColors.ink)),
                 const Icon(Icons.play_arrow_rounded, size: 16, color: AppColors.ink),
               ],
             ),
@@ -310,8 +418,8 @@ class _ChapterStop extends StatelessWidget {
         else
           Text(
             status,
-            textAlign: leftSide ? TextAlign.left : TextAlign.right,
-            style: context.text.labelSmall!.copyWith(color: complete ? AppColors.green : AppColors.inkDim),
+            textAlign: textAlign,
+            style: context.text.labelSmall!.copyWith(color: complete ? side(AppColors.green) : AppColors.inkDim),
           ),
       ],
     );
@@ -319,190 +427,263 @@ class _ChapterStop extends StatelessWidget {
       if (unlocked) return onTap();
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: AppColors.paperDeep,
-            content: Text('🔒  $status', style: context.text.titleSmall),
-          ),
-        );
+        ..showSnackBar(SnackBar(behavior: SnackBarBehavior.floating, content: Text('🔒  $status')));
     }
 
-    return Semantics(
-      button: true,
+    return Pressable(
       label: 'Chapter ${index + 1}, ${chapter.title}. ${unlocked ? '$count of $total steps done' : status}',
-      excludeSemantics: true,
-      onTap: tap, // excludeSemantics drops the detector's own tap action
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: tap,
-        // Min, not fixed, height: large text may run below the medal into the gap before the next stop.
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: _MapPath._medal + 20),
-          child: Row(
-            textDirection: leftSide ? TextDirection.ltr : TextDirection.rtl,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(width: width * 0.24 - _MapPath._medal / 2),
-              medal,
-              const SizedBox(width: AppSpace.md),
-              Expanded(
-                child: Padding(padding: const EdgeInsets.only(top: 8), child: text),
-              ),
-            ],
-          ),
+      onTap: tap,
+      // Min, not fixed, height: large text may run below the plinth into the gap before the next stop.
+      builder: (context, down) => ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: _Stop.height),
+        child: Row(
+          textDirection: leftSide ? TextDirection.ltr : TextDirection.rtl,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: width * 0.25 - _Stop.width / 2),
+            _Stop(
+              emoji: chapter.emoji,
+              color: c,
+              progress: count / total,
+              unlocked: unlocked,
+              complete: complete,
+              down: down,
+            ),
+            const SizedBox(width: AppSpace.sm),
+            Expanded(
+              child: Padding(padding: const EdgeInsets.only(top: 10), child: text),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-/// Big round chapter token with a progress ring, a raised edge, and a pulse when current.
-class _Medallion extends StatefulWidget {
-  const _Medallion({
+/// The chapter stop: a drum plinth with the progress ring on its top and the emoji block standing on it.
+class _Stop extends StatelessWidget {
+  const _Stop({
     required this.emoji,
     required this.color,
     required this.progress,
     required this.unlocked,
-    required this.current,
     required this.complete,
+    required this.down,
   });
   final String emoji;
   final Color color;
   final double progress;
-  final bool unlocked, current, complete;
+  final bool unlocked, complete, down;
+
+  static const width = 116.0, height = 128.0;
+
+  /// Distance from the stop's top edge to its board point (the centre of the plinth top).
+  static const lift = 92.0;
 
   @override
-  State<_Medallion> createState() => _MedallionState();
+  Widget build(BuildContext context) {
+    final sink = down ? 4.0 : 0.0;
+    final block = Container(
+      width: 56,
+      height: 56,
+      alignment: Alignment.center,
+      decoration: pieceDecoration(fill: unlocked ? color : AppColors.paperDeep, radius: 14, depth: unlocked ? 4 : 0),
+      child: unlocked
+          ? Text(emoji, style: const TextStyle(fontSize: 28))
+          : const Icon(Icons.lock_rounded, size: 26, color: AppColors.inkDim),
+    );
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _PlinthPainter(
+                color: unlocked ? color : AppColors.paperDeep,
+                progress: unlocked ? progress : 0,
+                raised: unlocked,
+                sink: sink,
+              ),
+            ),
+          ),
+          Positioned(left: (width - 56) / 2, top: lift - 56 + sink + (unlocked ? -4 : 2), child: block),
+          if (complete)
+            Positioned(
+              left: width / 2 + 14,
+              top: lift - 72 + sink,
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: pieceDecoration(fill: AppColors.green, radius: 999, depth: 2),
+                child: const Icon(Icons.check_rounded, size: 18, color: AppColors.ink),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
-class _MedallionState extends State<_Medallion> with SingleTickerProviderStateMixin {
-  late final _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
+class _PlinthPainter extends CustomPainter {
+  _PlinthPainter({required this.color, required this.progress, required this.raised, required this.sink});
+  final Color color;
+  final double progress, sink;
+  final bool raised;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final top = _Stop.lift + sink;
+    final thick = raised ? 18.0 - sink : 4.0;
+    const rx = 54.0, ry = 18.0;
+    final topOval = Rect.fromCenter(center: Offset(cx, top), width: rx * 2, height: ry * 2);
+    final bottomOval = topOval.shift(Offset(0, thick));
+    // Drum: hard shadow, side wall, top face.
+    final body = Path()
+      ..addOval(bottomOval)
+      ..addRect(Rect.fromLTRB(cx - rx, top, cx + rx, top + thick));
+    final ink = Paint()..color = AppColors.ink;
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = AppSpace.outline
+      ..color = AppColors.ink;
+    if (raised) canvas.drawOval(bottomOval.shift(Offset(0, 5 - sink)), ink);
+    canvas.drawPath(body, Paint()..color = raised ? side(color) : AppColors.track);
+    canvas.drawOval(bottomOval, stroke);
+    canvas.drawLine(Offset(cx - rx, top), Offset(cx - rx, top + thick), stroke);
+    canvas.drawLine(Offset(cx + rx, top), Offset(cx + rx, top + thick), stroke);
+    canvas.drawOval(topOval, Paint()..color = raised ? AppColors.tint(color, 0.45) : color);
+    canvas.drawOval(topOval, stroke);
+    if (!raised) return;
+    // Progress ring set into the top face: ink groove, white track, coloured arc.
+    final ring = topOval.deflate(7);
+    final groove = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 9
+      ..color = AppColors.ink;
+    canvas.drawOval(ring, groove);
+    canvas.drawOval(
+      ring,
+      groove
+        ..strokeWidth = 4.5
+        ..color = AppColors.card,
+    );
+    if (progress > 0) {
+      canvas.drawArc(
+        ring,
+        pi / 2,
+        2 * pi * progress,
+        false,
+        groove
+          ..color = side(color)
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PlinthPainter old) =>
+      old.color != color || old.progress != progress || old.raised != raised || old.sink != sink;
+}
+
+/// The player's pawn. Hops from the previous stop to the current one with a bouncy spring, then bobs.
+class _Pawn extends StatefulWidget {
+  const _Pawn({required this.from, required this.to});
+  final Offset from, to;
+
+  @override
+  State<_Pawn> createState() => _PawnState();
+}
+
+class _PawnState extends State<_Pawn> with TickerProviderStateMixin {
+  static const _size = Size(36, 52);
+  // Softer than AppMotion.bouncy so the hop reads as a hop, with a visible landing bounce.
+  static const _spring = SpringDescription(mass: 1, stiffness: 90, damping: 9);
+  late final _hop = AnimationController.unbounded(vsync: this);
+  late final _bob = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+  bool _started = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _sync();
+    if (!_started) {
+      _started = true;
+      _go();
+    }
   }
 
   @override
-  void didUpdateWidget(_Medallion old) {
+  void didUpdateWidget(_Pawn old) {
     super.didUpdateWidget(old);
-    _sync();
+    if (old.to != widget.to) _go();
   }
 
-  void _sync() {
-    final animate = widget.current && !MediaQuery.disableAnimationsOf(context);
-    if (animate && !_pulse.isAnimating) _pulse.repeat();
-    if (!animate) _pulse.stop();
+  void _go() {
+    if (context.reduceMotion) {
+      _hop.value = 1;
+      _bob.stop();
+      return;
+    }
+    _hop.value = 0;
+    _bob.repeat(reverse: true);
+    Future.delayed(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      Sound.play(Sfx.jump, volume: 0.5);
+      _hop.animateWith(SpringSimulation(_spring, 0, 1, 0));
+    });
   }
 
   @override
   void dispose() {
-    _pulse.dispose();
+    _hop.dispose();
+    _bob.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    const size = _MapPath._medal;
-    final c = widget.unlocked ? widget.color : AppColors.track;
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          if (widget.current)
-            AnimatedBuilder(
-              animation: _pulse,
-              builder: (_, _) {
-                final t = _pulse.value;
-                return Container(
-                  width: size * (1 + 0.35 * t),
-                  height: size * (1 + 0.35 * t),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: c.withValues(alpha: 0.6 * (1 - t)), width: 4),
-                    color: c.withValues(alpha: 0.12 * (1 - t)),
+    final color = Speaker.of('you').color;
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: ExcludeSemantics(
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_hop, _bob]),
+            builder: (_, _) {
+              final p = _hop.value;
+              final ground = Offset.lerp(widget.from, widget.to, p)!;
+              final air = sin(pi * p.clamp(0.0, 1.0)) * 90 + Curves.easeInOut.transform(_bob.value) * 4;
+              // Squash a little when the spring pushes past the landing point.
+              final squash = 1 - (p - 1).clamp(0.0, 0.2);
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Hard shadow stays on the ground and shrinks as the pawn rises.
+                  Positioned(
+                    left: ground.dx - 14 * (1 - air / 180),
+                    top: ground.dy - 4,
+                    child: Container(
+                      width: 28 * (1 - air / 180),
+                      height: 9,
+                      decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(99)),
+                    ),
                   ),
-                );
-              },
-            ),
-          CustomPaint(
-            size: const Size.square(size),
-            painter: _RingPainter(progress: widget.unlocked ? widget.progress : 0, color: c),
-          ),
-          // Raised token: darker edge below a glossy face.
-          Container(
-            width: size - 22,
-            height: size - 22,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                center: const Alignment(-0.35, -0.45),
-                colors: widget.unlocked
-                    ? [Color.lerp(c, Colors.white, 0.35)!, c, Color.lerp(c, AppColors.ink, 0.35)!]
-                    : const [AppColors.paperDeep, AppColors.card],
-                stops: widget.unlocked ? const [0, 0.55, 1] : null,
-              ),
-              boxShadow: [
-                BoxShadow(color: Color.lerp(c, AppColors.ink, 0.6)!, offset: const Offset(0, 6)),
-                if (widget.unlocked) BoxShadow(color: c.withValues(alpha: 0.45), blurRadius: 22),
-              ],
-            ),
-            alignment: Alignment.center,
-            child: widget.unlocked
-                ? Text(widget.emoji, style: const TextStyle(fontSize: 42))
-                : ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
-                    child: Opacity(opacity: 0.3, child: Text(widget.emoji, style: const TextStyle(fontSize: 42))),
+                  Positioned(
+                    left: ground.dx - _size.width / 2,
+                    top: ground.dy - _size.height - air + 2,
+                    child: Transform(
+                      alignment: Alignment.bottomCenter,
+                      transform: Matrix4.diagonal3Values(2 - squash, squash, 1),
+                      child: CustomPaint(size: _size, painter: PawnPainter(color)),
+                    ),
                   ),
+                ],
+              );
+            },
           ),
-          if (!widget.unlocked)
-            _corner(AppColors.paperDeep, const Icon(Icons.lock_rounded, size: 18, color: AppColors.inkDim)),
-          if (widget.complete)
-            _corner(AppColors.green, const Icon(Icons.check_rounded, size: 20, color: AppColors.ink)),
-        ],
+        ),
       ),
     );
   }
-
-  Widget _corner(Color bg, Widget icon) => Positioned(
-    right: 2,
-    bottom: 2,
-    child: Container(
-      width: 32,
-      height: 32,
-      decoration: BoxDecoration(
-        color: bg,
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.ink, width: 3),
-      ),
-      child: icon,
-    ),
-  );
-}
-
-class _RingPainter extends CustomPainter {
-  _RingPainter({required this.progress, required this.color});
-  final double progress;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Offset.zero & size;
-    final r = rect.deflate(4);
-    canvas.drawCircle(rect.center, size.width / 2 - 4, Paint()..color = AppColors.ink.withValues(alpha: 0.7));
-    final stroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 6
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(r, 0, 2 * pi, false, stroke..color = AppColors.track);
-    if (progress > 0) canvas.drawArc(r, -pi / 2, 2 * pi * progress, false, stroke..color = color);
-  }
-
-  @override
-  bool shouldRepaint(_RingPainter old) => old.progress != progress || old.color != color;
 }

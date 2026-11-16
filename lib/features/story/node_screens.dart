@@ -6,6 +6,7 @@ import '../../core/widgets.dart';
 import '../../domain/game/game_types.dart';
 import '../content/question_view.dart';
 import '../games/_shared/games_registry.dart';
+import 'story_art.dart';
 import 'story_data.dart';
 
 String gameUnit(String? gameId) => switch (gameId) {
@@ -55,7 +56,6 @@ class _GameNodeScreenState extends State<GameNodeScreen> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpace.md),
             child: Panel(
-              accent: spec?.color ?? widget.color,
               padding: const EdgeInsets.all(AppSpace.lg),
               child: Column(
                 children: [
@@ -65,23 +65,12 @@ class _GameNodeScreenState extends State<GameNodeScreen> {
                   const SizedBox(height: AppSpace.sm),
                   Text(n.intro, textAlign: TextAlign.center, style: context.text.bodyLarge),
                   const SizedBox(height: AppSpace.md),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: AppColors.yellow.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(color: AppColors.yellow.withValues(alpha: 0.5)),
-                    ),
-                    child: Text(
-                      '🎯  Goal: ${n.target} $unit',
-                      style: context.text.titleLarge!.copyWith(color: AppColors.yellow),
-                    ),
-                  ),
+                  _Goal(target: n.target, unit: unit),
                   if (last != null) ...[
                     const SizedBox(height: AppSpace.md),
                     Text(
                       _passed ? 'Goal reached with ${last.score}!' : 'You got ${last.score}. So close!',
-                      style: context.text.titleMedium!.copyWith(color: _passed ? AppColors.green : AppColors.red),
+                      style: context.text.titleMedium!.copyWith(color: _passed ? side(AppColors.green) : AppColors.red),
                     ),
                   ],
                   const SizedBox(height: AppSpace.lg),
@@ -135,7 +124,7 @@ class ScenarioScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Badge3D(emoji: '🤔', color: AppColors.yellow, size: 48),
+                const Badge3D(icon: Icons.call_split_rounded, color: AppColors.yellow, size: 48),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(node.title, style: context.text.headlineSmall)),
               ],
@@ -151,4 +140,85 @@ class ScenarioScreen extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// The goal as a game piece: a painted target beside a big outlined number.
+class _Goal extends StatelessWidget {
+  const _Goal({required this.target, required this.unit});
+  final int target;
+  final String unit;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'Goal: $target $unit',
+    excludeSemantics: true,
+    child: Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 18, 8),
+      decoration: pieceDecoration(fill: AppColors.paperDeep, radius: 16, depth: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CustomPaint(size: Size.square(52), painter: _TargetPainter()),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('GOAL', style: context.text.labelSmall!.copyWith(color: AppColors.ink, letterSpacing: 1.5)),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    OutlinedText('$target', fill: AppColors.yellow, style: context.text.displaySmall),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Text(unit, style: context.text.titleMedium),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _TargetPainter extends CustomPainter {
+  const _TargetPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    final r = size.width / 2 - 2;
+    Path ring(double radius) => Path()..addOval(Rect.fromCircle(center: c, radius: radius));
+    canvas.drawPath(ring(r).shift(const Offset(0, 3)), Paint()..color = AppColors.ink);
+    for (final (f, color) in [(1.0, AppColors.red), (0.68, AppColors.card), (0.36, AppColors.red)]) {
+      piece(canvas, ring(r * f), color);
+    }
+    // A dart stuck in the bullseye.
+    final dart = Paint()
+      ..strokeWidth = 3.5
+      ..strokeCap = StrokeCap.round
+      ..color = AppColors.ink;
+    canvas.drawLine(c, c + Offset(r * 0.8, -r * 0.8), dart);
+    piece(
+      canvas,
+      Path()
+        ..moveTo(c.dx + r * 0.6, c.dy - r * 0.8)
+        ..lineTo(c.dx + r * 0.95, c.dy - r * 0.95)
+        ..lineTo(c.dx + r * 0.8, c.dy - r * 0.6)
+        ..close(),
+      AppColors.blue,
+      stroke: 2,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_) => false;
 }

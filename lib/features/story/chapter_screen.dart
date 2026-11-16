@@ -90,13 +90,8 @@ class _ChapterScreenState extends ConsumerState<ChapterScreen> {
     if (ok) profile.completeStoryNode(id);
   }
 
-  void _toast(String msg) => ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: AppColors.paperDeep,
-      content: Text(msg, style: context.text.titleSmall),
-    ),
-  );
+  void _toast(String msg) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(behavior: SnackBarBehavior.floating, content: Text(msg)));
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +107,6 @@ class _ChapterScreenState extends ConsumerState<ChapterScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.sm),
             child: Panel(
-              accent: chapter.color,
               child: Row(
                 children: [
                   Badge3D(emoji: chapter.emoji, color: chapter.color, size: 64),
@@ -176,6 +170,7 @@ class _ChapterScreenState extends ConsumerState<ChapterScreen> {
 
 enum _StepState { done, current, locked }
 
+/// One step as a board tile. Tiles are joined by a dotted line through their markers.
 class _StepRow extends StatelessWidget {
   const _StepRow({
     super.key,
@@ -192,93 +187,153 @@ class _StepRow extends StatelessWidget {
   final bool first, last;
   final VoidCallback onTap;
 
-  (String, String) get _kind => switch (node.type) {
-    NodeType.dialogue => ('💬', 'STORY'),
-    NodeType.lesson => ('📘', 'LESSON'),
-    NodeType.game => ('🎮', 'GAME · GOAL ${node.target} ${gameUnit(node.gameId)}'.toUpperCase()),
-    NodeType.scenario => ('🤔', 'YOUR DECISION'),
-    NodeType.reward => ('🏆', 'REWARD · +${node.xp} XP'),
+  (IconData, String) get _kind => switch (node.type) {
+    NodeType.dialogue => (Icons.forum_rounded, 'STORY'),
+    NodeType.lesson => (Icons.menu_book_rounded, 'LESSON'),
+    NodeType.game => (
+      Icons.sports_esports_rounded,
+      'GAME · GOAL ${node.target} ${gameUnit(node.gameId)}'.toUpperCase(),
+    ),
+    NodeType.scenario => (Icons.call_split_rounded, 'YOUR DECISION'),
+    NodeType.reward => (Icons.emoji_events_rounded, 'REWARD · +${node.xp} XP'),
   };
 
   @override
   Widget build(BuildContext context) {
-    final (emoji, label) = _kind;
+    final (icon, label) = _kind;
     final isDone = state == _StepState.done, isCurrent = state == _StepState.current;
-    final dotColor = isDone ? AppColors.green : (isCurrent ? color : AppColors.paperDeep);
-    final line = AppColors.track;
-    return Semantics(
-      button: state != _StepState.locked,
-      label: '${node.title}, ${isDone ? 'done, tap to replay' : (isCurrent ? 'up next' : 'locked')}',
-      excludeSemantics: true,
-      onTap: state == _StepState.locked ? null : onTap, // excludeSemantics drops the Panel's own tap action
-      child: IntrinsicHeight(
+    final locked = state == _StepState.locked;
+    final fill = isCurrent ? color : (locked ? AppColors.paperDeep : AppColors.card);
+    final fg = isCurrent ? AppColors.on(color) : (locked ? AppColors.inkDim : AppColors.ink);
+    final depth = isCurrent ? 7.0 : (locked ? 0.0 : 4.0);
+    final semantic = '${node.title}, ${isDone ? 'done, tap to replay' : (isCurrent ? 'up next' : 'locked')}';
+
+    // Every tile takes the same height; a raised one gives up margin for its thicker edge.
+    Widget tile(bool down) => Padding(
+      padding: EdgeInsets.only(top: 6, bottom: 6 + 7 - depth),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 60),
+        transform: Matrix4.translationValues(0, down ? depth : 0, 0),
+        padding: const EdgeInsets.fromLTRB(10, 10, 12, 10),
+        decoration: pieceDecoration(fill: fill, radius: 14, depth: down ? 0 : depth),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              width: 44,
+            Container(
+              width: 40,
+              height: 40,
+              decoration: pieceDecoration(
+                fill: isCurrent ? AppColors.card : (locked ? AppColors.track : AppColors.tint(color, 0.6)),
+                radius: 10,
+                depth: 0,
+              ),
+              child: Icon(icon, size: 22, color: locked ? AppColors.inkDim : AppColors.ink),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: Container(width: 4, color: first ? Colors.transparent : line)),
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: dotColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.ink, width: 3),
-                      boxShadow: isCurrent ? [BoxShadow(color: color.withValues(alpha: 0.6), blurRadius: 14)] : null,
-                    ),
-                    child: Icon(
-                      isDone ? Icons.check_rounded : (isCurrent ? Icons.play_arrow_rounded : Icons.lock_rounded),
-                      size: isCurrent ? 22 : 16,
-                      color: isDone || isCurrent ? AppColors.ink : AppColors.inkDim,
-                    ),
-                  ),
-                  Expanded(child: Container(width: 4, color: last ? Colors.transparent : line)),
+                  Text(label, style: context.text.labelSmall!.copyWith(color: fg, letterSpacing: 1)),
+                  Text(node.title, style: context.text.titleMedium!.copyWith(color: fg)),
                 ],
               ),
             ),
-            const SizedBox(width: AppSpace.sm),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Opacity(
-                  opacity: state == _StepState.locked ? 0.5 : 1,
-                  child: Panel(
-                    accent: isCurrent ? color : null,
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                    onTap: state == _StepState.locked ? null : onTap,
-                    child: Row(
-                      children: [
-                        Text(emoji, style: const TextStyle(fontSize: 24)),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                label,
-                                style: context.text.labelSmall!.copyWith(
-                                  color: isCurrent ? color : AppColors.inkDim,
-                                  letterSpacing: 1,
-                                ),
-                              ),
-                              Text(node.title, style: context.text.titleMedium),
-                            ],
-                          ),
-                        ),
-                        if (isDone) const Icon(Icons.replay_rounded, color: AppColors.inkDim, size: 20),
-                        if (isCurrent) Icon(Icons.chevron_right_rounded, color: color),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            if (isDone) const Icon(Icons.replay_rounded, color: AppColors.inkDim, size: 20),
+            if (isCurrent) Icon(Icons.play_arrow_rounded, color: fg, size: 28),
           ],
         ),
       ),
     );
+
+    final card = locked
+        ? Semantics(label: semantic, excludeSemantics: true, child: tile(false))
+        : Pressable(label: semantic, onTap: onTap, builder: (_, down) => tile(down));
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: 44,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: _DotsPainter(top: !first, bottom: !last),
+                  ),
+                ),
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: pieceDecoration(
+                    fill: isDone ? AppColors.green : (isCurrent ? color : AppColors.paperDeep),
+                    radius: 9,
+                    depth: locked ? 0 : 3,
+                  ),
+                  child: Icon(
+                    isDone ? Icons.check_rounded : (isCurrent ? Icons.flag_rounded : Icons.lock_rounded),
+                    size: locked ? 16 : 20,
+                    color: isCurrent ? AppColors.on(color) : (locked ? AppColors.inkDim : AppColors.ink),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpace.sm),
+          Expanded(child: isCurrent ? _Pulse(child: card) : card),
+        ],
+      ),
+    );
   }
+}
+
+/// Dotted line through the step markers: the stretch above and/or below the centre.
+class _DotsPainter extends CustomPainter {
+  _DotsPainter({required this.top, required this.bottom});
+  final bool top, bottom;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = Paint()..color = AppColors.ink;
+    final x = size.width / 2, mid = size.height / 2;
+    for (var y = 3.0; y < size.height; y += 11) {
+      if ((y < mid && top) || (y > mid && bottom)) canvas.drawCircle(Offset(x, y), 2.6, p);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DotsPainter old) => old.top != top || old.bottom != bottom;
+}
+
+/// Gentle scale pulse for the step that is up next. Still under reduce motion.
+class _Pulse extends StatefulWidget {
+  const _Pulse({required this.child});
+  final Widget child;
+
+  @override
+  State<_Pulse> createState() => _PulseState();
+}
+
+class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
+  late final _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.reduceMotion ? _c.stop() : _c.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _c,
+    builder: (_, child) => Transform.scale(scale: 1 + 0.025 * Curves.easeInOut.transform(_c.value), child: child),
+    child: widget.child,
+  );
 }
