@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/sfx.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../../domain/entities/question.dart';
@@ -28,6 +29,8 @@ class _QuestionViewState extends State<QuestionView> {
 
   void _record(bool correct, [String? note]) {
     if (_result != null) return;
+    // Sound and haptic on the same frame as the visual change.
+    Sound.play(correct ? Sfx.correct : Sfx.wrong);
     correct ? HapticFeedback.mediumImpact() : HapticFeedback.heavyImpact();
     setState(() {
       _result = correct;
@@ -61,6 +64,7 @@ class _QuestionViewState extends State<QuestionView> {
         options: [for (final o in p['options']! as List) o as String],
         correctIndex: p['correctIndex']! as int,
         prompt: prompt(p['prompt']! as String),
+        compact: widget.compact,
         onResult: (c, _) => _record(c),
       ),
       QuestionType.trueFalse => _Choices(
@@ -68,6 +72,7 @@ class _QuestionViewState extends State<QuestionView> {
         correctIndex: p['answer'] == true ? 0 : 1,
         prompt: prompt(p['statement']! as String, kicker: 'TRUE OR FALSE?'),
         big: true,
+        compact: widget.compact,
         onResult: (c, _) => _record(c),
       ),
       QuestionType.scenario => _Choices(
@@ -75,11 +80,14 @@ class _QuestionViewState extends State<QuestionView> {
         outcomes: [for (final o in p['options']! as List) (o as Map)['outcome'] as String],
         correctIndex: p['correctIndex']! as int,
         prompt: prompt(p['prompt']! as String, kicker: 'WHAT WOULD YOU DO?'),
+        roomy: !widget.compact,
+        compact: widget.compact,
         onResult: _record,
       ),
       QuestionType.mythFact => MythFactBody(
         statement: p['statement']! as String,
         isFact: p['answer'] == 'fact',
+        compact: widget.compact,
         onResult: _record,
       ),
       QuestionType.match => Column(
@@ -89,6 +97,7 @@ class _QuestionViewState extends State<QuestionView> {
           prompt(p['prompt']! as String),
           MatchBody(
             pairs: [for (final e in p['pairs']! as List) ((e as Map)['left'] as String, e['right'] as String)],
+            compact: widget.compact,
             onResult: _record,
           ),
         ],
@@ -112,28 +121,30 @@ class _QuestionViewState extends State<QuestionView> {
           SizedBox(height: gap),
           FeedbackPanel(correct: r, title: title, explanation: q.explanation, note: _note),
           SizedBox(height: gap),
-          ChunkyButton(label: 'Continue', color: r ? AppColors.green : AppColors.red, onPressed: _continue),
+          ChunkyButton(label: 'Continue', color: r ? AppColors.green : AppColors.card, onPressed: _continue),
         ],
       ],
     );
   }
 }
 
-/// mcq, true/false and scenario share this: option tiles that lock after one pick.
+/// mcq, true/false and scenario share this: option pieces that lock after one pick.
 class _Choices extends StatefulWidget {
   const _Choices({
     required this.options,
     required this.correctIndex,
     required this.prompt,
     required this.onResult,
+    required this.compact,
     this.outcomes,
     this.big = false,
+    this.roomy = false,
   });
   final List<String> options;
   final List<String>? outcomes;
   final int correctIndex;
   final Widget prompt;
-  final bool big;
+  final bool big, roomy, compact;
   final void Function(bool correct, String? note) onResult;
 
   @override
@@ -142,14 +153,10 @@ class _Choices extends StatefulWidget {
 
 class _ChoicesState extends State<_Choices> {
   int? _chosen;
-  int _shakes = 0;
 
   void _pick(int i) {
     if (_chosen != null) return;
-    setState(() {
-      _chosen = i;
-      _shakes++;
-    });
+    setState(() => _chosen = i);
     final ok = i == widget.correctIndex;
     final o = widget.outcomes;
     final note = o == null
@@ -170,15 +177,15 @@ class _ChoicesState extends State<_Choices> {
 
   @override
   Widget build(BuildContext context) {
-    Widget tile(int i) => Shake(
-      shakes: i == _chosen && i != widget.correctIndex ? _shakes : 0,
-      child: OptionTile(
-        label: widget.options[i],
-        state: _state(i),
-        center: widget.big,
-        leading: widget.big ? null : String.fromCharCode(65 + i),
-        onTap: () => _pick(i),
-      ),
+    Widget tile(int i) => OptionTile(
+      label: widget.options[i],
+      state: _state(i),
+      center: widget.big,
+      dense: widget.compact,
+      roomy: widget.roomy,
+      tone: widget.big ? (i == 0 ? AppColors.blue : AppColors.orange) : null,
+      leading: widget.big ? null : String.fromCharCode(65 + i),
+      onTap: _chosen == null ? () => _pick(i) : null,
     );
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -190,15 +197,16 @@ class _ChoicesState extends State<_Choices> {
             children: [
               for (var i = 0; i < widget.options.length; i++) ...[
                 if (i > 0) const SizedBox(width: 12),
-                Expanded(
-                  child: SizedBox(height: 84, child: Center(child: tile(i))),
-                ),
+                Expanded(child: tile(i)),
               ],
             ],
           )
         else
           for (var i = 0; i < widget.options.length; i++)
-            Padding(padding: const EdgeInsets.only(bottom: 10), child: tile(i)),
+            Padding(
+              padding: EdgeInsets.only(bottom: widget.compact ? 6 : 8),
+              child: tile(i),
+            ),
       ],
     );
   }
