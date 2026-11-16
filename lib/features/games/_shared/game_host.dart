@@ -162,6 +162,7 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(contentProvider); // keep questions loaded for boost and revive
     return PopScope(
       canPop: _phase == _Phase.intro || _phase == _Phase.results,
       onPopInvokedWithResult: (didPop, _) {
