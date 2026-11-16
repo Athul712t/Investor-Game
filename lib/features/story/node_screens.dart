@@ -49,63 +49,67 @@ class _GameNodeScreenState extends State<GameNodeScreen> {
     return AppScaffold(
       glow: spec?.color ?? widget.color,
       appBar: AppBar(title: Text(n.title)),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(AppSpace.md, kToolbarHeight, AppSpace.md, AppSpace.md),
-          child: Panel(
-            accent: spec?.color ?? widget.color,
-            padding: const EdgeInsets.all(AppSpace.lg),
-            child: Column(
-              children: [
-                Badge3D(emoji: spec?.emoji ?? '🎮', color: spec?.color ?? widget.color, size: 88),
-                const SizedBox(height: AppSpace.md),
-                Text(spec?.title ?? 'Mini-game', style: context.text.headlineMedium),
-                const SizedBox(height: AppSpace.sm),
-                Text(n.intro, textAlign: TextAlign.center, style: context.text.bodyLarge),
-                const SizedBox(height: AppSpace.md),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: AppColors.amber.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: AppColors.amber.withValues(alpha: 0.5)),
-                  ),
-                  child: Text(
-                    '🎯  Goal: ${n.target} $unit',
-                    style: context.text.titleLarge!.copyWith(color: AppColors.amber),
-                  ),
-                ),
-                if (last != null) ...[
+      // Toolbar gap sits outside the scroll view so content never scrolls under the transparent app bar.
+      body: Padding(
+        padding: const EdgeInsets.only(top: kToolbarHeight),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpace.md),
+            child: Panel(
+              accent: spec?.color ?? widget.color,
+              padding: const EdgeInsets.all(AppSpace.lg),
+              child: Column(
+                children: [
+                  Badge3D(emoji: spec?.emoji ?? '🎮', color: spec?.color ?? widget.color, size: 88),
                   const SizedBox(height: AppSpace.md),
-                  Text(
-                    _passed ? 'Goal reached with ${last.score}!' : 'You got ${last.score}. So close!',
-                    style: context.text.titleMedium!.copyWith(color: _passed ? AppColors.mint : AppColors.coral),
+                  Text(spec?.title ?? 'Mini-game', style: context.text.headlineMedium),
+                  const SizedBox(height: AppSpace.sm),
+                  Text(n.intro, textAlign: TextAlign.center, style: context.text.bodyLarge),
+                  const SizedBox(height: AppSpace.md),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.amber.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: AppColors.amber.withValues(alpha: 0.5)),
+                    ),
+                    child: Text(
+                      '🎯  Goal: ${n.target} $unit',
+                      style: context.text.titleLarge!.copyWith(color: AppColors.amber),
+                    ),
                   ),
-                ],
-                const SizedBox(height: AppSpace.lg),
-                if (_passed)
-                  ChunkyButton(
-                    label: 'Continue story',
-                    icon: Icons.arrow_forward_rounded,
-                    onPressed: () => Navigator.of(context).pop(true),
-                  )
-                else ...[
-                  ChunkyButton(
-                    label: last == null ? 'Play' : 'Retry',
-                    icon: last == null ? Icons.play_arrow_rounded : Icons.replay_rounded,
-                    color: spec?.color ?? widget.color,
-                    onPressed: _launch,
-                  ),
-                  if (_misses >= 2) ...[
+                  if (last != null) ...[
                     const SizedBox(height: AppSpace.md),
-                    ChunkyButton(
-                      label: 'Continue anyway',
-                      color: AppColors.surfaceHi,
-                      onPressed: () => Navigator.of(context).pop(true),
+                    Text(
+                      _passed ? 'Goal reached with ${last.score}!' : 'You got ${last.score}. So close!',
+                      style: context.text.titleMedium!.copyWith(color: _passed ? AppColors.mint : AppColors.coral),
                     ),
                   ],
+                  const SizedBox(height: AppSpace.lg),
+                  if (_passed)
+                    ChunkyButton(
+                      label: 'Continue story',
+                      icon: Icons.arrow_forward_rounded,
+                      onPressed: () => Navigator.of(context).pop(true),
+                    )
+                  else ...[
+                    ChunkyButton(
+                      label: last == null ? 'Play' : 'Retry',
+                      icon: last == null ? Icons.play_arrow_rounded : Icons.replay_rounded,
+                      color: spec?.color ?? widget.color,
+                      onPressed: _launch,
+                    ),
+                    if (_misses >= 2) ...[
+                      const SizedBox(height: AppSpace.md),
+                      ChunkyButton(
+                        label: 'Continue anyway',
+                        color: AppColors.surfaceHi,
+                        onPressed: () => Navigator.of(context).pop(true),
+                      ),
+                    ],
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -124,25 +128,28 @@ class ScenarioScreen extends StatelessWidget {
   Widget build(BuildContext context) => AppScaffold(
     glow: color,
     appBar: AppBar(title: const Text('Decision time')),
-    body: SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(AppSpace.md, kToolbarHeight + AppSpace.sm, AppSpace.md, AppSpace.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              const Badge3D(emoji: '🤔', color: AppColors.amber, size: 48),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: Text(node.title, style: context.text.headlineSmall)),
-            ],
-          ),
-          const SizedBox(height: AppSpace.md),
-          Panel(
-            accent: color,
-            padding: const EdgeInsets.all(AppSpace.lg),
-            child: QuestionView(question: node.question!, onAnswered: (wise) => Navigator.of(context).pop(wise)),
-          ),
-        ],
+    body: Padding(
+      padding: const EdgeInsets.only(top: kToolbarHeight),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                const Badge3D(emoji: '🤔', color: AppColors.amber, size: 48),
+                const SizedBox(width: AppSpace.md),
+                Expanded(child: Text(node.title, style: context.text.headlineSmall)),
+              ],
+            ),
+            const SizedBox(height: AppSpace.md),
+            Panel(
+              accent: color,
+              padding: const EdgeInsets.all(AppSpace.lg),
+              child: QuestionView(question: node.question!, onAnswered: (wise) => Navigator.of(context).pop(wise)),
+            ),
+          ],
+        ),
       ),
     ),
   );

@@ -193,7 +193,9 @@ void main() {
     expect(container.read(profileProvider).completedLessons, {'x-1'});
     expect(container.read(profileProvider).xp, 12);
     await tester.pump(const Duration(seconds: 3));
-    await _tap(tester, 'Continue');
+    // System back on the summary still reports completion (the story chapter relies on it).
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
     expect(popped, isTrue);
   });
 

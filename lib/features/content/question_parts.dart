@@ -75,6 +75,7 @@ class OptionTile extends StatelessWidget {
       enabled: onTap != null,
       label: label,
       excludeSemantics: true,
+      onTap: onTap, // excludeSemantics drops the detector's own tap action
       child: AnimatedOpacity(
         duration: AppMotion.base,
         opacity: state == OptState.dim ? 0.45 : 1,

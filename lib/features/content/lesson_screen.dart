@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/content_repo.dart';
 import '../../core/profile.dart';
@@ -111,8 +112,14 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
     return _Phase.summary;
   }
 
+  /// Pops with [done]; a reloaded deep link has no route below, so it goes home instead.
+  void _leave(bool done) {
+    final nav = Navigator.of(context);
+    nav.canPop() ? nav.pop(done) : context.go('/');
+  }
+
   Future<void> _close() async {
-    if (_phase == _Phase.summary) return Navigator.of(context).pop(true);
+    if (_phase == _Phase.summary) return _leave(true);
     final leave = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -129,12 +136,12 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
         ],
       ),
     );
-    if (leave == true && mounted) Navigator.of(context).pop(false);
+    if (leave == true && mounted) _leave(false);
   }
 
   @override
   Widget build(BuildContext context) => PopScope(
-    canPop: _phase == _Phase.summary,
+    canPop: false, // system back on the summary must still pop true
     onPopInvokedWithResult: (didPop, _) {
       if (!didPop) _close();
     },
@@ -173,7 +180,7 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
                   total: _lesson.questions.length,
                   xp: _xp,
                   color: widget.color,
-                  onContinue: () => Navigator.of(context).pop(true),
+                  onContinue: () => _leave(true),
                 ),
               },
             ),

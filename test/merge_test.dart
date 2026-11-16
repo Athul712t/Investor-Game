@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flame/game.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:investor_game/domain/game/game_types.dart';
 import 'package:investor_game/features/games/merge/merge_board.dart';
@@ -51,5 +52,27 @@ void main() {
     }
     g.applyPowerup(PowerupType.magnet);
     g.revive();
+  });
+
+  test('arrow keys do nothing while the host has the game paused', () async {
+    final g = MergeGame(const GameConfig(seed: 3))..onGameResize(Vector2(390, 844));
+    await g.onLoad();
+    void mash() {
+      for (var i = 0; i < 40; i++) {
+        for (final k in [LogicalKeyboardKey.arrowLeft, LogicalKeyboardKey.arrowDown, LogicalKeyboardKey.arrowRight]) {
+          g.onKeyEvent(
+            KeyDownEvent(physicalKey: PhysicalKeyboardKey.keyA, logicalKey: k, timeStamp: Duration.zero),
+            {},
+          );
+        }
+      }
+    }
+
+    g.paused = true;
+    mash();
+    expect(g.score.value, 0);
+    g.paused = false;
+    mash();
+    expect(g.score.value, greaterThan(0));
   });
 }

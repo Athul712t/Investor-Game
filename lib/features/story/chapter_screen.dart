@@ -33,7 +33,20 @@ class _ChapterScreenState extends ConsumerState<ChapterScreen> {
     });
   }
 
+  bool _busy = false;
+
+  /// Guarded so a double tap cannot open a step twice (a doubled reward scene would pop the map too).
   Future<void> _play(int i) async {
+    if (_busy) return;
+    _busy = true;
+    try {
+      await _run(i);
+    } finally {
+      _busy = false;
+    }
+  }
+
+  Future<void> _run(int i) async {
     final node = chapter.nodes[i];
     final id = chapter.nodeId(i);
     final profile = ref.read(profileProvider.notifier);
@@ -198,6 +211,7 @@ class _StepRow extends StatelessWidget {
       button: state != _StepState.locked,
       label: '${node.title}, ${isDone ? 'done, tap to replay' : (isCurrent ? 'up next' : 'locked')}',
       excludeSemantics: true,
+      onTap: state == _StepState.locked ? null : onTap, // excludeSemantics drops the Panel's own tap action
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,

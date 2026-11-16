@@ -64,6 +64,10 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     if (sim.lane != before) _squashV -= 2.5;
   }
 
+  void _drop() {
+    if (!paused) sim.drop();
+  }
+
   void _jump() {
     if (paused || !sim.jump()) return;
     _squashV += 7;
@@ -111,7 +115,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     } else if (d.dy < 0) {
       _jump();
     } else {
-      sim.drop();
+      _drop();
     }
   }
 
@@ -126,7 +130,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     } else if (k == LogicalKeyboardKey.arrowUp || k == LogicalKeyboardKey.space || k == LogicalKeyboardKey.keyW) {
       _jump();
     } else if (k == LogicalKeyboardKey.arrowDown || k == LogicalKeyboardKey.keyS) {
-      sim.drop();
+      _drop();
     } else {
       return KeyEventResult.ignored;
     }

@@ -129,6 +129,7 @@ class _ChunkyButtonState extends State<ChunkyButton> {
       enabled: enabled,
       label: widget.label,
       excludeSemantics: true,
+      onTap: widget.onPressed, // excludeSemantics drops the detector's own tap action
       child: GestureDetector(
         onTapDown: enabled ? (_) => setState(() => _down = true) : null,
         onTapCancel: () => setState(() => _down = false),
