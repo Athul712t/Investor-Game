@@ -219,6 +219,7 @@ class _LessonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = locked ? AppColors.textDim : color;
+    final VoidCallback? open = locked ? null : () => context.push<bool>('/lesson/${lesson.id}');
     return Semantics(
       button: !locked,
       enabled: !locked,
@@ -229,11 +230,12 @@ class _LessonRow extends StatelessWidget {
               ? 'locked'
               : 'next'}',
       excludeSemantics: true,
+      onTap: open, // excludeSemantics drops the InkWell's own tap action
       child: Opacity(
         opacity: locked ? 0.55 : 1,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: locked ? null : () => context.push<bool>('/lesson/${lesson.id}'),
+          onTap: open,
           child: Container(
             constraints: const BoxConstraints(minHeight: 60),
             margin: const EdgeInsets.only(top: 6),

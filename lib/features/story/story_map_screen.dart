@@ -316,26 +316,30 @@ class _ChapterStop extends StatelessWidget {
           ),
       ],
     );
+    void tap() {
+      if (unlocked) return onTap();
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.surfaceHi,
+            content: Text('🔒  $status', style: context.text.titleSmall),
+          ),
+        );
+    }
+
     return Semantics(
       button: true,
       label: 'Chapter ${index + 1}, ${chapter.title}. ${unlocked ? '$count of $total steps done' : status}',
       excludeSemantics: true,
+      onTap: tap, // excludeSemantics drops the detector's own tap action
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () {
-          if (unlocked) return onTap();
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: AppColors.surfaceHi,
-                content: Text('🔒  $status', style: context.text.titleSmall),
-              ),
-            );
-        },
-        child: SizedBox(
-          height: _MapPath._medal + 20,
+        onTap: tap,
+        // Min, not fixed, height: large text may run below the medal into the gap before the next stop.
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: _MapPath._medal + 20),
           child: Row(
             textDirection: leftSide ? TextDirection.ltr : TextDirection.rtl,
             crossAxisAlignment: CrossAxisAlignment.start,

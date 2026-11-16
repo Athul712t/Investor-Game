@@ -90,7 +90,7 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
 
   // ---- rules ----
   void _move(MergeDir d) {
-    if (isOver || _overIn >= 0) return;
+    if (paused || isOver || _overIn >= 0) return; // keys still arrive while the host shows a card
     final r = _board.move(d);
     if (!r.changed) return;
     _last = r;

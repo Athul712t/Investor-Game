@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/content_repo.dart';
 import '../../../core/profile.dart';
@@ -138,12 +139,13 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
   }
 
   void _finish() {
+    final score = game.score.value;
     final r = GameResult(
       gameId: spec.id,
-      score: game.score.value,
+      score: score,
       durationMs: _watch.elapsedMilliseconds,
       coinsEarned: game.coins.value,
-      xpEarned: 10 + 5 * _correct,
+      xpEarned: (score > 0 ? 10 : 0) + 5 * _correct, // no base XP for ending an empty run
       questionsAnswered: _asked,
       questionsCorrect: _correct,
     );
@@ -154,25 +156,35 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
     });
   }
 
+  // _result is kept, so leaving from the next intro still reports the last finished run.
   void _again() => setState(() {
     _newGame();
-    _result = null;
     _phase = _Phase.intro;
   });
+
+  void _leave() {
+    final nav = Navigator.of(context);
+    nav.canPop() ? nav.pop(_result) : context.go('/'); // a reloaded deep link has nothing to pop to
+  }
 
   @override
   Widget build(BuildContext context) {
     ref.watch(contentProvider); // keep questions loaded for boost and revive
     return PopScope(
-      canPop: _phase == _Phase.intro || _phase == _Phase.results,
+      canPop: false, // system back must still hand the run back to the caller
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) _pause();
+        if (didPop) return;
+        _phase == _Phase.intro || _phase == _Phase.results ? _leave() : _pause();
       },
       child: Scaffold(
         body: Stack(
           fit: StackFit.expand,
           children: [
-            GameWidget(key: ObjectKey(game), game: game),
+            // The canvas has no semantics of its own.
+            Semantics(
+              label: '${spec.title}. ${spec.howTo}',
+              child: GameWidget(key: ObjectKey(game), game: game),
+            ),
             if (_phase == _Phase.playing || _phase == _Phase.paused) SafeArea(child: _hud(context)),
             if (_toast != null) SafeArea(child: _PowerupToast(_toast!)),
             if (_phase != _Phase.playing) _overlay(context),
@@ -244,7 +256,7 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
             onPressed: _headStart,
           ),
         ],
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Back')),
+        TextButton(onPressed: _leave, child: const Text('Back')),
       ]),
       _Phase.paused => _card(context, [
         Text('Paused', style: context.text.headlineMedium),
@@ -273,13 +285,17 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
       _Phase.results => _results(context),
       _Phase.playing => const SizedBox.shrink(),
     };
-    return ColoredBox(
-      color: AppColors.ink.withValues(alpha: 0.78),
-      child: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpace.md),
-            child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 440), child: card),
+    // Opaque so taps and swipes beside the card never reach the game underneath.
+    return Listener(
+      behavior: HitTestBehavior.opaque,
+      child: ColoredBox(
+        color: AppColors.ink.withValues(alpha: 0.78),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpace.md),
+              child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 440), child: card),
+            ),
           ),
         ),
       ),
@@ -331,7 +347,7 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
       const SizedBox(height: AppSpace.lg),
       ChunkyButton(label: 'Play again', icon: Icons.replay_rounded, color: spec.color, onPressed: _again),
       const SizedBox(height: AppSpace.md),
-      ChunkyButton(label: 'Done', color: AppColors.surfaceHi, onPressed: () => Navigator.of(context).pop(r)),
+      ChunkyButton(label: 'Done', color: AppColors.surfaceHi, onPressed: _leave),
     ]);
   }
 }
