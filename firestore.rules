@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // Content is read-only for clients; published via admin tooling.
+    match /content/{document=**} { allow read: if signedIn(); allow write: if false; }
+    match /story/{document=**}   { allow read: if signedIn(); allow write: if false; }
+    match /games/{id}            { allow read: if signedIn(); allow write: if false; }
+
+    // Users may read their own data. xp/coins/streak are server-written
+    // (Cloud Functions) so scores cannot be spoofed from the client.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['displayName', 'mode', 'createdAt']);
+      allow update: if isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'mode']);
+
+      match /progress/{id} { allow read: if isOwner(uid); allow write: if false; }
+      match /inventory/{id} { allow read: if isOwner(uid); allow write: if false; }
+      // Clients submit raw results here; a function validates and awards.
+      match /submissions/{id} { allow create: if isOwner(uid); allow read: if isOwner(uid); }
+    }
+
+    match /leaderboards/{period}/entries/{uid} { allow read: if signedIn(); allow write: if false; }
+  }
+}
