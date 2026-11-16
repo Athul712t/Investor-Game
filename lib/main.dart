@@ -1,53 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(const ProviderScope(child: InvestorGameApp()));
+import 'core/profile.dart';
+import 'core/router.dart';
+import 'core/theme.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  final prefs = await SharedPreferences.getInstance();
+  runApp(ProviderScope(overrides: [prefsProvider.overrideWithValue(prefs)], child: const InvestorGameApp()));
+}
 
 class InvestorGameApp extends StatelessWidget {
   const InvestorGameApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context) => MaterialApp.router(
     title: 'Investor Game',
-    theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
-    home: const ModeSelectScreen(),
+    debugShowCheckedModeBanner: false,
+    theme: buildTheme(),
+    routerConfig: router,
   );
-}
-
-class ModeSelectScreen extends StatelessWidget {
-  const ModeSelectScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    const modes = [
-      (
-        'Pure Game',
-        'Just play. Questions are optional boosts.',
-        Icons.sports_esports,
-      ),
-      (
-        'Story Mode',
-        'Learn through a story, unlock games.',
-        Icons.auto_stories,
-      ),
-      ('Pure Edu', 'Lessons and quizzes, no game.', Icons.school),
-    ];
-    return Scaffold(
-      appBar: AppBar(title: const Text('Investor Game')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          for (final m in modes)
-            Card(
-              child: ListTile(
-                leading: Icon(m.$3),
-                title: Text(m.$1),
-                subtitle: Text(m.$2),
-                onTap: () {},
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 }
