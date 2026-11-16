@@ -1,1 +1,1472 @@
-{"modules":[{"id":"mf-basics","title":"Mutual Fund Basics","subtitle":"What a fund is and how it works","emoji":"🏦","color":"mint","lessons":[{"id":"mf-basics-1","title":"What is a mutual fund?","minutes":2,"cards":[{"emoji":"🤝","title":"Many investors, one pool","body":"A mutual fund collects money from many investors and invests it together."}],"questions":[{"id":"mf-basics-1-q1","type":"mcq","topic":"mf-basics","difficulty":1,"explanation":"NAV is the per-unit value of a fund.","payload":{"prompt":"What does NAV stand for?","options":["Net Asset Value","New Account Value","Net Annual Volume"],"correctIndex":0}},{"id":"mf-basics-1-q2","type":"trueFalse","topic":"mf-basics","difficulty":1,"explanation":"Past performance does not guarantee future returns.","payload":{"statement":"Past returns guarantee future returns.","answer":false}},{"id":"mf-basics-1-q3","type":"mythFact","topic":"mf-basics","difficulty":1,"explanation":"Many funds accept SIPs of a few hundred rupees.","payload":{"statement":"You need a lot of money to start investing in mutual funds.","answer":"myth"}}]}]}]}
+{
+ "modules": [
+  {
+   "id": "mf-basics",
+   "title": "Mutual Fund Basics",
+   "subtitle": "What a fund is and how it works",
+   "emoji": "🏦",
+   "color": "mint",
+   "lessons": [
+    {
+     "id": "mf-basics-1",
+     "title": "Saving vs investing",
+     "minutes": 2,
+     "cards": [
+      {
+       "emoji": "💰",
+       "title": "Saving is for money you need soon",
+       "body": "Saving means keeping money where it is easy to reach, like a bank account. It suits emergencies and near-term needs, because the balance does not swing with the market."
+      },
+      {
+       "emoji": "📈",
+       "title": "Investing is for money to grow",
+       "body": "Investing means putting money into assets like shares or bonds, hoping it grows over time. Values can rise or fall, so it suits goals that are years away."
+      },
+      {
+       "emoji": "🍕",
+       "title": "Why inflation matters",
+       "body": "Inflation is the slow rise in prices. A snack that costs ₹100 today may cost more in the future, so money sitting idle for years can buy less than before."
+      },
+      {
+       "emoji": "🛟",
+       "title": "Build a cushion first",
+       "body": "Many people set aside an emergency fund before investing, for sudden needs like medical bills. That way a surprise does not force them to sell investments at a bad time."
+      }
+     ],
+     "questions": [
+      {
+       "id": "mf-basics-1-q1",
+       "type": "mcq",
+       "topic": "mf-basics",
+       "difficulty": 1,
+       "explanation": "Inflation is a general rise in prices over time. It is why money kept idle for many years can lose buying power.",
+       "payload": {
+        "prompt": "Which option best describes inflation?",
+        "options": [
+         "A fee banks charge on savings accounts",
+         "Prices rising over time, so each rupee buys less",
+         "A fall in share prices",
+         "The interest a mutual fund pays"
+        ],
+        "correctIndex": 1
+       }
+      },
+      {
+       "id": "mf-basics-1-q2",
+       "type": "trueFalse",
+       "topic": "mf-basics",
+       "difficulty": 1,
+       "explanation": "If prices keep rising while your money earns little or nothing, the same amount buys less later.",
+       "payload": {
+        "statement": "Money kept idle for many years can lose buying power because of inflation.",
+        "answer": true
+       }
+      },
+      {
+       "id": "mf-basics-1-q3",
+       "type": "mythFact",
+       "topic": "mf-basics",
+       "difficulty": 1,
+       "explanation": "Saving is about easy access for near-term needs. Investing aims for growth over time and comes with the chance that values fall.",
+       "payload": {
+        "statement": "Saving and investing are just two names for the same thing.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "mf-basics-1-q4",
+       "type": "match",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "Each term has a different job in planning. Saving and an emergency fund give access and safety nets, while investing is for long-term growth.",
+       "payload": {
+        "prompt": "Match each term with its meaning",
+        "pairs": [
+         {
+          "left": "Saving",
+          "right": "Easy access, short-term use"
+         },
+         {
+          "left": "Investing",
+          "right": "Aims to grow over years"
+         },
+         {
+          "left": "Inflation",
+          "right": "Prices rising over time"
+         },
+         {
+          "left": "Emergency fund",
+          "right": "Cushion for sudden needs"
+         }
+        ]
+       }
+      },
+      {
+       "id": "mf-basics-1-q5",
+       "type": "scenario",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "An emergency fund comes first so that a surprise bill does not force you to sell investments at a poor moment.",
+       "payload": {
+        "prompt": "You get a ₹30,000 bonus and have no emergency savings. Which approach follows basic planning principles?",
+        "options": [
+         {
+          "text": "Put all of it into a fund at once so it never sits idle",
+          "outcome": "If a sudden expense comes next month, you may have to withdraw when the fund's value is down."
+         },
+         {
+          "text": "Spend it all because a bonus is extra money",
+          "outcome": "The money is gone and you still have no cushion for surprises."
+         },
+         {
+          "text": "Set aside an emergency cushion first, then think about goals for the rest",
+          "outcome": "You can handle surprises without selling investments, and plan the rest by goal and time horizon."
+         }
+        ],
+        "correctIndex": 2
+       }
+      }
+     ]
+    },
+    {
+     "id": "mf-basics-2",
+     "title": "What is a mutual fund",
+     "minutes": 2,
+     "cards": [
+      {
+       "emoji": "🍱",
+       "title": "A pooled money box",
+       "body": "A mutual fund pools money from many investors. It is like friends chipping in for a group order: together you can buy a wider spread than any one of you could alone."
+      },
+      {
+       "emoji": "🎟️",
+       "title": "You own units",
+       "body": "In return for your money you get units of the fund. Each unit is a small share of everything the fund holds, so its value moves with the fund's holdings."
+      },
+      {
+       "emoji": "🧑‍💼",
+       "title": "A professional runs it",
+       "body": "A fund manager at an asset management company (AMC) decides what to buy and sell, following the scheme's stated goals. SEBI is the regulator of mutual funds in India."
+      },
+      {
+       "emoji": "⚠️",
+       "title": "Spread out, but not risk-free",
+       "body": "Holding many securities spreads risk, but does not remove it. Mutual fund investments are subject to market risks, so the value can fall as well as rise."
+      }
+     ],
+     "questions": [
+      {
+       "id": "mf-basics-2-q1",
+       "type": "mcq",
+       "topic": "mf-basics",
+       "difficulty": 1,
+       "explanation": "SEBI, the Securities and Exchange Board of India, makes the rules that AMCs and mutual fund schemes must follow.",
+       "payload": {
+        "prompt": "Who regulates mutual funds in India?",
+        "options": [
+         "The stock exchange alone",
+         "Each investor's own bank",
+         "SEBI"
+        ],
+        "correctIndex": 2
+       }
+      },
+      {
+       "id": "mf-basics-2-q2",
+       "type": "trueFalse",
+       "topic": "mf-basics",
+       "difficulty": 1,
+       "explanation": "Units show your share in the fund. The number of units you hold times the NAV gives the value of your investment.",
+       "payload": {
+        "statement": "When you invest in a mutual fund, you receive units.",
+        "answer": true
+       }
+      },
+      {
+       "id": "mf-basics-2-q3",
+       "type": "mythFact",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "Spreading money across many holdings reduces the effect of any one of them failing, but market risk remains and the fund's value can fall.",
+       "payload": {
+        "statement": "Because a fund holds many securities, it cannot lose money.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "mf-basics-2-q4",
+       "type": "match",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "A fund has several moving parts: you hold units, an AMC runs the scheme, a manager makes decisions and SEBI oversees the industry.",
+       "payload": {
+        "prompt": "Match each term with its meaning",
+        "pairs": [
+         {
+          "left": "Unit",
+          "right": "A small share of the fund"
+         },
+         {
+          "left": "AMC",
+          "right": "Company that runs the fund"
+         },
+         {
+          "left": "Fund manager",
+          "right": "Picks what to buy and sell"
+         },
+         {
+          "left": "SEBI",
+          "right": "Regulator of mutual funds"
+         }
+        ]
+       }
+      },
+      {
+       "id": "mf-basics-2-q5",
+       "type": "scenario",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "Holding many securities reduces risk from any single one but never removes market risk. Scheme documents and the riskometer show what the fund holds and how risky it is.",
+       "payload": {
+        "prompt": "A social media post says: \"Invest in this fund, it holds hundreds of stocks so it has zero risk!\" What is the sound response?",
+        "options": [
+         {
+          "text": "Invest at once, since many stocks mean no risk",
+          "outcome": "If markets fall, the fund's value can fall too, and you may not have been ready for that."
+         },
+         {
+          "text": "Read the scheme documents and riskometer first, and remember that value can fall",
+          "outcome": "You understand what you are buying and can judge whether it fits your goal and comfort with risk."
+         },
+         {
+          "text": "Decide that all mutual funds are scams and avoid them for ever",
+          "outcome": "You skip a regulated option without understanding it, based on one post."
+         }
+        ],
+        "correctIndex": 1
+       }
+      }
+     ]
+    },
+    {
+     "id": "mf-basics-3",
+     "title": "NAV and units",
+     "minutes": 3,
+     "cards": [
+      {
+       "emoji": "🏷️",
+       "title": "NAV is the price of one unit",
+       "body": "NAV, or Net Asset Value, is the value of one unit of a fund. It is the fund's assets minus its liabilities, divided by the number of units."
+      },
+      {
+       "emoji": "🕔",
+       "title": "NAV updates every business day",
+       "body": "Most funds work out their NAV at the end of each business day. If the fund's holdings gain value, NAV rises; if they lose value, NAV falls."
+      },
+      {
+       "emoji": "🧮",
+       "title": "Units = amount ÷ NAV",
+       "body": "If you invest ₹5,000 when the NAV is ₹50, you get about 100 units, for example. A lower NAV gives more units for the same amount."
+      },
+      {
+       "emoji": "🍰",
+       "title": "A low NAV is not a bargain",
+       "body": "NAV is not a price tag that shows cheap or costly. A fund with a NAV of ₹10 is not better than one with ₹100; what matters is what it holds, its risk and its costs."
+      }
+     ],
+     "questions": [
+      {
+       "id": "mf-basics-3-q1",
+       "type": "mcq",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "Units equal the amount divided by NAV: ₹6,000 ÷ ₹20 = 300 units.",
+       "payload": {
+        "prompt": "For example, you invest ₹6,000 when the NAV is ₹20 (ignoring small charges). How many units do you get?",
+        "options": [
+         "300",
+         "30",
+         "120"
+        ],
+        "correctIndex": 0
+       }
+      },
+      {
+       "id": "mf-basics-3-q2",
+       "type": "trueFalse",
+       "topic": "mf-basics",
+       "difficulty": 1,
+       "explanation": "NAV reflects the value of the fund's holdings, so it is updated daily after markets close.",
+       "payload": {
+        "statement": "Most funds work out their NAV at the end of each business day.",
+        "answer": true
+       }
+      },
+      {
+       "id": "mf-basics-3-q3",
+       "type": "mythFact",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "NAV only shows the value of one unit. A fund with a low NAV is not a better deal, since what counts is how its value changes and what it holds.",
+       "payload": {
+        "statement": "A fund with a low NAV is cheaper and better value than one with a high NAV.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "mf-basics-3-q4",
+       "type": "match",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "Divide the amount by the NAV: the higher the NAV, the fewer units the same rupees buy.",
+       "payload": {
+        "prompt": "For example, invest ₹1,000 (ignoring charges). Match the NAV with the units",
+        "pairs": [
+         {
+          "left": "₹1,000 at NAV ₹10",
+          "right": "About 100 units"
+         },
+         {
+          "left": "₹1,000 at NAV ₹20",
+          "right": "About 50 units"
+         },
+         {
+          "left": "₹1,000 at NAV ₹40",
+          "right": "About 25 units"
+         },
+         {
+          "left": "₹1,000 at NAV ₹50",
+          "right": "About 20 units"
+         }
+        ]
+       }
+      },
+      {
+       "id": "mf-basics-3-q5",
+       "type": "scenario",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "NAV is just the value of one unit. Holdings, risk and costs matter far more than whether the number looks big or small.",
+       "payload": {
+        "prompt": "Two funds have NAVs of ₹12 and ₹240. A friend says the ₹12 one is the cheap pick. What is the better approach?",
+        "options": [
+         {
+          "text": "Buy the ₹12 fund because it is cheaper",
+          "outcome": "A lower NAV only means more units per rupee, not a better fund."
+         },
+         {
+          "text": "Buy the ₹240 fund because a high NAV shows it has done well",
+          "outcome": "NAV level alone says little about how good a fund is."
+         },
+         {
+          "text": "Compare what each fund holds, its risk level and its costs, since NAV alone says little",
+          "outcome": "You judge the funds on things that matter for your goal rather than on a unit price."
+         }
+        ],
+        "correctIndex": 2
+       }
+      }
+     ]
+    },
+    {
+     "id": "mf-basics-4",
+     "title": "Who runs your fund and what it costs",
+     "minutes": 3,
+     "cards": [
+      {
+       "emoji": "🏢",
+       "title": "The AMC runs the fund",
+       "body": "An asset management company (AMC) sets up and manages mutual fund schemes. Its fund manager makes the investment decisions under SEBI's rules."
+      },
+      {
+       "emoji": "🧾",
+       "title": "Expense ratio: the yearly running cost",
+       "body": "The expense ratio is a yearly percentage of the fund's assets used to run it. It is taken out of the fund daily, so it is already reflected in the NAV and you get no separate bill."
+      },
+      {
+       "emoji": "🚪",
+       "title": "Exit load: a fee for leaving early",
+       "body": "Some schemes charge an exit load if you redeem within a set period. It is a percentage of the amount withdrawn, and the scheme documents state it."
+      },
+      {
+       "emoji": "✂️",
+       "title": "Direct vs regular plans",
+       "body": "A direct plan is bought straight from the AMC with no distributor commission. A regular plan goes through a distributor, so its expense ratio is higher. The two have different NAVs."
+      }
+     ],
+     "questions": [
+      {
+       "id": "mf-basics-4-q1",
+       "type": "mcq",
+       "topic": "mf-basics",
+       "difficulty": 1,
+       "explanation": "The expense ratio is the annual cost of running the scheme, charged as a percentage of its assets. Lower costs leave more of the fund's value with investors.",
+       "payload": {
+        "prompt": "What is an expense ratio?",
+        "options": [
+         "A yearly percentage of the fund's assets used to run it",
+         "A one-time fee when you first invest",
+         "The profit a fund promises each year"
+        ],
+        "correctIndex": 0
+       }
+      },
+      {
+       "id": "mf-basics-4-q2",
+       "type": "trueFalse",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "The regular plan has a higher expense ratio because it includes distributor commission, so the two plans have different NAVs.",
+       "payload": {
+        "statement": "A direct plan and a regular plan of the same scheme have the same NAV.",
+        "answer": false
+       }
+      },
+      {
+       "id": "mf-basics-4-q3",
+       "type": "mythFact",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "It is deducted from the fund's assets daily, so you see its effect in the NAV rather than as a separate payment.",
+       "payload": {
+        "statement": "The expense ratio is a bill you pay separately every year.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "mf-basics-4-q4",
+       "type": "match",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "Each term describes a different cost: running the fund, leaving early, or the route you invest through.",
+       "payload": {
+        "prompt": "Match each cost term with its meaning",
+        "pairs": [
+         {
+          "left": "Expense ratio",
+          "right": "Yearly cost of running fund"
+         },
+         {
+          "left": "Exit load",
+          "right": "Fee for early redemption"
+         },
+         {
+          "left": "Direct plan",
+          "right": "No distributor commission"
+         },
+         {
+          "left": "Regular plan",
+          "right": "Pays a distributor"
+         }
+        ]
+       }
+      },
+      {
+       "id": "mf-basics-4-q5",
+       "type": "scenario",
+       "topic": "mf-basics",
+       "difficulty": 2,
+       "explanation": "Exit load terms are written in the scheme documents. Checking them in advance avoids a surprise if you withdraw early.",
+       "payload": {
+        "prompt": "You may need the money within a few months. The scheme has an exit load for early redemption. What should you do before investing?",
+        "options": [
+         {
+          "text": "Check the exit load period in the scheme documents and see whether it suits when you may need the money",
+          "outcome": "You know the cost of leaving early before you commit."
+         },
+         {
+          "text": "Ignore it, because exit loads only apply to big amounts",
+          "outcome": "If an exit load applies to your withdrawal, you could lose part of the amount unexpectedly."
+         },
+         {
+          "text": "Assume withdrawing is always free",
+          "outcome": "A surprise charge at redemption reduces the money you receive."
+         }
+        ],
+        "correctIndex": 0
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fund-types",
+   "title": "Types of Funds",
+   "subtitle": "Equity, debt, hybrid, index and risk",
+   "emoji": "🧩",
+   "color": "violet",
+   "lessons": [
+    {
+     "id": "fund-types-1",
+     "title": "Equity funds",
+     "minutes": 2,
+     "cards": [
+      {
+       "emoji": "🏭",
+       "title": "Equity funds buy shares",
+       "body": "An equity fund invests mainly in company shares. A share is a tiny piece of ownership in a business, so the fund's value moves with company prospects and the market."
+      },
+      {
+       "emoji": "🎢",
+       "title": "Bigger ups and downs",
+       "body": "Share prices can swing a lot in the short term. Equity fund values can rise and fall sharply, which is why they suit money you will not need for many years."
+      },
+      {
+       "emoji": "📏",
+       "title": "Large, mid and small cap",
+       "body": "SEBI groups companies by market value: the top 100 are large cap, the 101st to 250th are mid cap and the rest are small cap. Smaller companies often swing more."
+      },
+      {
+       "emoji": "🗂️",
+       "title": "Sector and thematic funds",
+       "body": "Some equity funds focus on one sector or theme, like banking or technology. Keeping all your eggs in one basket means more risk than a fund spread across many sectors."
+      }
+     ],
+     "questions": [
+      {
+       "id": "fund-types-1-q1",
+       "type": "mcq",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "SEBI ranks companies by market value: the top 100 are large cap, the 101st to 250th mid cap and the rest small cap.",
+       "payload": {
+        "prompt": "Under SEBI's grouping, which companies are called large cap?",
+        "options": [
+         "The 100 largest by market value",
+         "Companies with the highest share price",
+         "Companies that pay dividends"
+        ],
+        "correctIndex": 0
+       }
+      },
+      {
+       "id": "fund-types-1-q2",
+       "type": "trueFalse",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "Concentrating on one sector means that trouble in that sector hits the whole fund, while a wider spread softens it.",
+       "payload": {
+        "statement": "A fund focused on one sector is usually riskier than one spread across many sectors.",
+        "answer": true
+       }
+      },
+      {
+       "id": "fund-types-1-q3",
+       "type": "mythFact",
+       "topic": "fund-types",
+       "difficulty": 1,
+       "explanation": "Equity funds can do better over long periods but nothing is guaranteed, and they can fall sharply, even for several years.",
+       "payload": {
+        "statement": "Equity funds guarantee higher returns than other funds over any period.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "fund-types-1-q4",
+       "type": "match",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "SEBI's size groups are ranked by market value. Sectoral funds are defined by industry, not company size.",
+       "payload": {
+        "prompt": "Match each fund type with its focus",
+        "pairs": [
+         {
+          "left": "Large cap",
+          "right": "Top 100 companies"
+         },
+         {
+          "left": "Mid cap",
+          "right": "101st to 250th companies"
+         },
+         {
+          "left": "Small cap",
+          "right": "251st company onwards"
+         },
+         {
+          "left": "Sectoral fund",
+          "right": "Focuses on one sector"
+         }
+        ]
+       }
+      },
+      {
+       "id": "fund-types-1-q5",
+       "type": "scenario",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "Equity values swing in the short term. Decisions are better tied to your goal, time horizon and risk comfort than to one month's move.",
+       "payload": {
+        "prompt": "Your equity fund's value drops 12% in a month (an example) on market news. The money is for a goal 10 years away. What is a reasonable way to behave?",
+        "options": [
+         {
+          "text": "Borrow money to invest more at once, to win it back fast",
+          "outcome": "Borrowing adds a new risk and a debt to repay if prices keep falling."
+         },
+         {
+          "text": "Redeem everything immediately to stop the fall",
+          "outcome": "You turn a temporary drop into a real loss and may miss any recovery."
+         },
+         {
+          "text": "Check whether your goal or risk comfort has changed, rather than reacting to the headline alone",
+          "outcome": "You decide based on your plan, which is calmer than reacting to short-term noise."
+         }
+        ],
+        "correctIndex": 2
+       }
+      }
+     ]
+    },
+    {
+     "id": "fund-types-2",
+     "title": "Debt funds",
+     "minutes": 2,
+     "cards": [
+      {
+       "emoji": "🏛️",
+       "title": "Debt funds lend money",
+       "body": "A debt fund invests in bonds and similar instruments, where the borrower pays interest and returns the money at maturity. The fund is lending to governments and companies."
+      },
+      {
+       "emoji": "📉",
+       "title": "Interest-rate risk",
+       "body": "When interest rates rise, prices of existing bonds usually fall, so a debt fund's NAV can dip. Funds holding longer-maturity bonds are generally more sensitive to rate changes."
+      },
+      {
+       "emoji": "⚠️",
+       "title": "Credit risk",
+       "body": "The borrower may delay or fail to pay interest or the principal. A fund holding weaker borrowers carries more credit risk, and its NAV can fall if one defaults."
+      },
+      {
+       "emoji": "🚫",
+       "title": "Not guaranteed, not a deposit",
+       "body": "Debt funds are not bank deposits and offer no guaranteed return. They are often less volatile than equity funds, but their value can still fall."
+      }
+     ],
+     "questions": [
+      {
+       "id": "fund-types-2-q1",
+       "type": "mcq",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "Credit risk is the chance that a borrower does not pay back as promised, which can reduce the fund's NAV.",
+       "payload": {
+        "prompt": "What is credit risk in a debt fund?",
+        "options": [
+         "The stock market closing early",
+         "The fund charging a higher expense ratio",
+         "The borrower may fail to pay interest or principal"
+        ],
+        "correctIndex": 2
+       }
+      },
+      {
+       "id": "fund-types-2-q2",
+       "type": "trueFalse",
+       "topic": "fund-types",
+       "difficulty": 1,
+       "explanation": "New bonds pay the higher rate, so older, lower-rate bonds become less attractive and their prices fall.",
+       "payload": {
+        "statement": "When interest rates rise, prices of existing bonds usually fall.",
+        "answer": true
+       }
+      },
+      {
+       "id": "fund-types-2-q3",
+       "type": "mythFact",
+       "topic": "fund-types",
+       "difficulty": 1,
+       "explanation": "Debt funds face interest-rate risk and credit risk, and their NAV can fall. They are not bank deposits and nothing is guaranteed.",
+       "payload": {
+        "statement": "Debt funds are completely safe and cannot lose money.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "fund-types-2-q4",
+       "type": "match",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "These terms describe how debt funds work and where their risks come from.",
+       "payload": {
+        "prompt": "Match each term with its meaning",
+        "pairs": [
+         {
+          "left": "Interest-rate risk",
+          "right": "Rates up, bond prices fall"
+         },
+         {
+          "left": "Credit risk",
+          "right": "Borrower may not repay"
+         },
+         {
+          "left": "Maturity",
+          "right": "Date the loan is repaid"
+         },
+         {
+          "left": "Debt fund",
+          "right": "Invests mainly in bonds"
+         }
+        ]
+       }
+      },
+      {
+       "id": "fund-types-2-q5",
+       "type": "scenario",
+       "topic": "fund-types",
+       "difficulty": 3,
+       "explanation": "A dip after a rate rise is an example of interest-rate risk. Knowing the risks lets you decide calmly instead of acting on false assumptions.",
+       "payload": {
+        "prompt": "Your debt fund's NAV dips for a few weeks after interest rates rise. What is the best response?",
+        "options": [
+         {
+          "text": "Understand that rate moves can cause dips, and check the fund's holdings against your time horizon",
+          "outcome": "You treat the dip as a known risk and decide using facts about the fund and your plan."
+         },
+         {
+          "text": "Panic, because debt funds are supposed to be risk-free",
+          "outcome": "Withdrawing in alarm turns a dip into a real loss based on a wrong belief."
+         },
+         {
+          "text": "Assume a borrower has defaulted and sell at once",
+          "outcome": "You act on a guess instead of checking the portfolio and fund updates."
+         }
+        ],
+        "correctIndex": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "fund-types-3",
+     "title": "Hybrid and index funds",
+     "minutes": 3,
+     "cards": [
+      {
+       "emoji": "🥗",
+       "title": "Hybrid funds mix equity and debt",
+       "body": "A hybrid fund holds both shares and bonds in one scheme. Like a balanced meal, the mix is meant to soften the swings, but the fund can still fall in value."
+      },
+      {
+       "emoji": "🎚️",
+       "title": "The mix decides the risk",
+       "body": "A hybrid with more shares swings more than one with more bonds. The scheme documents state the range it will keep, so check it before investing."
+      },
+      {
+       "emoji": "🪞",
+       "title": "Index funds copy a market index",
+       "body": "An index fund holds the same companies as a chosen market index, in similar proportions. It does not try to beat the index, only to follow it."
+      },
+      {
+       "emoji": "🧾",
+       "title": "Lower cost, same market risk",
+       "body": "With no manager picking stocks, index funds usually have lower expense ratios. They still rise and fall with their index and carry market risk."
+      }
+     ],
+     "questions": [
+      {
+       "id": "fund-types-3-q1",
+       "type": "mcq",
+       "topic": "fund-types",
+       "difficulty": 1,
+       "explanation": "An index fund copies the holdings of an index, so its value moves roughly with that index.",
+       "payload": {
+        "prompt": "What does an index fund try to do?",
+        "options": [
+         "Beat the market by picking the best stocks",
+         "Follow a chosen market index",
+         "Guarantee the index's returns"
+        ],
+        "correctIndex": 1
+       }
+      },
+      {
+       "id": "fund-types-3-q2",
+       "type": "trueFalse",
+       "topic": "fund-types",
+       "difficulty": 1,
+       "explanation": "The bond part may soften the swings, but the share part and the bonds themselves can still fall in value.",
+       "payload": {
+        "statement": "A hybrid fund cannot lose value because it holds some bonds.",
+        "answer": false
+       }
+      },
+      {
+       "id": "fund-types-3-q3",
+       "type": "mythFact",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "An index fund falls when its index falls. Following a rule removes stock-picking by a manager, not market risk.",
+       "payload": {
+        "statement": "Index funds carry no market risk because they follow a fixed rule.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "fund-types-3-q4",
+       "type": "match",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "Each fund is defined by what it holds or follows.",
+       "payload": {
+        "prompt": "Match each fund with what it does",
+        "pairs": [
+         {
+          "left": "Hybrid fund",
+          "right": "Mix of shares and bonds"
+         },
+         {
+          "left": "Index fund",
+          "right": "Follows a market index"
+         },
+         {
+          "left": "Equity fund",
+          "right": "Mainly company shares"
+         },
+         {
+          "left": "Debt fund",
+          "right": "Mainly bonds and similar"
+         }
+        ]
+       }
+      },
+      {
+       "id": "fund-types-3-q5",
+       "type": "scenario",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "Index funds copy their index, including its falls. Market risk is the price of owning market-linked assets.",
+       "payload": {
+        "prompt": "The market falls sharply and your index fund's NAV drops with it. What does this tell you?",
+        "options": [
+         {
+          "text": "An index fund follows its index, so it falls when the index falls; judge it against your goal and horizon",
+          "outcome": "You understand the fund is working as designed and can think about whether it still fits your plan."
+         },
+         {
+          "text": "The fund is broken and you should switch at once",
+          "outcome": "Switching in a hurry locks in the fall and may land you in something with a similar risk."
+         },
+         {
+          "text": "A hybrid fund would not have been affected at all",
+          "outcome": "A hybrid also holds shares, so it could fall too, although possibly less."
+         }
+        ],
+        "correctIndex": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "fund-types-4",
+     "title": "Risk and matching funds to goals",
+     "minutes": 3,
+     "cards": [
+      {
+       "emoji": "🌡️",
+       "title": "The riskometer",
+       "body": "SEBI requires every scheme to show a riskometer with six levels, from Low to Very High. It describes how risky the scheme is, based on what it holds."
+      },
+      {
+       "emoji": "🧭",
+       "title": "Know your own risk comfort",
+       "body": "The riskometer rates the fund, not you. Ask yourself how a fall would feel and whether you could stay calm if your investment dropped for a while."
+      },
+      {
+       "emoji": "⏳",
+       "title": "Match money to time",
+       "body": "Money needed soon should not depend on assets that swing sharply. Goals many years away have time to ride out ups and downs, though a recovery is never guaranteed."
+      },
+      {
+       "emoji": "🧑‍🏫",
+       "title": "Ask a registered professional",
+       "body": "A SEBI-registered investment adviser or an AMFI-registered distributor can help you fit funds to your goals, time horizon and risk comfort. This course is education, not advice."
+      }
+     ],
+     "questions": [
+      {
+       "id": "fund-types-4-q1",
+       "type": "mcq",
+       "topic": "fund-types",
+       "difficulty": 1,
+       "explanation": "The riskometer has six levels: Low, Low to Moderate, Moderate, Moderately High, High and Very High.",
+       "payload": {
+        "prompt": "How many levels does SEBI's riskometer have?",
+        "options": [
+         "Three",
+         "Six",
+         "Ten"
+        ],
+        "correctIndex": 1
+       }
+      },
+      {
+       "id": "fund-types-4-q2",
+       "type": "trueFalse",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "The riskometer rates the scheme's risk. Your own comfort with risk is something you have to judge for yourself.",
+       "payload": {
+        "statement": "The riskometer measures your personal comfort with risk.",
+        "answer": false
+       }
+      },
+      {
+       "id": "fund-types-4-q3",
+       "type": "mythFact",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "Low risk is not no risk. Even funds at the lower levels can see their value fall, and none is guaranteed.",
+       "payload": {
+        "statement": "A scheme with a Low riskometer level cannot lose money.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "fund-types-4-q4",
+       "type": "match",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "A good plan combines the scheme's risk with your goal, time horizon and comfort.",
+       "payload": {
+        "prompt": "Match each planning idea with its meaning",
+        "pairs": [
+         {
+          "left": "Riskometer",
+          "right": "Rates the scheme's risk"
+         },
+         {
+          "left": "Risk comfort",
+          "right": "Your tolerance for dips"
+         },
+         {
+          "left": "Time horizon",
+          "right": "Years until you need money"
+         },
+         {
+          "left": "Goal",
+          "right": "What the money is for"
+         }
+        ]
+       }
+      },
+      {
+       "id": "fund-types-4-q5",
+       "type": "scenario",
+       "topic": "fund-types",
+       "difficulty": 2,
+       "explanation": "Money needed within a short time should not depend on sharp swings. Match the fund's risk to your time horizon and comfort, not to past gains.",
+       "payload": {
+        "prompt": "You need ₹50,000 for a trip in 8 months. A fund rated Very High on the riskometer has shown a big recent gain. What is sensible thinking?",
+        "options": [
+         {
+          "text": "It fits, because the recent gain shows it works",
+          "outcome": "Recent gains do not predict the future and a sharp fall before your trip could cut your money."
+         },
+         {
+          "text": "Your horizon is short and the fund swings sharply, so it may not fit; consider talking to a registered adviser",
+          "outcome": "You match the money to its time frame and ask for help if unsure."
+         },
+         {
+          "text": "Invest anyway and hope it does not fall",
+          "outcome": "Hope is not a plan, and a fall near the trip date would leave you short."
+         }
+        ],
+        "correctIndex": 1
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sip-power",
+   "title": "The Power of SIP",
+   "subtitle": "Small steps, regular habit, time",
+   "emoji": "🌱",
+   "color": "amber",
+   "lessons": [
+    {
+     "id": "sip-power-1",
+     "title": "What is a SIP",
+     "minutes": 2,
+     "cards": [
+      {
+       "emoji": "📅",
+       "title": "A SIP is a habit, not a fund",
+       "body": "A Systematic Investment Plan (SIP) lets you invest a fixed amount in a chosen scheme at regular intervals, such as monthly. It is a way of investing, not a type of fund."
+      },
+      {
+       "emoji": "🔁",
+       "title": "Auto-debit makes it easy",
+       "body": "Your bank account is debited on the date you choose and units are bought at the NAV for that date. Like a recurring phone recharge, you set it up once and it runs."
+      },
+      {
+       "emoji": "🪙",
+       "title": "Start small",
+       "body": "Many schemes allow SIPs from a few hundred rupees a month, so you do not need a big sum to begin. You can usually pause or stop a SIP, subject to the scheme's rules."
+      },
+      {
+       "emoji": "🧠",
+       "title": "Takes the guesswork out",
+       "body": "Investing on a schedule means you do not have to guess the right day to invest. A SIP builds discipline, but it does not guarantee profit or protect against loss."
+      }
+     ],
+     "questions": [
+      {
+       "id": "sip-power-1-q1",
+       "type": "mcq",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "A SIP is a method of investing, not a fund. The money goes into a scheme you pick, at regular intervals.",
+       "payload": {
+        "prompt": "What is a SIP?",
+        "options": [
+         "A type of fund that never falls",
+         "A fee charged on withdrawals",
+         "A way of investing a fixed amount at regular intervals"
+        ],
+        "correctIndex": 2
+       }
+      },
+      {
+       "id": "sip-power-1-q2",
+       "type": "trueFalse",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "A SIP is a way to invest in a scheme. The scheme itself could be equity, debt, hybrid or index.",
+       "payload": {
+        "statement": "A SIP is a separate type of fund, like equity or debt.",
+        "answer": false
+       }
+      },
+      {
+       "id": "sip-power-1-q3",
+       "type": "mythFact",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "A SIP is a disciplined way to invest, but the value still depends on the scheme and the market, so losses are possible.",
+       "payload": {
+        "statement": "A SIP guarantees you will make a profit.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "sip-power-1-q4",
+       "type": "match",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "A SIP combines a fixed sum, a schedule, automatic payment and units bought at the NAV of the day.",
+       "payload": {
+        "prompt": "Match each SIP idea with its meaning",
+        "pairs": [
+         {
+          "left": "Fixed amount",
+          "right": "Same sum every instalment"
+         },
+         {
+          "left": "Regular interval",
+          "right": "Such as monthly"
+         },
+         {
+          "left": "Auto-debit",
+          "right": "Bank pays on a set date"
+         },
+         {
+          "left": "Units bought",
+          "right": "At NAV on that date"
+         }
+        ]
+       }
+      },
+      {
+       "id": "sip-power-1-q5",
+       "type": "scenario",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "A SIP spreads your buying over time, so you do not need to pick the perfect day. It still carries market risk.",
+       "payload": {
+        "prompt": "A friend says: \"Wait for the market to dip, then start your SIP.\" What is worth remembering?",
+        "options": [
+         {
+          "text": "Waiting for the perfect low is easy because it is obvious in advance",
+          "outcome": "Nobody can reliably predict lows, so you could wait a long time and miss out on starting."
+         },
+         {
+          "text": "Timing the market is hard, and a SIP spreads buying over many dates, so start when your budget and goal are ready",
+          "outcome": "You build a habit and avoid betting on one day, though outcomes are not guaranteed."
+         },
+         {
+          "text": "Put in the whole year's amount at once to be safe",
+          "outcome": "A lump sum puts all your money in at one price, which a SIP is designed to avoid."
+         }
+        ],
+        "correctIndex": 1
+       }
+      }
+     ]
+    },
+    {
+     "id": "sip-power-2",
+     "title": "Rupee cost averaging",
+     "minutes": 3,
+     "cards": [
+      {
+       "emoji": "🛒",
+       "title": "Fixed money, changing price",
+       "body": "With a SIP you invest the same rupee amount each time, but the NAV changes. When the NAV is low your money buys more units, and when it is high, fewer."
+      },
+      {
+       "emoji": "🔢",
+       "title": "A small example",
+       "body": "For example, ₹1,000 a month at NAVs of ₹10, ₹5 and ₹10 buys 100, 200 and 100 units. That is 400 units for ₹3,000, or ₹7.50 a unit, against an average NAV of about ₹8.33."
+      },
+      {
+       "emoji": "⚖️",
+       "title": "That is rupee cost averaging",
+       "body": "Buying at different prices evens out your average cost per unit over time. It helps you avoid betting everything on a single date."
+      },
+      {
+       "emoji": "🚧",
+       "title": "Not a safety net",
+       "body": "Rupee cost averaging does not guarantee profit or protect from loss. If prices keep falling, or you sell during a fall, you can still end up with a loss."
+      }
+     ],
+     "questions": [
+      {
+       "id": "sip-power-2-q1",
+       "type": "mcq",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "The same rupees divided by a lower NAV give more units.",
+       "payload": {
+        "prompt": "In a SIP of a fixed amount, what happens when the NAV is low?",
+        "options": [
+         "The SIP pauses by itself",
+         "Fewer units are bought",
+         "More units are bought"
+        ],
+        "correctIndex": 2
+       }
+      },
+      {
+       "id": "sip-power-2-q2",
+       "type": "trueFalse",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "You invest the same amount, not the same number of units. The units bought change with the NAV.",
+       "payload": {
+        "statement": "In a SIP, you buy the same number of units every month.",
+        "answer": false
+       }
+      },
+      {
+       "id": "sip-power-2-q3",
+       "type": "mythFact",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "It can lower your average cost per unit, but it cannot guarantee a profit or prevent losses if prices stay low.",
+       "payload": {
+        "statement": "Rupee cost averaging ensures you never lose money.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "sip-power-2-q4",
+       "type": "match",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "Units equal the amount divided by NAV, so a lower NAV buys more units.",
+       "payload": {
+        "prompt": "For a ₹1,000 SIP instalment (ignoring charges), match the NAV with the units",
+        "pairs": [
+         {
+          "left": "NAV ₹10",
+          "right": "100 units"
+         },
+         {
+          "left": "NAV ₹5",
+          "right": "200 units"
+         },
+         {
+          "left": "NAV ₹20",
+          "right": "50 units"
+         },
+         {
+          "left": "NAV ₹8",
+          "right": "125 units"
+         }
+        ]
+       }
+      },
+      {
+       "id": "sip-power-2-q5",
+       "type": "scenario",
+       "topic": "sip-power",
+       "difficulty": 3,
+       "explanation": "A lower NAV means the same instalment buys more units. This is how a SIP averages cost, but it never guarantees a gain.",
+       "payload": {
+        "prompt": "Your fund's NAV is below where it was when your SIP began, and the next instalment is due. What is sound thinking?",
+        "options": [
+         {
+          "text": "Skip it, and only buy when prices have risen",
+          "outcome": "You miss the instalment that would have bought more units, and you are guessing about prices."
+         },
+         {
+          "text": "Triple the next instalment to make up for the fall",
+          "outcome": "You take on more risk than planned and may strain your budget."
+         },
+         {
+          "text": "A lower NAV means this instalment buys more units, so keep to your plan, knowing the outcome is not guaranteed",
+          "outcome": "You follow the plan you set while understanding the risk."
+         }
+        ],
+        "correctIndex": 2
+       }
+      }
+     ]
+    },
+    {
+     "id": "sip-power-3",
+     "title": "Power of compounding",
+     "minutes": 3,
+     "cards": [
+      {
+       "emoji": "❄️",
+       "title": "Returns that earn returns",
+       "body": "Compounding means the gains you earn start earning gains too, like a snowball picking up more snow as it rolls. Over long periods this effect can grow large."
+      },
+      {
+       "emoji": "🔢",
+       "title": "An assumed illustration",
+       "body": "Suppose ₹10,000 grows at an assumed 10% a year (not a prediction). It becomes ₹11,000 after year one, ₹12,100 after year two and ₹13,310 after year three."
+      },
+      {
+       "emoji": "⏱️",
+       "title": "Time is the key ingredient",
+       "body": "At the same assumed 10%, ₹1,000 left for 10 years grows to about ₹2,594, but left for 20 years to about ₹6,727. That is roughly 2.6 times as much."
+      },
+      {
+       "emoji": "🌱",
+       "title": "Start early, stay steady",
+       "body": "Starting earlier gives money more time to compound. Real returns vary and can be negative, so actual results will not follow a smooth line like these examples."
+      }
+     ],
+     "questions": [
+      {
+       "id": "sip-power-3-q1",
+       "type": "mcq",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "Year one gives ₹11,000. In year two the 10% is earned on ₹11,000, not on ₹10,000, giving ₹12,100.",
+       "payload": {
+        "prompt": "At an assumed 10% a year, what would ₹10,000 become after 2 years, for example?",
+        "options": [
+         "₹11,000",
+         "₹12,000",
+         "₹12,100"
+        ],
+        "correctIndex": 2
+       }
+      },
+      {
+       "id": "sip-power-3-q2",
+       "type": "trueFalse",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "Gains that stay invested become part of the base that earns the next gains.",
+       "payload": {
+        "statement": "Compounding means returns can earn further returns.",
+        "answer": true
+       }
+      },
+      {
+       "id": "sip-power-3-q3",
+       "type": "mythFact",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "Examples use an assumed steady rate for simplicity. Actual returns vary year to year and can be negative.",
+       "payload": {
+        "statement": "Real investments grow by the same percentage every year, like in compounding examples.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "sip-power-3-q4",
+       "type": "match",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "Compounding relies on time, and examples use assumed rates because real returns are uncertain.",
+       "payload": {
+        "prompt": "Match each idea with its meaning",
+        "pairs": [
+         {
+          "left": "Compounding",
+          "right": "Gains earning more gains"
+         },
+         {
+          "left": "Assumed rate",
+          "right": "A what-if, not a promise"
+         },
+         {
+          "left": "Time",
+          "right": "Longer stay, bigger effect"
+         },
+         {
+          "left": "Real returns",
+          "right": "Vary from year to year"
+         }
+        ]
+       }
+      },
+      {
+       "id": "sip-power-3-q5",
+       "type": "scenario",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "An earlier start gives compounding more time to work. It improves the odds but guarantees nothing, and your budget and emergency cushion come first.",
+       "payload": {
+        "prompt": "Two friends plan to invest the same monthly amount. One starts now and the other waits ten years to get settled. What is the lesson?",
+        "options": [
+         {
+          "text": "Waiting makes no difference, only the amount matters",
+          "outcome": "Time is what lets compounding build, so a late start usually leaves less time for it."
+         },
+         {
+          "text": "The earlier start gives more time to compound, though results are not guaranteed, so start with what your budget allows after an emergency cushion",
+          "outcome": "You use time as an advantage without taking on more than you can afford."
+         },
+         {
+          "text": "Starting early guarantees more money at the end",
+          "outcome": "No result is guaranteed, because returns vary and can be negative."
+         }
+        ],
+        "correctIndex": 1
+       }
+      }
+     ]
+    },
+    {
+     "id": "sip-power-4",
+     "title": "Staying invested through ups and downs",
+     "minutes": 3,
+     "cards": [
+      {
+       "emoji": "🎢",
+       "title": "Markets move both ways",
+       "body": "Markets rise and fall, sometimes sharply, and even long-term goals see rough patches. Falls are a normal part of how market-linked investments behave."
+      },
+      {
+       "emoji": "😨",
+       "title": "Panic selling locks in the loss",
+       "body": "Redeeming after a fall turns a temporary drop in value into a real loss, and you may miss any later recovery. Recovery is never guaranteed, so choose risk you can live with."
+      },
+      {
+       "emoji": "🛍️",
+       "title": "Falls can mean more units",
+       "body": "If your SIP keeps running while the NAV is low, each instalment buys more units. This lowers your average cost, but it does not promise a profit."
+      },
+      {
+       "emoji": "🔍",
+       "title": "Review by plan, not headline",
+       "body": "Revisit your goal, time horizon and risk comfort now and then. An emergency fund helps you avoid redeeming in a fall. Change course when your plan changes, not for headlines."
+      }
+     ],
+     "questions": [
+      {
+       "id": "sip-power-4-q1",
+       "type": "mcq",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "Selling after a fall fixes the lower value as your actual result, and you may miss any recovery.",
+       "payload": {
+        "prompt": "What does panic selling after a fall do?",
+        "options": [
+         "Guarantees the value will recover",
+         "Lowers the fund's expense ratio",
+         "Turns a temporary drop into a real loss"
+        ],
+        "correctIndex": 2
+       }
+      },
+      {
+       "id": "sip-power-4-q2",
+       "type": "trueFalse",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "A lower NAV means the same instalment buys more units, so stopping skips those purchases. It does not by itself decide whether you gain or lose.",
+       "payload": {
+        "statement": "Stopping a SIP during a market fall means missing units that would have been bought at lower NAVs.",
+        "answer": true
+       }
+      },
+      {
+       "id": "sip-power-4-q3",
+       "type": "mythFact",
+       "topic": "sip-power",
+       "difficulty": 1,
+       "explanation": "A SIP does not remove market risk. Your units can lose value in a fall, though a SIP's regular buying may lower your average cost.",
+       "payload": {
+        "statement": "A SIP protects you from losses when markets fall.",
+        "answer": "myth"
+       }
+      },
+      {
+       "id": "sip-power-4-q4",
+       "type": "match",
+       "topic": "sip-power",
+       "difficulty": 2,
+       "explanation": "Calm, planned behaviour supports your goals, while panic can turn a temporary fall into a real loss.",
+       "payload": {
+        "prompt": "Match each behaviour with its likely effect",
+        "pairs": [
+         {
+          "left": "Panic selling",
+          "right": "Locks in a loss"
+         },
+         {
+          "left": "Continuing SIP in a dip",
+          "right": "Buys more units per rupee"
+         },
+         {
+          "left": "Emergency fund",
+          "right": "Avoids forced redemption"
+         },
+         {
+          "left": "Reviewing your plan",
+          "right": "Checks goal and horizon"
+         }
+        ]
+       }
+      },
+      {
+       "id": "sip-power-4-q5",
+       "type": "scenario",
+       "topic": "sip-power",
+       "difficulty": 3,
+       "explanation": "Decisions should come from your plan. If your goal and finances are unchanged, a fall alone is not a reason to exit, though outcomes are never guaranteed.",
+       "payload": {
+        "prompt": "The market has been down for three months and your SIP's value is below the amount invested. A colleague says everyone is getting out. What should you do?",
+        "options": [
+         {
+          "text": "Redeem everything now before it falls further",
+          "outcome": "If it recovers, you would have locked in the loss and missed the rebound."
+         },
+         {
+          "text": "Check whether your goal, horizon or finances have changed, and if not, keep to your plan rather than react to noise",
+          "outcome": "You act on your plan, not on fear, though no outcome is guaranteed."
+         },
+         {
+          "text": "Stop the SIP and wait until markets are up",
+          "outcome": "You skip instalments that would buy more units, based on a guess about timing."
+         }
+        ],
+        "correctIndex": 1
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
