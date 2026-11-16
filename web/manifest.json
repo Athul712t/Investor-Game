@@ -1,11 +1,11 @@
 {
-    "name": "investor_game",
-    "short_name": "investor_game",
+    "name": "Investor Game",
+    "short_name": "Investor Game",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0B1022",
+    "theme_color": "#0B1022",
+    "description": "Learn mutual funds by playing.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
