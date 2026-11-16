@@ -25,7 +25,7 @@ class StoryMapScreen extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: AppColors.surfaceHi,
+          backgroundColor: AppColors.paperDeep,
           content: Text('🔓  ${story.chapters[i + 1].title} unlocked!', style: context.text.titleMedium),
         ),
       );
@@ -37,7 +37,6 @@ class StoryMapScreen extends ConsumerWidget {
     final story = ref.watch(storyProvider);
     final profile = ref.watch(profileProvider);
     return AppScaffold(
-      glow: AppColors.sky,
       appBar: AppBar(
         leading: IconButton(
           tooltip: 'Back',
@@ -46,7 +45,7 @@ class StoryMapScreen extends ConsumerWidget {
         ),
         title: const Text('Story Mode'),
         actions: [
-          StatPill(icon: Icons.bolt_rounded, value: '${profile.xp}', color: AppColors.violet, semantic: 'XP'),
+          StatPill(icon: Icons.bolt_rounded, value: '${profile.xp}', color: AppColors.blue, semantic: 'XP'),
           const SizedBox(width: AppSpace.md),
         ],
       ),
@@ -186,12 +185,12 @@ class _Flag extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
     decoration: BoxDecoration(
-      color: AppColors.surfaceHi,
+      color: AppColors.paperDeep,
       borderRadius: BorderRadius.circular(999),
-      border: Border.all(color: dim ? AppColors.line : AppColors.sky.withValues(alpha: 0.5), width: 1.5),
+      border: Border.all(color: dim ? AppColors.track : AppColors.teal.withValues(alpha: 0.5), width: 1.5),
       boxShadow: const [BoxShadow(color: AppColors.ink, offset: Offset(0, 4))],
     ),
-    child: Text('$emoji  $text', style: context.text.titleSmall!.copyWith(color: dim ? AppColors.textDim : null)),
+    child: Text('$emoji  $text', style: context.text.titleSmall!.copyWith(color: dim ? AppColors.inkDim : null)),
   );
 }
 
@@ -217,10 +216,10 @@ class _PathPainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = 26
           ..strokeCap = StrokeCap.round
-          ..color = (lit ? AppColors.mint : AppColors.surfaceHi).withValues(alpha: lit ? 0.10 : 0.6),
+          ..color = (lit ? AppColors.green : AppColors.paperDeep).withValues(alpha: lit ? 0.10 : 0.6),
       );
       final dot = Paint()
-        ..color = lit ? AppColors.mint : (last ? AppColors.line : AppColors.textDim.withValues(alpha: 0.5));
+        ..color = lit ? AppColors.green : (last ? AppColors.track : AppColors.inkDim.withValues(alpha: 0.5));
       for (final m in path.computeMetrics()) {
         for (var d = 0.0; d < m.length; d += 16) {
           canvas.drawCircle(m.getTangentForOffset(d)!.position, lit ? 4 : 3, dot);
@@ -278,14 +277,14 @@ class _ChapterStop extends StatelessWidget {
         Text(
           'CHAPTER ${index + 1}',
           style: context.text.labelSmall!.copyWith(
-            color: unlocked ? chapter.color : AppColors.textDim,
+            color: unlocked ? chapter.color : AppColors.inkDim,
             letterSpacing: 1.2,
           ),
         ),
         Text(
           chapter.title,
           textAlign: leftSide ? TextAlign.left : TextAlign.right,
-          style: context.text.titleLarge!.copyWith(color: unlocked ? null : AppColors.textDim),
+          style: context.text.titleLarge!.copyWith(color: unlocked ? null : AppColors.inkDim),
         ),
         Text(chapter.subtitle, textAlign: leftSide ? TextAlign.left : TextAlign.right, style: context.text.bodySmall),
         const SizedBox(height: 6),
@@ -312,7 +311,7 @@ class _ChapterStop extends StatelessWidget {
           Text(
             status,
             textAlign: leftSide ? TextAlign.left : TextAlign.right,
-            style: context.text.labelSmall!.copyWith(color: complete ? AppColors.mint : AppColors.textDim),
+            style: context.text.labelSmall!.copyWith(color: complete ? AppColors.green : AppColors.inkDim),
           ),
       ],
     );
@@ -323,7 +322,7 @@ class _ChapterStop extends StatelessWidget {
         ..showSnackBar(
           SnackBar(
             behavior: SnackBarBehavior.floating,
-            backgroundColor: AppColors.surfaceHi,
+            backgroundColor: AppColors.paperDeep,
             content: Text('🔒  $status', style: context.text.titleSmall),
           ),
         );
@@ -407,7 +406,7 @@ class _MedallionState extends State<_Medallion> with SingleTickerProviderStateMi
   @override
   Widget build(BuildContext context) {
     const size = _MapPath._medal;
-    final c = widget.unlocked ? widget.color : AppColors.line;
+    final c = widget.unlocked ? widget.color : AppColors.track;
     return SizedBox(
       width: size,
       height: size,
@@ -445,7 +444,7 @@ class _MedallionState extends State<_Medallion> with SingleTickerProviderStateMi
                 center: const Alignment(-0.35, -0.45),
                 colors: widget.unlocked
                     ? [Color.lerp(c, Colors.white, 0.35)!, c, Color.lerp(c, AppColors.ink, 0.35)!]
-                    : const [AppColors.surfaceHi, AppColors.surface],
+                    : const [AppColors.paperDeep, AppColors.card],
                 stops: widget.unlocked ? const [0, 0.55, 1] : null,
               ),
               boxShadow: [
@@ -462,8 +461,9 @@ class _MedallionState extends State<_Medallion> with SingleTickerProviderStateMi
                   ),
           ),
           if (!widget.unlocked)
-            _corner(AppColors.surfaceHi, const Icon(Icons.lock_rounded, size: 18, color: AppColors.textDim)),
-          if (widget.complete) _corner(AppColors.mint, const Icon(Icons.check_rounded, size: 20, color: AppColors.ink)),
+            _corner(AppColors.paperDeep, const Icon(Icons.lock_rounded, size: 18, color: AppColors.inkDim)),
+          if (widget.complete)
+            _corner(AppColors.green, const Icon(Icons.check_rounded, size: 20, color: AppColors.ink)),
         ],
       ),
     );
@@ -499,7 +499,7 @@ class _RingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6
       ..strokeCap = StrokeCap.round;
-    canvas.drawArc(r, 0, 2 * pi, false, stroke..color = AppColors.line);
+    canvas.drawArc(r, 0, 2 * pi, false, stroke..color = AppColors.track);
     if (progress > 0) canvas.drawArc(r, -pi / 2, 2 * pi * progress, false, stroke..color = color);
   }
 

@@ -32,14 +32,14 @@ class HomeScreen extends ConsumerWidget {
             StatPill(
               icon: Icons.local_fire_department_rounded,
               value: '${p.streak}',
-              color: AppColors.coral,
+              color: AppColors.red,
               semantic: 'Day streak',
             ),
             const SizedBox(width: 8),
             StatPill(
               icon: Icons.monetization_on_rounded,
               value: '${p.coins}',
-              color: AppColors.amber,
+              color: AppColors.yellow,
               semantic: 'Coins',
             ),
           ],
@@ -53,13 +53,13 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   Text('Level ${p.level}', style: context.text.titleLarge),
                   const SizedBox(width: 8),
-                  Text(p.title, style: context.text.titleSmall!.copyWith(color: AppColors.violet)),
+                  Text(p.title, style: context.text.titleSmall!.copyWith(color: AppColors.blue)),
                   const Spacer(),
                   Text('${p.xp % Profile.xpPerLevel}/${Profile.xpPerLevel} XP', style: context.text.bodySmall),
                 ],
               ),
               const SizedBox(height: 10),
-              FatProgress(value: p.levelProgress, color: AppColors.violet),
+              FatProgress(value: p.levelProgress, color: AppColors.blue),
             ],
           ),
         ),
@@ -70,7 +70,7 @@ class HomeScreen extends ConsumerWidget {
         const SizedBox(height: AppSpace.sm),
         _ModeCard(
           emoji: '📖',
-          color: AppColors.sky,
+          color: AppColors.teal,
           title: 'Story Mode',
           body: 'From pocket money to portfolio. Learn, play, unlock chapters.',
           cta: 'Continue story',
@@ -83,7 +83,7 @@ class HomeScreen extends ConsumerWidget {
             Expanded(
               child: _MiniMode(
                 emoji: '🎮',
-                color: AppColors.amber,
+                color: AppColors.yellow,
                 title: 'Arcade',
                 body: 'Pure game',
                 onTap: () => tab(2),
@@ -93,7 +93,7 @@ class HomeScreen extends ConsumerWidget {
             Expanded(
               child: _MiniMode(
                 emoji: '🎓',
-                color: AppColors.violet,
+                color: AppColors.blue,
                 title: 'Learn',
                 body: 'Pure knowledge',
                 onTap: () => tab(1),

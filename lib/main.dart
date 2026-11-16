@@ -6,12 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/cloud.dart';
 import 'core/profile.dart';
 import 'core/router.dart';
+import 'core/sfx.dart';
 import 'core/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   final prefs = await SharedPreferences.getInstance();
+  Sound.init(prefs);
   final container = ProviderContainer(overrides: [prefsProvider.overrideWithValue(prefs)]);
   container.read(cloudProvider.notifier).start();
   runApp(UncontrolledProviderScope(container: container, child: const InvestorGameApp()));

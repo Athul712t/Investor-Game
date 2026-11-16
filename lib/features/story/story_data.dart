@@ -128,10 +128,10 @@ class Speaker {
   final Color color;
 
   static const cast = {
-    'asha': Speaker('Asha', '👩🏽‍💼', AppColors.violet),
-    'kabir': Speaker('Kabir', '😎', AppColors.coral),
-    'you': Speaker('You', '🙂', AppColors.mint),
-    'narrator': Speaker('', '📖', AppColors.sky),
+    'asha': Speaker('Asha', '👩🏽‍💼', AppColors.blue),
+    'kabir': Speaker('Kabir', '😎', AppColors.red),
+    'you': Speaker('You', '🙂', AppColors.green),
+    'narrator': Speaker('', '📖', AppColors.teal),
   };
   static Speaker of(String id) => cast[id] ?? cast['narrator']!;
 }

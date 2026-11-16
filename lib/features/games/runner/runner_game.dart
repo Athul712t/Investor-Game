@@ -1,3 +1,5 @@
+import '../_shared/arcade_colors.dart';
+
 import 'dart:math';
 import 'dart:ui';
 
@@ -7,7 +9,6 @@ import 'package:flutter/painting.dart' show TextPainter, TextSpan, TextStyle, Te
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' show KeyEventResult;
 
-import '../../../core/theme.dart';
 import '../../../domain/game/game_types.dart';
 import '../_shared/arcade_game.dart';
 import 'runner_backdrop.dart';
@@ -199,7 +200,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
           Offset((_fx.nextDouble() - 0.5) * 60, 40 + sim.speed * 4),
           0.45,
           2 + _fx.nextDouble() * 2.5,
-          (sim.doubleScore > 0 ? AppColors.mint : AppColors.textDim).withValues(alpha: 0.6),
+          (sim.doubleScore > 0 ? ArcadeColors.mint : ArcadeColors.textDim).withValues(alpha: 0.6),
         ),
       );
     }
@@ -216,25 +217,25 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     switch (e.type) {
       case SimEventType.coin:
         HapticFeedback.selectionClick();
-        _burst(at, 10, [AppColors.amber, AppColors.text], 160, star: true);
+        _burst(at, 10, [ArcadeColors.amber, ArcadeColors.text], 160, star: true);
       case SimEventType.boost:
         HapticFeedback.mediumImpact();
-        _burst(at, 26, [AppColors.violet, AppColors.amber, AppColors.text], 260, star: true);
+        _burst(at, 26, [ArcadeColors.violet, ArcadeColors.amber, ArcadeColors.text], 260, star: true);
         _flash = 0.35;
         requestBoost();
       case SimEventType.shieldBreak:
         HapticFeedback.heavyImpact();
         _shake = 8;
-        _burst(at, 30, [AppColors.sky, AppColors.text, AppColors.coral], 320);
+        _burst(at, 30, [ArcadeColors.sky, ArcadeColors.text, ArcadeColors.coral], 320);
       case SimEventType.hit:
         HapticFeedback.heavyImpact();
         _shake = 18;
         _flash = 1;
         _crashT = 0;
-        _burst(cam.p(sim.x, sim.jumpH + 1, 0), 46, [AppColors.coral, AppColors.amber, AppColors.text], 420);
+        _burst(cam.p(sim.x, sim.jumpH + 1, 0), 46, [ArcadeColors.coral, ArcadeColors.amber, ArcadeColors.text], 420);
       case SimEventType.land:
         _squashV -= 6;
-        _burst(cam.p(sim.x, 0, 0), 8, [AppColors.textDim], 120, gravity: 300);
+        _burst(cam.p(sim.x, 0, 0), 8, [ArcadeColors.textDim], 120, gravity: 300);
     }
   }
 
@@ -300,13 +301,13 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       path,
       Paint()
         ..shader = Gradient.linear(Offset(0, far.dy), Offset(0, near.dy), [
-          AppColors.mint.withValues(alpha: 0),
-          AppColors.mint.withValues(alpha: 0.10),
+          ArcadeColors.mint.withValues(alpha: 0),
+          ArcadeColors.mint.withValues(alpha: 0.10),
         ]),
     );
   }
 
-  TextPainter _glyph(String s, {Color color = AppColors.text, double size = 64}) => _glyphs.putIfAbsent(
+  TextPainter _glyph(String s, {Color color = ArcadeColors.text, double size = 64}) => _glyphs.putIfAbsent(
     '$s$size${color.toARGB32()}',
     () => TextPainter(
       text: TextSpan(
@@ -337,9 +338,9 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     if (a <= 0) return;
     switch (e.kind) {
       case Kind.low:
-        _block(c, e.x, z, 1.3, RunnerSim.lowHeight, 0.4, AppColors.coral, a, low: true);
+        _block(c, e.x, z, 1.3, RunnerSim.lowHeight, 0.4, ArcadeColors.coral, a, low: true);
       case Kind.tall:
-        _block(c, e.x, z, 1.3, 3.3, 0.3, Color.lerp(AppColors.surfaceHi, AppColors.coral, 0.3)!, a, low: false);
+        _block(c, e.x, z, 1.3, 3.3, 0.3, Color.lerp(ArcadeColors.surfaceHi, ArcadeColors.coral, 0.3)!, a, low: false);
       case Kind.coin:
         _coin(c, e, z, a);
       case Kind.boost:
@@ -360,7 +361,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     c.drawOval(
       Rect.fromCenter(center: cam.p(x, 0, z), width: s * hw * 3.4, height: s * 1.3),
       Paint()
-        ..color = AppColors.coral.withValues(alpha: 0.35 * a)
+        ..color = ArcadeColors.coral.withValues(alpha: 0.35 * a)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, max(2, s * 0.5)),
     );
     final dx = x - cam.camX;
@@ -368,23 +369,23 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       final sx = dx > 0 ? x - hw : x + hw;
       c.drawPath(
         poly([cam.p(sx, 0, z1), cam.p(sx, h, z1), cam.p(sx, h, z2), cam.p(sx, 0, z2)]),
-        fill(Color.lerp(base, AppColors.ink, 0.5)!),
+        fill(Color.lerp(base, ArcadeColors.ink, 0.5)!),
       );
     }
-    c.drawPath(poly([tl, tr, br, bl]), fill(Color.lerp(base, AppColors.text, low ? 0.35 : 0.15)!));
+    c.drawPath(poly([tl, tr, br, bl]), fill(Color.lerp(base, ArcadeColors.text, low ? 0.35 : 0.15)!));
     final front = Rect.fromPoints(tl, fr);
     c.drawRect(
       front,
       Paint()
         ..shader = Gradient.linear(front.topCenter, front.bottomCenter, [
           base.withValues(alpha: a),
-          Color.lerp(base, AppColors.ink, 0.45)!.withValues(alpha: a),
+          Color.lerp(base, ArcadeColors.ink, 0.45)!.withValues(alpha: a),
         ]),
     );
     final edge = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = max(1, s * 0.07)
-      ..color = Color.lerp(AppColors.coral, AppColors.text, 0.3)!.withValues(alpha: a);
+      ..color = Color.lerp(ArcadeColors.coral, ArcadeColors.text, 0.3)!.withValues(alpha: a);
     c.drawRect(front, edge);
 
     if (low) {
@@ -405,19 +406,19 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
           ..strokeWidth = max(1.2, s * 0.12)
           ..strokeJoin = StrokeJoin.round
           ..strokeCap = StrokeCap.round
-          ..color = AppColors.text.withValues(alpha: 0.9 * a),
+          ..color = ArcadeColors.text.withValues(alpha: 0.9 * a),
       );
       final tip = front.topLeft + Offset(0.92 * front.width, 0.8 * front.height);
       c.drawPath(
         poly([tip + Offset(-s * 0.32, -s * 0.05), tip + Offset(s * 0.05, s * 0.06), tip + Offset(-s * 0.1, -s * 0.3)]),
-        fill(AppColors.text),
+        fill(ArcadeColors.text),
       );
     } else {
       // Hazard stripes at the base, a bear on the face.
       final stripe = Rect.fromLTRB(front.left, front.bottom - front.height * 0.16, front.right, front.bottom);
       c.save();
       c.clipRect(stripe);
-      final sp = Paint()..color = AppColors.coral.withValues(alpha: 0.85 * a);
+      final sp = Paint()..color = ArcadeColors.coral.withValues(alpha: 0.85 * a);
       final step = stripe.height * 1.2;
       for (var sx = stripe.left - stripe.height; sx < stripe.right; sx += step * 2) {
         c.drawPath(
@@ -436,11 +437,11 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = s * 0.25
-          ..color = AppColors.coral.withValues(alpha: 0.4 * a)
+          ..color = ArcadeColors.coral.withValues(alpha: 0.4 * a)
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, max(2, s * 0.3)),
       );
       if (a > 0.05) {
-        c.saveLayer(null, Paint()..color = AppColors.text.withValues(alpha: a));
+        c.saveLayer(null, Paint()..color = ArcadeColors.text.withValues(alpha: a));
         _emoji(c, '🐻', Offset(front.center.dx, front.top + front.height * 0.42), s * 1.7);
         c.restore();
       }
@@ -456,22 +457,22 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       at,
       r * 1.6,
       Paint()
-        ..color = AppColors.amber.withValues(alpha: 0.35 * a)
+        ..color = ArcadeColors.amber.withValues(alpha: 0.35 * a)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, max(2, r * 0.8)),
     );
     final rect = Rect.fromCenter(center: at, width: r * 2 * spin, height: r * 2);
-    c.drawOval(rect, Paint()..color = Color.lerp(AppColors.amber, AppColors.coral, 0.35)!.withValues(alpha: a));
-    c.drawOval(rect.deflate(r * 0.14), Paint()..color = AppColors.amber.withValues(alpha: a));
+    c.drawOval(rect, Paint()..color = Color.lerp(ArcadeColors.amber, ArcadeColors.coral, 0.35)!.withValues(alpha: a));
+    c.drawOval(rect.deflate(r * 0.14), Paint()..color = ArcadeColors.amber.withValues(alpha: a));
     c.drawOval(
       Rect.fromCenter(center: at, width: r * 0.9 * spin, height: r * 0.9),
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = max(0.8, r * 0.12)
-        ..color = Color.lerp(AppColors.amber, AppColors.ink, 0.25)!.withValues(alpha: a),
+        ..color = Color.lerp(ArcadeColors.amber, ArcadeColors.ink, 0.25)!.withValues(alpha: a),
     );
     c.drawOval(
       Rect.fromCenter(center: at + Offset(-r * 0.3 * spin, -r * 0.35), width: r * 0.5 * spin, height: r * 0.3),
-      Paint()..color = AppColors.text.withValues(alpha: 0.7 * a),
+      Paint()..color = ArcadeColors.text.withValues(alpha: 0.7 * a),
     );
   }
 
@@ -482,7 +483,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     final rays = Paint()
       ..strokeWidth = max(1, r * 0.12)
       ..strokeCap = StrokeCap.round
-      ..color = AppColors.amber.withValues(alpha: 0.55 * a);
+      ..color = ArcadeColors.amber.withValues(alpha: 0.55 * a);
     for (var i = 0; i < 10; i++) {
       final ang = _t * 1.5 + i * pi / 5;
       final d = Offset(cos(ang), sin(ang));
@@ -492,7 +493,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       at,
       r * 1.5,
       Paint()
-        ..color = AppColors.violet.withValues(alpha: 0.6 * a)
+        ..color = ArcadeColors.violet.withValues(alpha: 0.6 * a)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, max(3, r * 0.7)),
     );
     c.drawCircle(
@@ -500,8 +501,8 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       r,
       Paint()
         ..shader = Gradient.radial(at - Offset(r * 0.3, r * 0.3), r * 1.3, [
-          Color.lerp(AppColors.violet, AppColors.text, 0.5)!.withValues(alpha: a),
-          AppColors.violet.withValues(alpha: a),
+          Color.lerp(ArcadeColors.violet, ArcadeColors.text, 0.5)!.withValues(alpha: a),
+          ArcadeColors.violet.withValues(alpha: a),
         ]),
     );
     c.drawCircle(
@@ -510,7 +511,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = max(1, r * 0.1)
-        ..color = AppColors.amber.withValues(alpha: a),
+        ..color = ArcadeColors.amber.withValues(alpha: a),
     );
     // Lightning bolt.
     final bolt = [
@@ -523,7 +524,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     ];
     c.drawPath(
       Path()..addPolygon([for (final p in bolt) at + p * r], true),
-      Paint()..color = AppColors.amber.withValues(alpha: a),
+      Paint()..color = ArcadeColors.amber.withValues(alpha: a),
     );
   }
 
@@ -538,14 +539,14 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     final shrink = 1 - (h / 5).clamp(0.0, 0.6);
     c.drawOval(
       Rect.fromCenter(center: ground, width: s * 2.0 * shrink, height: s * 0.55 * shrink),
-      Paint()..color = AppColors.ink.withValues(alpha: 0.6),
+      Paint()..color = ArcadeColors.ink.withValues(alpha: 0.6),
     );
     c.drawOval(
       Rect.fromCenter(center: ground, width: s * 2.3 * shrink, height: s * 0.62 * shrink),
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.5
-        ..color = AppColors.mint.withValues(alpha: 0.75 * shrink)
+        ..color = ArcadeColors.mint.withValues(alpha: 0.75 * shrink)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
     );
 
@@ -571,7 +572,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       Offset(0, -size * 0.42),
       size * 0.5,
       Paint()
-        ..color = (sim.doubleScore > 0 ? AppColors.amber : AppColors.mint).withValues(alpha: 0.28)
+        ..color = (sim.doubleScore > 0 ? ArcadeColors.amber : ArcadeColors.mint).withValues(alpha: 0.28)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, size * 0.25),
     );
     _emoji(c, '🐂', Offset(0, -size * 0.45), size);
@@ -588,9 +589,9 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
             center,
             r,
             [
-              AppColors.sky.withValues(alpha: 0.0),
-              AppColors.sky.withValues(alpha: 0.10),
-              AppColors.sky.withValues(alpha: 0.35),
+              ArcadeColors.sky.withValues(alpha: 0.0),
+              ArcadeColors.sky.withValues(alpha: 0.10),
+              ArcadeColors.sky.withValues(alpha: 0.35),
             ],
             [0, 0.7, 1],
           ),
@@ -601,7 +602,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2
-          ..color = AppColors.sky.withValues(alpha: 0.85),
+          ..color = ArcadeColors.sky.withValues(alpha: 0.85),
       );
       c.drawArc(
         Rect.fromCircle(center: center, radius: r * 0.82),
@@ -612,7 +613,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3
           ..strokeCap = StrokeCap.round
-          ..color = AppColors.text.withValues(alpha: 0.7),
+          ..color = ArcadeColors.text.withValues(alpha: 0.7),
       );
     }
   }
@@ -656,7 +657,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       final ph = (_t * (1.4 + _hash01(i + 50)) + _hash01(i + 99)) % 1.0;
       final r0 = reach * (0.3 + ph * 0.5);
       final d = Offset(cos(ang), sin(ang));
-      p.color = AppColors.text.withValues(alpha: 0.5 * f * ph);
+      p.color = ArcadeColors.text.withValues(alpha: 0.5 * f * ph);
       c.drawLine(o + d * r0, o + d * (r0 + 40 + 120 * ph), p);
     }
   }
@@ -673,11 +674,11 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       Rect.fromLTWH(0, 0, cam.w, 120),
       Paint()
         ..shader = Gradient.linear(Offset.zero, const Offset(0, 120), [
-          AppColors.ink.withValues(alpha: 0.55),
-          AppColors.ink.withValues(alpha: 0),
+          ArcadeColors.ink.withValues(alpha: 0.55),
+          ArcadeColors.ink.withValues(alpha: 0),
         ]),
     );
-    final tint = sim.slowMo > 0 ? AppColors.sky : AppColors.ink;
+    final tint = sim.slowMo > 0 ? ArcadeColors.sky : ArcadeColors.ink;
     c.drawRect(
       r,
       Paint()
@@ -689,28 +690,31 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
         ),
     );
     if (_flash > 0) {
-      c.drawRect(r, Paint()..color = (sim.crashed ? AppColors.coral : AppColors.text).withValues(alpha: _flash * 0.35));
+      c.drawRect(
+        r,
+        Paint()..color = (sim.crashed ? ArcadeColors.coral : ArcadeColors.text).withValues(alpha: _flash * 0.35),
+      );
     }
   }
 
   /// Timer rings for active powerups, below the host's top bar.
   void _hud(Canvas c) {
     final items = <(String, double, Color)>[
-      if (sim.shield) ('🛡️', 1, AppColors.sky),
-      if (sim.magnet > 0) ('🧲', sim.magnet / 8, AppColors.coral),
-      if (sim.doubleScore > 0) ('2×', sim.doubleScore / 8, AppColors.mint),
-      if (sim.slowMo > 0) ('🐢', sim.slowMo / 5, AppColors.sky),
+      if (sim.shield) ('🛡️', 1, ArcadeColors.sky),
+      if (sim.magnet > 0) ('🧲', sim.magnet / 8, ArcadeColors.coral),
+      if (sim.doubleScore > 0) ('2×', sim.doubleScore / 8, ArcadeColors.mint),
+      if (sim.slowMo > 0) ('🐢', sim.slowMo / 5, ArcadeColors.sky),
     ];
     for (final (i, (label, frac, color)) in items.indexed) {
       final at = Offset(32 + i * 52.0, 122);
-      c.drawCircle(at, 21, Paint()..color = AppColors.surface.withValues(alpha: 0.85));
+      c.drawCircle(at, 21, Paint()..color = ArcadeColors.surface.withValues(alpha: 0.85));
       c.drawCircle(
         at,
         19,
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3.5
-          ..color = AppColors.line,
+          ..color = ArcadeColors.line,
       );
       c.drawArc(
         Rect.fromCircle(center: at, radius: 19),
@@ -724,7 +728,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
           ..color = color,
       );
       if (label == '2×') {
-        final tp = _glyph(label, color: AppColors.mint, size: 18);
+        final tp = _glyph(label, color: ArcadeColors.mint, size: 18);
         tp.paint(c, at - Offset(tp.width / 2, tp.height / 2));
       } else {
         _emoji(c, label, at, 20);

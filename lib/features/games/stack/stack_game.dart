@@ -1,3 +1,5 @@
+import '../_shared/arcade_colors.dart';
+
 import 'dart:math';
 import 'dart:ui' as ui;
 
@@ -7,12 +9,11 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' show KeyEventResult;
 
-import '../../../core/theme.dart';
 import '../../../domain/game/game_types.dart';
 import '../_shared/arcade_game.dart';
 import 'stack_math.dart';
 
-const _palette = [AppColors.mint, AppColors.sky, AppColors.violet, AppColors.amber, AppColors.coral];
+const _palette = [ArcadeColors.mint, ArcadeColors.sky, ArcadeColors.violet, ArcadeColors.amber, ArcadeColors.coral];
 const _blockH = 0.075; // block height in units (1 unit = min(width, 0.6 * height))
 const _startW = 0.6;
 const _perfectTol = 0.014;
@@ -198,11 +199,11 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
       coins.value++;
       _flash = 1;
       _rings.add(_Ring(res.center, topY, res.width, color));
-      _pops.add(_Pop(_streak > 1 ? 'Perfect x$_streak' : 'Perfect', res.center, topY, AppColors.text, true));
+      _pops.add(_Pop(_streak > 1 ? 'Perfect x$_streak' : 'Perfect', res.center, topY, ArcadeColors.text, true));
       _haptic(HapticFeedback.lightImpact);
       if (_streak % 3 == 0) {
         _w = min(_startW, _w + 0.06);
-        _pops.add(_Pop('Block grows!', res.center, topY - 0.11, AppColors.mint, false));
+        _pops.add(_Pop('Block grows!', res.center, topY - 0.11, ArcadeColors.mint, false));
       }
     } else {
       _streak = 0;
@@ -210,7 +211,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
     }
     if (placed % 5 == 0) {
       coins.value++;
-      _pops.add(_Pop('+1 coin', res.center, topY - (res.perfect ? 0.22 : 0.08), AppColors.amber, false));
+      _pops.add(_Pop('+1 coin', res.center, topY - (res.perfect ? 0.22 : 0.08), ArcadeColors.amber, false));
     }
 
     _dir = _rng.nextBool() ? 1 : -1;
@@ -225,7 +226,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
         _slowLeft = 5;
       case PowerupType.extraLife:
         _w = _startW;
-        _pops.add(_Pop('Full width', _tower.last.x, (_tower.length + 1) * _blockH, AppColors.coral, false));
+        _pops.add(_Pop('Full width', _tower.last.x, (_tower.length + 1) * _blockH, ArcadeColors.coral, false));
       case PowerupType.doubleScore:
         _doubleLeft = 8;
       default:
@@ -246,7 +247,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
 
   // Blend toward ink (dl < 0) or white (dl > 0): keeps the palette hue, unlike a lightness shift.
   Color _shade(Color c, double dl) =>
-      Color.lerp(c, dl < 0 ? AppColors.ink : const Color(0xFFFFFFFF), dl.abs() * (dl < 0 ? 2.2 : 1.8))!;
+      Color.lerp(c, dl < 0 ? ArcadeColors.ink : const Color(0xFFFFFFFF), dl.abs() * (dl < 0 ? 2.2 : 1.8))!;
 
   void _text(Canvas c, String s, Offset at, double fs, Color col, {double alpha = 1}) {
     final tp = TextPainter(
@@ -257,7 +258,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
           fontSize: fs,
           fontWeight: FontWeight.w700,
           color: col.withValues(alpha: alpha),
-          shadows: [Shadow(color: AppColors.ink.withValues(alpha: 0.6 * alpha), blurRadius: 6)],
+          shadows: [Shadow(color: ArcadeColors.ink.withValues(alpha: 0.6 * alpha), blurRadius: 6)],
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -306,11 +307,11 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
     final hgt = (_cam / (u * 3.5)).clamp(0.0, 1.0);
 
     // Sky gradient shifts from city dusk to deep space with height.
-    final top = Color.lerp(Color.lerp(AppColors.ink, AppColors.violet, 0.4), AppColors.ink, hgt)!;
-    final mid = Color.lerp(Color.lerp(AppColors.ink, AppColors.violet, 0.45), AppColors.surface, hgt)!;
+    final top = Color.lerp(Color.lerp(ArcadeColors.ink, ArcadeColors.violet, 0.4), ArcadeColors.ink, hgt)!;
+    final mid = Color.lerp(Color.lerp(ArcadeColors.ink, ArcadeColors.violet, 0.45), ArcadeColors.surface, hgt)!;
     final bot = Color.lerp(
-      Color.lerp(AppColors.ink, AppColors.coral, 0.5),
-      Color.lerp(AppColors.ink, AppColors.violet, 0.22),
+      Color.lerp(ArcadeColors.ink, ArcadeColors.coral, 0.5),
+      Color.lerp(ArcadeColors.ink, ArcadeColors.violet, 0.22),
       hgt,
     )!;
     canvas.drawRect(
@@ -324,7 +325,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
       canvas.drawCircle(
         Offset(s[0] * w, s[1] * h),
         s[2],
-        Paint()..color = AppColors.text.withValues(alpha: a.clamp(0.0, 1.0) * 0.8),
+        Paint()..color = ArcadeColors.text.withValues(alpha: a.clamp(0.0, 1.0) * 0.8),
       );
     }
 
@@ -332,7 +333,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
     final cityA = (1 - _cam / (h * 1.1)).clamp(0.0, 1.0);
     if (cityA > 0) {
       final base = _groundY + _cam * 0.25;
-      final cityCol = Color.lerp(bot, AppColors.ink, 0.65)!.withValues(alpha: cityA);
+      final cityCol = Color.lerp(bot, ArcadeColors.ink, 0.65)!.withValues(alpha: cityA);
       for (final b in _city) {
         final bh = b[2] * h, bx = b[0] * w, bw = b[1] * w;
         canvas.drawRect(Rect.fromLTWH(bx, base - bh, bw, bh + h), Paint()..color = cityCol);
@@ -341,7 +342,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
             if (sin(wx * 12.9 + wy * 78.2 + b[3] * 40) > 0.55) {
               canvas.drawRect(
                 Rect.fromLTWH(wx, wy, 3, 4),
-                Paint()..color = AppColors.amber.withValues(alpha: 0.35 * cityA),
+                Paint()..color = ArcadeColors.amber.withValues(alpha: 0.35 * cityA),
               );
             }
           }
@@ -354,7 +355,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
       canvas.drawCircle(
         Offset(p[0] * w + sin(_t * 0.5 + p[1] * 9) * 8, y * h),
         p[2],
-        Paint()..color = AppColors.text.withValues(alpha: 0.12),
+        Paint()..color = ArcadeColors.text.withValues(alpha: 0.12),
       );
     }
 
@@ -364,9 +365,9 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
     if (gy < h) {
       canvas.drawRect(
         Rect.fromLTWH(0, gy, w, h - gy + 4),
-        Paint()..color = Color.lerp(AppColors.ink, AppColors.surface, 0.7)!,
+        Paint()..color = Color.lerp(ArcadeColors.ink, ArcadeColors.surface, 0.7)!,
       );
-      canvas.drawRect(Rect.fromLTWH(0, gy, w, 3), Paint()..color = AppColors.line);
+      canvas.drawRect(Rect.fromLTWH(0, gy, w, 3), Paint()..color = ArcadeColors.line);
     }
 
     final bh = _blockH * u;
@@ -428,9 +429,9 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
   /// Active powerup and streak state, below the host HUD.
   void _chips(Canvas canvas) {
     final chips = <(String, Color)>[
-      if (_slowLeft > 0) ('🐢 Slow-mo  $_slowLeft', AppColors.sky),
-      if (_doubleLeft > 0) ('✖️ 2x  $_doubleLeft', AppColors.amber),
-      if (_streak >= 2) ('🔥 Streak $_streak', AppColors.mint),
+      if (_slowLeft > 0) ('🐢 Slow-mo  $_slowLeft', ArcadeColors.sky),
+      if (_doubleLeft > 0) ('✖️ 2x  $_doubleLeft', ArcadeColors.amber),
+      if (_streak >= 2) ('🔥 Streak $_streak', ArcadeColors.mint),
     ];
     var y = 104.0;
     for (final (s, col) in chips) {
@@ -441,7 +442,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
             fontFamily: 'Fredoka',
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.text,
+            color: ArcadeColors.text,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -450,7 +451,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
         Rect.fromLTWH((size.x - tp.width) / 2 - 12, y, tp.width + 24, 28),
         const Radius.circular(14),
       );
-      canvas.drawRRect(rect, Paint()..color = AppColors.ink.withValues(alpha: 0.55));
+      canvas.drawRRect(rect, Paint()..color = ArcadeColors.ink.withValues(alpha: 0.55));
       canvas.drawRRect(
         rect,
         Paint()

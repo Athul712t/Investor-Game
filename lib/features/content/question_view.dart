@@ -112,7 +112,7 @@ class _QuestionViewState extends State<QuestionView> {
           SizedBox(height: gap),
           FeedbackPanel(correct: r, title: title, explanation: q.explanation, note: _note),
           SizedBox(height: gap),
-          ChunkyButton(label: 'Continue', color: r ? AppColors.mint : AppColors.coral, onPressed: _continue),
+          ChunkyButton(label: 'Continue', color: r ? AppColors.green : AppColors.red, onPressed: _continue),
         ],
       ],
     );

@@ -21,10 +21,10 @@ class DailyCard extends ConsumerWidget {
     final question = ref.watch(contentProvider).value?.randomQuick(Random(today.hashCode));
     if (question == null) return const SizedBox.shrink();
     return Panel(
-      accent: done ? null : AppColors.coral,
+      accent: done ? null : AppColors.red,
       child: Row(
         children: [
-          Badge3D(emoji: done ? '✅' : '🎯', color: done ? AppColors.mint : AppColors.coral),
+          Badge3D(emoji: done ? '✅' : '🎯', color: done ? AppColors.green : AppColors.red),
           const SizedBox(width: AppSpace.md),
           Expanded(
             child: Column(
@@ -42,11 +42,11 @@ class DailyCard extends ConsumerWidget {
             ChunkyButton(
               label: 'Go',
               expand: false,
-              color: AppColors.coral,
+              color: AppColors.red,
               onPressed: () => showModalBottomSheet<void>(
                 context: context,
                 isScrollControlled: true,
-                backgroundColor: AppColors.surface,
+                backgroundColor: AppColors.card,
                 showDragHandle: true,
                 builder: (sheet) => SafeArea(
                   child: SingleChildScrollView(

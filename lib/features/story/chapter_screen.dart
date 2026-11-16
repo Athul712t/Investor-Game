@@ -93,7 +93,7 @@ class _ChapterScreenState extends ConsumerState<ChapterScreen> {
   void _toast(String msg) => ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
-      backgroundColor: AppColors.surfaceHi,
+      backgroundColor: AppColors.paperDeep,
       content: Text(msg, style: context.text.titleSmall),
     ),
   );
@@ -105,7 +105,6 @@ class _ChapterScreenState extends ConsumerState<ChapterScreen> {
     final current = chapter.currentIndex(done);
     final complete = current == chapter.nodes.length;
     return AppScaffold(
-      glow: chapter.color,
       appBar: AppBar(title: Text('Chapter ${widget.index + 1}')),
       body: Column(
         children: [
@@ -165,7 +164,7 @@ class _ChapterScreenState extends ConsumerState<ChapterScreen> {
             child: ChunkyButton(
               label: complete ? 'Back to map' : (count == 0 ? 'Start chapter' : 'Continue'),
               icon: complete ? Icons.map_rounded : Icons.play_arrow_rounded,
-              color: complete ? AppColors.surfaceHi : chapter.color,
+              color: complete ? AppColors.paperDeep : chapter.color,
               onPressed: () => complete ? Navigator.of(context).pop() : _play(current),
             ),
           ),
@@ -205,8 +204,8 @@ class _StepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final (emoji, label) = _kind;
     final isDone = state == _StepState.done, isCurrent = state == _StepState.current;
-    final dotColor = isDone ? AppColors.mint : (isCurrent ? color : AppColors.surfaceHi);
-    final line = AppColors.line;
+    final dotColor = isDone ? AppColors.green : (isCurrent ? color : AppColors.paperDeep);
+    final line = AppColors.track;
     return Semantics(
       button: state != _StepState.locked,
       label: '${node.title}, ${isDone ? 'done, tap to replay' : (isCurrent ? 'up next' : 'locked')}',
@@ -233,7 +232,7 @@ class _StepRow extends StatelessWidget {
                     child: Icon(
                       isDone ? Icons.check_rounded : (isCurrent ? Icons.play_arrow_rounded : Icons.lock_rounded),
                       size: isCurrent ? 22 : 16,
-                      color: isDone || isCurrent ? AppColors.ink : AppColors.textDim,
+                      color: isDone || isCurrent ? AppColors.ink : AppColors.inkDim,
                     ),
                   ),
                   Expanded(child: Container(width: 4, color: last ? Colors.transparent : line)),
@@ -261,7 +260,7 @@ class _StepRow extends StatelessWidget {
                               Text(
                                 label,
                                 style: context.text.labelSmall!.copyWith(
-                                  color: isCurrent ? color : AppColors.textDim,
+                                  color: isCurrent ? color : AppColors.inkDim,
                                   letterSpacing: 1,
                                 ),
                               ),
@@ -269,7 +268,7 @@ class _StepRow extends StatelessWidget {
                             ],
                           ),
                         ),
-                        if (isDone) const Icon(Icons.replay_rounded, color: AppColors.textDim, size: 20),
+                        if (isDone) const Icon(Icons.replay_rounded, color: AppColors.inkDim, size: 20),
                         if (isCurrent) Icon(Icons.chevron_right_rounded, color: color),
                       ],
                     ),

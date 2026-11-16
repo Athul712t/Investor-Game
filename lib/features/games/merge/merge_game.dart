@@ -1,3 +1,5 @@
+import '../_shared/arcade_colors.dart';
+
 import 'dart:math';
 import 'dart:ui' as ui show Gradient;
 
@@ -174,7 +176,7 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
     for (var i = 0; i < 18; i++) {
       final a = _rng.nextDouble() * 2 * pi, v = 80 + _rng.nextDouble() * 200;
       _particles.add(
-        _Particle(c, Offset(cos(a), sin(a)) * v, i.isEven ? col : AppColors.amber, 3 + _rng.nextDouble() * 4),
+        _Particle(c, Offset(cos(a), sin(a)) * v, i.isEven ? col : ArcadeColors.amber, 3 + _rng.nextDouble() * 4),
       );
     }
   }
@@ -201,13 +203,19 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
   }
 
   // ---- drawing ----
-  static const _ramp = [AppColors.sky, AppColors.mint, AppColors.amber, AppColors.coral, AppColors.violet];
+  static const _ramp = [
+    ArcadeColors.sky,
+    ArcadeColors.mint,
+    ArcadeColors.amber,
+    ArcadeColors.coral,
+    ArcadeColors.violet,
+  ];
 
   static Color _tierColor(int tier) {
     final pos = ((tier - 1).clamp(0, 11)) / 11 * (_ramp.length - 1);
     final i = pos.floor().clamp(0, _ramp.length - 2);
     final base = Color.lerp(_ramp[i], _ramp[i + 1], pos - i)!;
-    return Color.lerp(AppColors.surfaceHi, base, 0.6 + 0.4 * min(1.0, (tier - 1) / 3))!;
+    return Color.lerp(ArcadeColors.surfaceHi, base, 0.6 + 0.4 * min(1.0, (tier - 1) / 3))!;
   }
 
   final _tp = <String, TextPainter>{};
@@ -242,11 +250,14 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
     canvas.scale(scale);
     canvas.translate(-rect.center.dx, -rect.center.dy);
     final rr = RRect.fromRectAndRadius(rect, Radius.circular(rect.width * 0.2));
-    canvas.drawRRect(rr.shift(Offset(0, lift)), Paint()..color = Color.lerp(base, AppColors.ink, 0.45)!);
+    canvas.drawRRect(rr.shift(Offset(0, lift)), Paint()..color = Color.lerp(base, ArcadeColors.ink, 0.45)!);
     canvas.drawRRect(
       rr,
       Paint()
-        ..shader = ui.Gradient.linear(rect.topLeft, rect.bottomLeft, [Color.lerp(base, AppColors.text, 0.22)!, base]),
+        ..shader = ui.Gradient.linear(rect.topLeft, rect.bottomLeft, [
+          Color.lerp(base, ArcadeColors.text, 0.22)!,
+          base,
+        ]),
     );
     if (tier >= 6) {
       canvas.drawRRect(
@@ -254,10 +265,10 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2
-          ..color = AppColors.text.withValues(alpha: 0.35),
+          ..color = ArcadeColors.text.withValues(alpha: 0.35),
       );
     }
-    final fg = base.computeLuminance() > 0.35 ? AppColors.ink : AppColors.text;
+    final fg = base.computeLuminance() > 0.35 ? ArcadeColors.ink : ArcadeColors.text;
     final label = '₹$value';
     final fs = rect.width * (label.length <= 3 ? 0.3 : (label.length == 4 ? 0.26 : 0.21));
     final emoji = _text(_emoji[(tier - 1).clamp(0, 11)], rect.width * 0.34, fg, display: false);
@@ -272,19 +283,19 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
     if (size.x <= 0) return;
     final br = _boardRect;
     final panel = RRect.fromRectAndRadius(br, const Radius.circular(AppSpace.radius));
-    canvas.drawRRect(panel.shift(const Offset(0, 6)), Paint()..color = AppColors.ink.withValues(alpha: 0.6));
-    canvas.drawRRect(panel, Paint()..color = AppColors.surface);
+    canvas.drawRRect(panel.shift(const Offset(0, 6)), Paint()..color = ArcadeColors.ink.withValues(alpha: 0.6));
+    canvas.drawRRect(panel, Paint()..color = ArcadeColors.surface);
     canvas.drawRRect(
       panel,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2
-        ..color = AppColors.line,
+        ..color = ArcadeColors.line,
     );
     for (var i = 0; i < 16; i++) {
       canvas.drawRRect(
         RRect.fromRectAndRadius(_cellRect(i), Radius.circular(_cell * 0.2)),
-        Paint()..color = AppColors.ink.withValues(alpha: 0.45),
+        Paint()..color = ArcadeColors.ink.withValues(alpha: 0.45),
       );
     }
 
@@ -322,31 +333,31 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
     final next = max(_board.highest, 1) * 2;
     final tier = MergeBoard.tierOf(next);
     final label = '${_emoji[(tier - 1).clamp(0, 11)]}  Next goal ₹$next';
-    _paintText(canvas, _text(label, 16, AppColors.textDim, display: false), Offset(size.x / 2, br.bottom + 30));
+    _paintText(canvas, _text(label, 16, ArcadeColors.textDim, display: false), Offset(size.x / 2, br.bottom + 30));
     if (_doubleMoves > 0) {
       final s = '2x score: $_doubleMoves moves left';
-      _paintText(canvas, _text(s, 13, AppColors.amber), Offset(size.x / 2, br.bottom + 52));
+      _paintText(canvas, _text(s, 13, ArcadeColors.amber), Offset(size.x / 2, br.bottom + 52));
     }
   }
 
   void _drawBanner(Canvas canvas, Rect br) {
     if (_bannerT > 1.4) return;
     final a = (_bannerT < 0.15 ? _bannerT / 0.15 : 1 - ((_bannerT - 0.9) / 0.5).clamp(0.0, 1.0)).toDouble();
-    final tp = _text(_banner, 24, AppColors.text);
+    final tp = _text(_banner, 24, ArcadeColors.text);
     final c = br.center.translate(0, -_bannerT * 20);
     final pill = RRect.fromRectAndRadius(
       Rect.fromCenter(center: c, width: tp.width + 40, height: tp.height + 20),
       const Radius.circular(24),
     );
-    canvas.drawRRect(pill, Paint()..color = AppColors.surfaceHi.withValues(alpha: 0.95 * a));
+    canvas.drawRRect(pill, Paint()..color = ArcadeColors.surfaceHi.withValues(alpha: 0.95 * a));
     canvas.drawRRect(
       pill,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2
-        ..color = AppColors.amber.withValues(alpha: a),
+        ..color = ArcadeColors.amber.withValues(alpha: a),
     );
-    canvas.saveLayer(null, Paint()..color = AppColors.text.withValues(alpha: a));
+    canvas.saveLayer(null, Paint()..color = ArcadeColors.text.withValues(alpha: a));
     _paintText(canvas, tp, c);
     canvas.restore();
   }

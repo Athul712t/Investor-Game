@@ -36,10 +36,10 @@ class _MythFactBodyState extends State<MythFactBody> {
     final leaning = picked ?? (_dx == 0 ? null : _dx > 0);
     final strength = picked != null ? 1.0 : (_dx.abs() / 110).clamp(0.0, 1.0);
     final stampColor = leaning == null
-        ? AppColors.line
+        ? AppColors.track
         : picked == null
-        ? (leaning ? AppColors.mint : AppColors.coral)
-        : (picked == widget.isFact ? AppColors.mint : AppColors.coral);
+        ? (leaning ? AppColors.green : AppColors.red)
+        : (picked == widget.isFact ? AppColors.green : AppColors.red);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,9 +72,9 @@ class _MythFactBodyState extends State<MythFactBody> {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.surfaceHi, AppColors.surface],
+                    colors: [AppColors.paperDeep, AppColors.card],
                   ),
-                  border: Border.all(color: Color.lerp(AppColors.line, stampColor, strength)!, width: 2.5),
+                  border: Border.all(color: Color.lerp(AppColors.track, stampColor, strength)!, width: 2.5),
                   boxShadow: [BoxShadow(color: stampColor.withValues(alpha: 0.25 * strength), blurRadius: 24)],
                 ),
                 child: Stack(
@@ -122,7 +122,7 @@ class _MythFactBodyState extends State<MythFactBody> {
                 child: ChunkyButton(
                   label: 'Myth',
                   icon: Icons.arrow_back_rounded,
-                  color: AppColors.coral,
+                  color: AppColors.red,
                   onPressed: () => _pick(false),
                 ),
               ),

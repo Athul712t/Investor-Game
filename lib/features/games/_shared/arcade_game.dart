@@ -1,9 +1,10 @@
+import 'arcade_colors.dart';
+
 import 'dart:ui';
 
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/theme.dart';
 import '../../../domain/game/game_types.dart';
 
 /// Base class of every mini-game. The host (GameHostScreen) owns the HUD,
@@ -53,5 +54,5 @@ abstract class ArcadeGame extends FlameGame {
   }
 
   @override
-  Color backgroundColor() => AppColors.ink;
+  Color backgroundColor() => ArcadeColors.ink;
 }

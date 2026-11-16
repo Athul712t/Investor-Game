@@ -47,7 +47,7 @@ void main() {
     await settle();
     await tester.tap(find.text('Start'));
     await settle();
-    await tester.tap(find.byTooltip('Pause'));
+    await tester.tap(find.bySemanticsLabel('Pause'));
     await settle();
     await tester.tap(find.text('End run'));
     await settle();

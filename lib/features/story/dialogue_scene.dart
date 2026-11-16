@@ -79,7 +79,7 @@ class _DialogueSceneState extends ConsumerState<DialogueScene> with SingleTicker
         final chars = text.characters;
         final shown = (chars.length * _typing.value).round();
         final style = narrator
-            ? context.text.bodyLarge!.copyWith(fontSize: 18, fontStyle: FontStyle.italic, color: AppColors.textDim)
+            ? context.text.bodyLarge!.copyWith(fontSize: 18, fontStyle: FontStyle.italic, color: AppColors.inkDim)
             : context.text.bodyLarge!.copyWith(fontSize: 19, height: 1.45);
         // The hidden remainder keeps the bubble at full size, so it doesn't grow while typing.
         return Text.rich(
@@ -178,7 +178,7 @@ class _DialogueSceneState extends ConsumerState<DialogueScene> with SingleTicker
               onPressed: () => Navigator.of(context).pop(true),
               icon: const Icon(Icons.fast_forward_rounded, size: 18),
               label: const Text('Skip'),
-              style: TextButton.styleFrom(foregroundColor: AppColors.textDim, minimumSize: const Size(48, 48)),
+              style: TextButton.styleFrom(foregroundColor: AppColors.inkDim, minimumSize: const Size(48, 48)),
             ),
           ],
         ),
@@ -193,7 +193,7 @@ class _DialogueSceneState extends ConsumerState<DialogueScene> with SingleTicker
     decoration: BoxDecoration(
       color: AppColors.ink.withValues(alpha: 0.75),
       borderRadius: BorderRadius.circular(AppSpace.radius),
-      border: Border.all(color: AppColors.line),
+      border: Border.all(color: AppColors.track),
     ),
     child: bubble,
   );
@@ -238,7 +238,7 @@ class _DialogueSceneState extends ConsumerState<DialogueScene> with SingleTicker
               constraints: const BoxConstraints(minHeight: 120),
               padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: AppColors.card,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(color: sp.color.withValues(alpha: 0.7), width: 2),
                 boxShadow: [BoxShadow(color: Color.lerp(sp.color, AppColors.ink, 0.65)!, offset: const Offset(0, 6))],
@@ -256,7 +256,7 @@ class _DialogueSceneState extends ConsumerState<DialogueScene> with SingleTicker
                   width: 16,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: AppColors.card,
                     border: Border(
                       top: BorderSide(color: sp.color.withValues(alpha: 0.7), width: 2),
                       left: BorderSide(color: sp.color.withValues(alpha: 0.7), width: 2),
@@ -329,26 +329,26 @@ class _SkylinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rng = Random(7);
     final w = size.width, h = size.height;
-    final star = Paint()..color = AppColors.text.withValues(alpha: 0.5);
+    final star = Paint()..color = AppColors.ink.withValues(alpha: 0.5);
     for (var i = 0; i < 40; i++) {
       canvas.drawCircle(Offset(rng.nextDouble() * w, rng.nextDouble() * h * 0.4), rng.nextDouble() * 1.4 + 0.4, star);
     }
     final moon = Offset(w * 0.78, h * 0.16);
-    canvas.drawCircle(moon, 80, Paint()..color = AppColors.amber.withValues(alpha: 0.05));
-    canvas.drawCircle(moon, 52, Paint()..color = AppColors.amber.withValues(alpha: 0.07));
+    canvas.drawCircle(moon, 80, Paint()..color = AppColors.yellow.withValues(alpha: 0.05));
+    canvas.drawCircle(moon, 52, Paint()..color = AppColors.yellow.withValues(alpha: 0.07));
     canvas.drawPath(
       Path.combine(
         PathOperation.difference,
         Path()..addOval(Rect.fromCircle(center: moon, radius: 30)),
         Path()..addOval(Rect.fromCircle(center: moon + const Offset(12, -8), radius: 26)),
       ),
-      Paint()..color = AppColors.amber.withValues(alpha: 0.9),
+      Paint()..color = AppColors.yellow.withValues(alpha: 0.9),
     );
 
     final base = h * 0.6;
     void layer(Color color, double minH, double maxH, double windowAlpha) {
       final paint = Paint()..color = color;
-      final win = Paint()..color = AppColors.amber.withValues(alpha: windowAlpha);
+      final win = Paint()..color = AppColors.yellow.withValues(alpha: windowAlpha);
       var x = -10.0;
       while (x < w) {
         final bw = 34 + rng.nextDouble() * 46;
@@ -367,8 +367,8 @@ class _SkylinePainter extends CustomPainter {
       }
     }
 
-    layer(Color.lerp(Color.lerp(tint, AppColors.ink, 0.78)!, AppColors.surfaceHi, 0.35)!, 70, 210, 0.22);
-    layer(AppColors.surface, 30, 110, 0.5);
+    layer(Color.lerp(Color.lerp(tint, AppColors.ink, 0.78)!, AppColors.paperDeep, 0.35)!, 70, 210, 0.22);
+    layer(AppColors.card, 30, 110, 0.5);
     // Fade the street into the page so the dialogue sits on a calm surface.
     canvas.drawRect(
       Rect.fromLTWH(0, base - 20, w, h - base + 20),

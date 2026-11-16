@@ -59,10 +59,10 @@ class OptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = switch (state) {
-      OptState.right || OptState.missed => AppColors.mint,
-      OptState.wrong => AppColors.coral,
-      OptState.selected => AppColors.violet,
-      _ => AppColors.line,
+      OptState.right || OptState.missed => AppColors.green,
+      OptState.wrong => AppColors.red,
+      OptState.selected => AppColors.blue,
+      _ => AppColors.track,
     };
     final tinted = state != OptState.idle && state != OptState.dim;
     final icon = switch (state) {
@@ -92,11 +92,11 @@ class OptionTile extends StatelessWidget {
               constraints: const BoxConstraints(minHeight: 56),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: tinted ? Color.alphaBlend(c.withValues(alpha: 0.18), AppColors.surface) : AppColors.surfaceHi,
+                color: tinted ? Color.alphaBlend(c.withValues(alpha: 0.18), AppColors.card) : AppColors.paperDeep,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: c, width: 2),
                 boxShadow: [
-                  BoxShadow(color: tinted ? c.withValues(alpha: 0.6) : AppColors.line, offset: const Offset(0, 4)),
+                  BoxShadow(color: tinted ? c.withValues(alpha: 0.6) : AppColors.track, offset: const Offset(0, 4)),
                 ],
               ),
               child: Row(
@@ -113,7 +113,7 @@ class OptionTile extends StatelessWidget {
                       ),
                       child: Text(
                         leading!,
-                        style: context.text.labelLarge!.copyWith(color: tinted ? c : AppColors.textDim),
+                        style: context.text.labelLarge!.copyWith(color: tinted ? c : AppColors.inkDim),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -145,7 +145,7 @@ class FeedbackPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = correct ? AppColors.mint : AppColors.coral;
+    final c = correct ? AppColors.green : AppColors.red;
     return TweenAnimationBuilder<double>(
       duration: AppMotion.base,
       curve: Curves.easeOutBack,
@@ -157,7 +157,7 @@ class FeedbackPanel extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpace.md),
         decoration: BoxDecoration(
-          color: Color.alphaBlend(c.withValues(alpha: 0.16), AppColors.surface),
+          color: Color.alphaBlend(c.withValues(alpha: 0.16), AppColors.card),
           borderRadius: BorderRadius.circular(AppSpace.radius),
           border: Border.all(color: c.withValues(alpha: 0.6), width: 1.5),
         ),
@@ -176,7 +176,7 @@ class FeedbackPanel extends StatelessWidget {
             ),
             if (note != null) ...[const SizedBox(height: AppSpace.sm), Text(note!, style: context.text.bodyLarge)],
             const SizedBox(height: AppSpace.sm),
-            Text(explanation, style: context.text.bodyMedium!.copyWith(color: AppColors.text.withValues(alpha: 0.85))),
+            Text(explanation, style: context.text.bodyMedium!.copyWith(color: AppColors.ink.withValues(alpha: 0.85))),
           ],
         ),
       ),

@@ -16,7 +16,7 @@ void main() {
       title: 'Test',
       lines: [DialogueLine('asha', 'Hello {name}, welcome!'), DialogueLine('you', 'Thanks Asha.')],
     );
-    const chapter = Chapter(id: 'c', title: 'C', subtitle: '', emoji: '💸', color: AppColors.amber, nodes: [node]);
+    const chapter = Chapter(id: 'c', title: 'C', subtitle: '', emoji: '💸', color: AppColors.yellow, nodes: [node]);
     bool? result;
     await tester.pumpWidget(
       ProviderScope(

@@ -96,10 +96,10 @@ class _Header extends StatelessWidget {
       ),
       const SizedBox(height: AppSpace.md),
       Panel(
-        accent: AppColors.violet,
+        accent: AppColors.blue,
         child: Row(
           children: [
-            const Badge3D(emoji: '🎓', color: AppColors.violet, size: 44),
+            const Badge3D(emoji: '🎓', color: AppColors.blue, size: 44),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -107,7 +107,7 @@ class _Header extends StatelessWidget {
                 children: [
                   Text('$finished of $total lessons', style: context.text.titleMedium),
                   const SizedBox(height: 8),
-                  FatProgress(value: total == 0 ? 0 : finished / total, color: AppColors.violet),
+                  FatProgress(value: total == 0 ? 0 : finished / total, color: AppColors.blue),
                 ],
               ),
             ),
@@ -166,7 +166,7 @@ class _ModuleCard extends StatelessWidget {
                     AnimatedRotation(
                       duration: AppMotion.base,
                       turns: open ? 0.5 : 0,
-                      child: const Icon(Icons.expand_more_rounded, color: AppColors.textDim),
+                      child: const Icon(Icons.expand_more_rounded, color: AppColors.inkDim),
                     ),
                   ],
                 ),
@@ -218,7 +218,7 @@ class _LessonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = locked ? AppColors.textDim : color;
+    final c = locked ? AppColors.inkDim : color;
     final VoidCallback? open = locked ? null : () => context.push<bool>('/lesson/${lesson.id}');
     return Semantics(
       button: !locked,
@@ -259,7 +259,7 @@ class _LessonRow extends StatelessWidget {
                   child: completed
                       ? const Icon(Icons.check_rounded, color: AppColors.ink, size: 22)
                       : locked
-                      ? const Icon(Icons.lock_rounded, color: AppColors.textDim, size: 18)
+                      ? const Icon(Icons.lock_rounded, color: AppColors.inkDim, size: 18)
                       : Text('${index + 1}', style: context.text.labelLarge!.copyWith(color: color)),
                 ),
                 const SizedBox(width: 12),
@@ -279,7 +279,7 @@ class _LessonRow extends StatelessWidget {
                     child: Text('START', style: context.text.labelSmall!.copyWith(color: AppColors.ink)),
                   )
                 else if (completed)
-                  const Icon(Icons.replay_rounded, color: AppColors.textDim, size: 20),
+                  const Icon(Icons.replay_rounded, color: AppColors.inkDim, size: 20),
               ],
             ),
           ),

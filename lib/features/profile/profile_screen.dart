@@ -18,11 +18,11 @@ class ProfileScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpace.md),
       children: [
         Panel(
-          accent: AppColors.violet,
+          accent: AppColors.blue,
           padding: const EdgeInsets.all(AppSpace.lg),
           child: Row(
             children: [
-              const Badge3D(emoji: '🦊', color: AppColors.violet, size: 72),
+              const Badge3D(emoji: '🦊', color: AppColors.blue, size: 72),
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(
@@ -31,7 +31,7 @@ class ProfileScreen extends ConsumerWidget {
                     Text(p.name, style: context.text.headlineSmall),
                     Text('Level ${p.level} · ${p.title}', style: context.text.bodyMedium),
                     const SizedBox(height: 10),
-                    FatProgress(value: p.levelProgress, color: AppColors.violet),
+                    FatProgress(value: p.levelProgress, color: AppColors.blue),
                   ],
                 ),
               ),
@@ -81,7 +81,7 @@ class ProfileScreen extends ConsumerWidget {
             Icon(
               cloud.state == CloudState.synced ? Icons.cloud_done_rounded : Icons.cloud_off_rounded,
               size: 16,
-              color: cloud.state == CloudState.synced ? AppColors.mint : AppColors.textDim,
+              color: cloud.state == CloudState.synced ? AppColors.green : AppColors.inkDim,
             ),
             const SizedBox(width: 6),
             Text(switch (cloud.state) {

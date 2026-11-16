@@ -1,7 +1,7 @@
+import '../_shared/arcade_colors.dart';
+
 import 'dart:math';
 import 'dart:ui';
-
-import '../../../core/theme.dart';
 
 /// Perspective camera shared by the backdrop and the game. Metres in, pixels out.
 class Cam {
@@ -52,7 +52,13 @@ class Backdrop {
 
   final _stars = <(Offset, double)>[];
   late final List<_Building> _far, _near;
-  static const _signs = [AppColors.mint, AppColors.coral, AppColors.violet, AppColors.sky, AppColors.amber];
+  static const _signs = [
+    ArcadeColors.mint,
+    ArcadeColors.coral,
+    ArcadeColors.violet,
+    ArcadeColors.sky,
+    ArcadeColors.amber,
+  ];
 
   static List<_Building> _city(Random r, double minH, double maxH, double litChance) {
     final out = <_Building>[];
@@ -74,8 +80,8 @@ class Backdrop {
 
   void render(Canvas c, Cam cam, double t, double distance) {
     final w = cam.w, h = cam.h, hy = cam.hy;
-    final skyTop = AppColors.ink;
-    final skyLow = Color.lerp(AppColors.ink, AppColors.violet, 0.32)!;
+    final skyTop = ArcadeColors.ink;
+    final skyLow = Color.lerp(ArcadeColors.ink, ArcadeColors.violet, 0.32)!;
     c.drawRect(
       Rect.fromLTWH(0, 0, w, hy + 1),
       Paint()..shader = Gradient.linear(Offset.zero, Offset(0, hy), [skyTop, skyTop, skyLow], [0, 0.35, 1]),
@@ -85,7 +91,7 @@ class Backdrop {
     final star = Paint();
     for (final (i, (o, phase)) in _stars.indexed) {
       final a = 0.25 + 0.55 * (0.5 + 0.5 * sin(t * (1 + phase * 2) + i));
-      star.color = AppColors.text.withValues(alpha: a * (1 - o.dy * 0.6));
+      star.color = ArcadeColors.text.withValues(alpha: a * (1 - o.dy * 0.6));
       c.drawCircle(Offset(o.dx * w, o.dy * hy * 0.85), 0.6 + phase * 1.1, star);
     }
 
@@ -94,22 +100,22 @@ class Backdrop {
       Rect.fromLTWH(0, 0, w, hy + h * 0.2),
       Paint()
         ..shader = Gradient.radial(Offset(cam.cx, hy), max(w, h) * 0.55, [
-          AppColors.violet.withValues(alpha: 0.38),
-          AppColors.violet.withValues(alpha: 0.0),
+          ArcadeColors.violet.withValues(alpha: 0.38),
+          ArcadeColors.violet.withValues(alpha: 0.0),
         ]),
     );
 
     _chart(c, cam, t);
-    _skyline(c, cam, _far, Color.lerp(AppColors.ink, AppColors.violet, 0.28)!, 0.4, t);
-    _skyline(c, cam, _near, Color.lerp(AppColors.ink, AppColors.surface, 0.55)!, 1.0, t);
+    _skyline(c, cam, _far, Color.lerp(ArcadeColors.ink, ArcadeColors.violet, 0.28)!, 0.4, t);
+    _skyline(c, cam, _near, Color.lerp(ArcadeColors.ink, ArcadeColors.surface, 0.55)!, 1.0, t);
 
     // Ground.
     c.drawRect(
       Rect.fromLTWH(0, hy, w, h - hy),
       Paint()
         ..shader = Gradient.linear(Offset(0, hy), Offset(0, h), [
-          Color.lerp(AppColors.ink, AppColors.violet, 0.18)!,
-          AppColors.ink,
+          Color.lerp(ArcadeColors.ink, ArcadeColors.violet, 0.18)!,
+          ArcadeColors.ink,
         ]),
     );
     _grid(c, cam, distance);
@@ -119,7 +125,7 @@ class Backdrop {
       Offset(0, hy),
       Offset(w, hy),
       Paint()
-        ..color = AppColors.mint.withValues(alpha: 0.35)
+        ..color = ArcadeColors.mint.withValues(alpha: 0.35)
         ..strokeWidth = 1.5
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
     );
@@ -156,8 +162,8 @@ class Backdrop {
       fill,
       Paint()
         ..shader = Gradient.linear(Offset(0, cam.hy - cam.h * 0.2), Offset(0, cam.hy), [
-          AppColors.mint.withValues(alpha: 0.13),
-          AppColors.mint.withValues(alpha: 0.0),
+          ArcadeColors.mint.withValues(alpha: 0.13),
+          ArcadeColors.mint.withValues(alpha: 0.0),
         ]),
     );
     final stroke = Paint()
@@ -166,14 +172,14 @@ class Backdrop {
     c.drawPath(
       line,
       stroke
-        ..color = AppColors.mint.withValues(alpha: 0.28)
+        ..color = ArcadeColors.mint.withValues(alpha: 0.28)
         ..strokeWidth = 6
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
     );
     c.drawPath(
       line,
       stroke
-        ..color = AppColors.mint.withValues(alpha: 0.55)
+        ..color = ArcadeColors.mint.withValues(alpha: 0.55)
         ..strokeWidth = 1.6
         ..maskFilter = null,
     );
@@ -191,7 +197,7 @@ class Backdrop {
       c.drawRect(rect, body);
       for (final (i, o) in b.windows.indexed) {
         final flick = 0.55 + 0.45 * sin(t * 0.7 + i * 3.1 + b.x * 40);
-        win.color = (i.isEven ? AppColors.amber : AppColors.sky).withValues(alpha: 0.32 * flick * depth + 0.08);
+        win.color = (i.isEven ? ArcadeColors.amber : ArcadeColors.sky).withValues(alpha: 0.32 * flick * depth + 0.08);
         c.drawRect(Rect.fromLTWH(rect.left + o.dx * bw, rect.top + o.dy * bh, max(1.5, bw * 0.1), 2.2), win);
       }
       if (b.sign != null) {
@@ -212,7 +218,7 @@ class Backdrop {
     final zb = cam.zBottom;
     for (final gx in const [7.5, 11.0, 15.5, 21.0, 28.0, 38.0, 52.0]) {
       for (final sx in const [-1.0, 1.0]) {
-        p.color = AppColors.violet.withValues(alpha: 0.28);
+        p.color = ArcadeColors.violet.withValues(alpha: 0.28);
         c.drawLine(cam.p(sx * gx, 0, 300), cam.p(sx * gx, 0, zb), p);
       }
     }
@@ -220,7 +226,7 @@ class Backdrop {
     final off = distance % spacing;
     for (var z = zb - off + spacing; z < 140; z += spacing) {
       final a = (1 - z / 140).clamp(0.0, 1.0);
-      p.color = AppColors.violet.withValues(alpha: 0.26 * a);
+      p.color = ArcadeColors.violet.withValues(alpha: 0.26 * a);
       final y = cam.p(0, 0, z).dy;
       c.drawLine(Offset(0, y), Offset(cam.w, y), p);
     }
@@ -239,15 +245,15 @@ class Backdrop {
       road,
       Paint()
         ..shader = Gradient.linear(Offset(0, cam.hy), Offset(0, cam.h), [
-          AppColors.ink,
-          Color.lerp(AppColors.surface, AppColors.ink, 0.15)!,
+          ArcadeColors.ink,
+          Color.lerp(ArcadeColors.surface, ArcadeColors.ink, 0.15)!,
         ]),
     );
 
     // Alternating bands rushing toward the camera give a strong sense of speed.
     const band = 12.0;
     final band0 = zb - (distance % (band * 2));
-    final bandPaint = Paint()..color = AppColors.text.withValues(alpha: 0.03);
+    final bandPaint = Paint()..color = ArcadeColors.text.withValues(alpha: 0.03);
     for (var z = band0; z < 150; z += band * 2) {
       _quad(c, cam, -half, half, z, z + band, bandPaint);
     }
@@ -255,11 +261,11 @@ class Backdrop {
     // Dashed lane dividers.
     const dash = 3.2, period = 8.0;
     final dOff = distance % period;
-    final glow = Paint()..color = AppColors.mint.withValues(alpha: 0.18);
+    final glow = Paint()..color = ArcadeColors.mint.withValues(alpha: 0.18);
     for (final lx in const [-1.5, 1.5]) {
       for (var z = zb - dOff; z < 130; z += period) {
         final a = (1 - z / 130).clamp(0.0, 1.0);
-        final core = Paint()..color = AppColors.mint.withValues(alpha: 0.85 * a);
+        final core = Paint()..color = ArcadeColors.mint.withValues(alpha: 0.85 * a);
         _quad(c, cam, lx - 0.16, lx + 0.16, z, z + dash, glow);
         _quad(c, cam, lx - 0.06, lx + 0.06, z, z + dash, core);
       }
@@ -272,7 +278,7 @@ class Backdrop {
         a,
         b,
         Paint()
-          ..color = AppColors.violet.withValues(alpha: 0.7)
+          ..color = ArcadeColors.violet.withValues(alpha: 0.7)
           ..strokeWidth = 7
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
       );
@@ -280,7 +286,7 @@ class Backdrop {
         a,
         b,
         Paint()
-          ..color = Color.lerp(AppColors.violet, AppColors.text, 0.35)!
+          ..color = Color.lerp(ArcadeColors.violet, ArcadeColors.text, 0.35)!
           ..strokeWidth = 2.2,
       );
     }
@@ -305,7 +311,7 @@ class Backdrop {
   /// Street lamps on both sides, drawn back to front before the entities.
   void lamps(Canvas c, Cam cam, double distance) {
     const spacing = 16.0, lx = 6.4, pole = 4.6;
-    const colors = [AppColors.mint, AppColors.violet, AppColors.amber, AppColors.sky];
+    const colors = [ArcadeColors.mint, ArcadeColors.violet, ArcadeColors.amber, ArcadeColors.sky];
     final firstIdx = ((distance + cam.zBottom) / spacing).ceil();
     final lastIdx = ((distance + 130) / spacing).floor();
     for (var i = lastIdx; i >= firstIdx; i--) {
@@ -323,7 +329,7 @@ class Backdrop {
             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
         );
         final pp = Paint()
-          ..color = Color.lerp(AppColors.line, AppColors.ink, 0.2)!.withValues(alpha: a)
+          ..color = Color.lerp(ArcadeColors.line, ArcadeColors.ink, 0.2)!.withValues(alpha: a)
           ..strokeWidth = max(1, s * 0.16)
           ..strokeCap = StrokeCap.round;
         c.drawLine(base, top, pp);
@@ -338,7 +344,7 @@ class Backdrop {
         c.drawCircle(
           arm,
           max(1, s * 0.22),
-          Paint()..color = Color.lerp(col, AppColors.text, 0.5)!.withValues(alpha: a),
+          Paint()..color = Color.lerp(col, ArcadeColors.text, 0.5)!.withValues(alpha: a),
         );
       }
     }

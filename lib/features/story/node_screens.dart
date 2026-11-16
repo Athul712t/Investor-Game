@@ -47,7 +47,6 @@ class _GameNodeScreenState extends State<GameNodeScreen> {
     final unit = gameUnit(n.gameId);
     final last = _last;
     return AppScaffold(
-      glow: spec?.color ?? widget.color,
       appBar: AppBar(title: Text(n.title)),
       // Toolbar gap sits outside the scroll view so content never scrolls under the transparent app bar.
       body: Padding(
@@ -69,20 +68,20 @@ class _GameNodeScreenState extends State<GameNodeScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                     decoration: BoxDecoration(
-                      color: AppColors.amber.withValues(alpha: 0.14),
+                      color: AppColors.yellow.withValues(alpha: 0.14),
                       borderRadius: BorderRadius.circular(999),
-                      border: Border.all(color: AppColors.amber.withValues(alpha: 0.5)),
+                      border: Border.all(color: AppColors.yellow.withValues(alpha: 0.5)),
                     ),
                     child: Text(
                       '🎯  Goal: ${n.target} $unit',
-                      style: context.text.titleLarge!.copyWith(color: AppColors.amber),
+                      style: context.text.titleLarge!.copyWith(color: AppColors.yellow),
                     ),
                   ),
                   if (last != null) ...[
                     const SizedBox(height: AppSpace.md),
                     Text(
                       _passed ? 'Goal reached with ${last.score}!' : 'You got ${last.score}. So close!',
-                      style: context.text.titleMedium!.copyWith(color: _passed ? AppColors.mint : AppColors.coral),
+                      style: context.text.titleMedium!.copyWith(color: _passed ? AppColors.green : AppColors.red),
                     ),
                   ],
                   const SizedBox(height: AppSpace.lg),
@@ -103,7 +102,7 @@ class _GameNodeScreenState extends State<GameNodeScreen> {
                       const SizedBox(height: AppSpace.md),
                       ChunkyButton(
                         label: 'Continue anyway',
-                        color: AppColors.surfaceHi,
+                        color: AppColors.paperDeep,
                         onPressed: () => Navigator.of(context).pop(true),
                       ),
                     ],
@@ -126,7 +125,6 @@ class ScenarioScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppScaffold(
-    glow: color,
     appBar: AppBar(title: const Text('Decision time')),
     body: Padding(
       padding: const EdgeInsets.only(top: kToolbarHeight),
@@ -137,7 +135,7 @@ class ScenarioScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Badge3D(emoji: '🤔', color: AppColors.amber, size: 48),
+                const Badge3D(emoji: '🤔', color: AppColors.yellow, size: 48),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(node.title, style: context.text.headlineSmall)),
               ],

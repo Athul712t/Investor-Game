@@ -81,7 +81,7 @@ class _RewardSceneState extends State<RewardScene> with SingleTickerProviderStat
                         duration: const Duration(milliseconds: 900),
                         curve: Curves.elasticOut,
                         builder: (_, s, child) => Transform.scale(scale: s, child: child),
-                        child: const Badge3D(emoji: '🏆', color: AppColors.amber, size: 132),
+                        child: const Badge3D(emoji: '🏆', color: AppColors.yellow, size: 132),
                       ),
                       const SizedBox(height: AppSpace.lg),
                       Text('New title earned', style: context.text.bodyMedium),
@@ -97,11 +97,11 @@ class _RewardSceneState extends State<RewardScene> with SingleTickerProviderStat
                         spacing: AppSpace.sm,
                         alignment: WrapAlignment.center,
                         children: [
-                          StatPill(icon: Icons.bolt_rounded, value: '+${widget.node.xp} XP', color: AppColors.violet),
+                          StatPill(icon: Icons.bolt_rounded, value: '+${widget.node.xp} XP', color: AppColors.blue),
                           StatPill(
                             icon: Icons.monetization_on_rounded,
                             value: '+${widget.node.coins}',
-                            color: AppColors.amber,
+                            color: AppColors.yellow,
                             semantic: 'Coins',
                           ),
                         ],
@@ -151,7 +151,7 @@ class _CelebrationPainter extends CustomPainter {
   final Animation<double> t;
   final Color tint;
 
-  static const _colors = [AppColors.mint, AppColors.amber, AppColors.coral, AppColors.violet, AppColors.sky];
+  static const _colors = [AppColors.green, AppColors.yellow, AppColors.red, AppColors.blue, AppColors.teal];
 
   @override
   void paint(Canvas canvas, Size size) {

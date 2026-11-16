@@ -123,7 +123,7 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
     final leave = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpace.radius)),
         title: Text('Leave this lesson?', style: ctx.text.titleLarge),
         content: Text('Your progress in this lesson will be lost.', style: ctx.text.bodyMedium),
@@ -131,7 +131,7 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
           TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Keep going')),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Leave', style: TextStyle(color: AppColors.coral)),
+            child: const Text('Leave', style: TextStyle(color: AppColors.red)),
           ),
         ],
       ),
@@ -146,7 +146,6 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
       if (!didPop) _close();
     },
     child: AppScaffold(
-      glow: widget.color,
       body: Column(
         children: [
           Padding(
@@ -157,7 +156,7 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
                   tooltip: 'Close',
                   constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                   onPressed: _close,
-                  icon: const Icon(Icons.close_rounded, color: AppColors.textDim),
+                  icon: const Icon(Icons.close_rounded, color: AppColors.inkDim),
                 ),
                 const SizedBox(width: 4),
                 Expanded(
@@ -247,7 +246,7 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
                 height: 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: i == _card ? widget.color : AppColors.line,
+                  color: i == _card ? widget.color : AppColors.track,
                 ),
               ),
           ],
@@ -307,7 +306,7 @@ class _Summary extends StatelessWidget {
                       const SizedBox(height: AppSpace.sm),
                       Text('$correct of $total correct', style: context.text.titleLarge!.copyWith(color: color)),
                       const SizedBox(height: AppSpace.lg),
-                      StatPill(icon: Icons.bolt_rounded, value: '+$xp XP', color: AppColors.violet, semantic: 'Earned'),
+                      StatPill(icon: Icons.bolt_rounded, value: '+$xp XP', color: AppColors.blue, semantic: 'Earned'),
                     ],
                   ),
                 ),
@@ -333,7 +332,7 @@ class _Confetti extends StatefulWidget {
 
 class _ConfettiState extends State<_Confetti> with SingleTickerProviderStateMixin {
   late final _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))..forward();
-  static const _palette = [AppColors.mint, AppColors.amber, AppColors.coral, AppColors.violet, AppColors.sky];
+  static const _palette = [AppColors.green, AppColors.yellow, AppColors.red, AppColors.blue, AppColors.teal];
   late final _bits = () {
     final r = Random(7);
     return [
