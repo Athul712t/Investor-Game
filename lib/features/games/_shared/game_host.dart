@@ -64,6 +64,24 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
     game.resumeEngine();
   }
 
+  static const _headStartCost = 30;
+
+  /// Spend coins to begin the run with a random power-up.
+  void _headStart() {
+    if (game.boosts.isEmpty || !ref.read(profileProvider.notifier).spend(_headStartCost)) return;
+    final p = game.boosts[_rng.nextInt(game.boosts.length)];
+    _start();
+    game.applyPowerup(p);
+    _showToast(p);
+  }
+
+  void _showToast(PowerupType p) {
+    setState(() => _toast = p);
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _toast = null);
+    });
+  }
+
   void _pause() {
     if (_phase != _Phase.playing) return;
     game.pauseEngine();
@@ -114,10 +132,7 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
       final p = game.boosts[_rng.nextInt(game.boosts.length)];
       game.applyPowerup(p);
       HapticFeedback.mediumImpact();
-      setState(() => _toast = p);
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) setState(() => _toast = null);
-      });
+      _showToast(p);
     }
     _resume();
   }
@@ -219,6 +234,15 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
         ],
         const SizedBox(height: AppSpace.lg),
         ChunkyButton(label: 'Start', icon: Icons.play_arrow_rounded, color: spec.color, onPressed: _start),
+        if (ref.watch(profileProvider.select((p) => p.coins)) >= _headStartCost) ...[
+          const SizedBox(height: AppSpace.md),
+          ChunkyButton(
+            label: 'Head start  ·  $_headStartCost coins',
+            icon: Icons.bolt_rounded,
+            color: AppColors.amber,
+            onPressed: _headStart,
+          ),
+        ],
         TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Back')),
       ]),
       _Phase.paused => _card(context, [

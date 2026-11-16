@@ -15,7 +15,7 @@ Future<ProviderContainer> _container() async {
 }
 
 void main() {
-  testWidgets('hub shows the three modes', (tester) async {
+  testWidgets('hub loads with story mode and the tab bar', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(
@@ -23,8 +23,8 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Story Mode'), findsOneWidget);
-    expect(find.text('Arcade'), findsOneWidget);
-    expect(find.text('Learn'), findsWidgets);
+    expect(find.text('Choose your mode'), findsOneWidget);
+    expect(find.text('Play'), findsOneWidget); // bottom bar
   });
 
   test('profile: rewards, streak, lesson and game records persist', () async {

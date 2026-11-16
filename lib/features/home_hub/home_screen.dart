@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/profile.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
+import 'daily_card.dart';
 import 'shell.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -62,6 +63,8 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: AppSpace.md),
+        const DailyCard(),
         const SizedBox(height: AppSpace.lg),
         Text('Choose your mode', style: context.text.titleLarge),
         const SizedBox(height: AppSpace.sm),
