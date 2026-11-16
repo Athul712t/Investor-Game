@@ -1,1 +1,277 @@
-{"chapters":[]}
+{
+  "chapters": [
+    {
+      "id": "salary-day",
+      "title": "Salary Day",
+      "subtitle": "First salary, big temptations",
+      "emoji": "💸",
+      "color": "amber",
+      "nodes": [
+        {
+          "type": "dialogue",
+          "title": "Ding! Salary credited",
+          "lines": [
+            { "speaker": "narrator", "text": "Month one of your first job in the city. It is 9:02 am. Your phone buzzes." },
+            { "speaker": "you", "text": "Salary credited?! It's real. I am officially a person with money." },
+            { "speaker": "kabir", "text": "{name}! FLATMATE! I heard the buzz. Biryani tonight? New sneakers? A tiny trip to Goa?" },
+            { "speaker": "you", "text": "Kabir, it has been in my account for forty seconds." },
+            { "speaker": "kabir", "text": "And it is already lonely. Money wants to be spent. It's science." },
+            { "speaker": "asha", "text": "Congratulations, {name}! First salary is a big day. Enjoy some of it, really." },
+            { "speaker": "asha", "text": "But before it all vanishes, come for chai on Sunday. I'll tell you what I wish someone had told me." }
+          ]
+        },
+        { "type": "lesson", "title": "Saving vs investing", "lessonId": "mf-basics-1" },
+        {
+          "type": "dialogue",
+          "title": "The silent thief",
+          "lines": [
+            { "speaker": "narrator", "text": "Sunday. Asha's balcony. Two cups of chai and a plate of samosas." },
+            { "speaker": "asha", "text": "When I started working, a samosa at my office canteen cost ₹10. Guess what it costs now?" },
+            { "speaker": "you", "text": "Twelve?" },
+            { "speaker": "asha", "text": "Twenty. Same samosa. Same potato. That slow price rise is called inflation." },
+            { "speaker": "kabir", "text": "So the samosa got richer and I got poorer? Rude." },
+            { "speaker": "asha", "text": "Exactly. Money sitting idle quietly buys less every year. It's a silent thief, no mask, no noise." },
+            { "speaker": "asha", "text": "Saving keeps money safe. Investing gives it a chance to keep up with that thief over time. Both have a job." }
+          ]
+        },
+        {
+          "type": "game",
+          "title": "Outrun the price rise",
+          "gameId": "runner",
+          "target": 150,
+          "intro": "Prices are chasing your rupees. Run 150 metres and dodge the dips!"
+        },
+        {
+          "type": "dialogue",
+          "title": "Kabir's hot tip",
+          "lines": [
+            { "speaker": "kabir", "text": "Forget samosas. My cousin's friend's gym trainer has a HOT TIP. Guaranteed to double. Super secret." },
+            { "speaker": "asha", "text": "If it's a secret, why does your gym trainer know it?" },
+            { "speaker": "kabir", "text": "...He's very well connected?" },
+            { "speaker": "asha", "text": "Nobody can guarantee doubling. Anyone who promises that is selling something, usually to you." },
+            { "speaker": "you", "text": "Then how do regular people invest without being experts?" },
+            { "speaker": "asha", "text": "One common way is a mutual fund. Lots of people pool their money, and a professional team invests it as per a stated plan." },
+            { "speaker": "kabir", "text": "A group trip, but for money. I'm in. Who's driving?" }
+          ]
+        },
+        { "type": "lesson", "title": "What is a mutual fund", "lessonId": "mf-basics-2" },
+        {
+          "type": "scenario",
+          "title": "The weekend decision",
+          "question": {
+            "id": "story-salary-weekend",
+            "type": "scenario",
+            "topic": "budgeting",
+            "difficulty": 1,
+            "explanation": "Paying your future self first, then enjoying the rest guilt-free, is a habit many patient investors swear by. The amounts are up to you.",
+            "payload": {
+              "prompt": "Friday night. Kabir is holding two concert tickets and a very hopeful face. What do you do with this month's salary?",
+              "options": [
+                {
+                  "text": "Spend it all. YOLO. Next month is next month's problem.",
+                  "outcome": "Great concert! By the 20th you are eating plain rice and calling it 'minimalism'."
+                },
+                {
+                  "text": "Set aside a slice for goals first, then enjoy the rest.",
+                  "outcome": "You go to the concert AND your goals fund grows. Asha sends a thumbs up emoji. A rare honour."
+                },
+                {
+                  "text": "Put everything into the gym trainer's secret tip.",
+                  "outcome": "The trainer stops replying. Kabir says the tip 'is in a consolidation phase'. Hmm."
+                }
+              ],
+              "correctIndex": 1
+            }
+          }
+        },
+        {
+          "type": "dialogue",
+          "title": "A plan on a napkin",
+          "lines": [
+            { "speaker": "you", "text": "Okay. Plan: needs first, a slice for the future, then fun. Written on a napkin, so it's official." },
+            { "speaker": "asha", "text": "That napkin is worth more than any hot tip. Next week, I'll take you both to the zoo." },
+            { "speaker": "kabir", "text": "An actual zoo? With animals?" },
+            { "speaker": "asha", "text": "A Fund Zoo. You'll see." }
+          ]
+        },
+        { "type": "reward", "title": "Salary Saviour", "xp": 60, "coins": 40 }
+      ]
+    },
+    {
+      "id": "fund-zoo",
+      "title": "The Fund Zoo",
+      "subtitle": "NAV, fund managers, wild fund types",
+      "emoji": "🦁",
+      "color": "mint",
+      "nodes": [
+        {
+          "type": "dialogue",
+          "title": "Welcome to the zoo",
+          "lines": [
+            { "speaker": "narrator", "text": "Saturday morning. Asha hands you each an imaginary ticket. 'The Fund Zoo', it says." },
+            { "speaker": "kabir", "text": "I opened an investing app and it keeps saying 'NAV'. I nodded like I knew. I did not know." },
+            { "speaker": "asha", "text": "NAV is the price of one unit of a fund. When you invest, you buy units at that day's NAV." },
+            { "speaker": "you", "text": "So a lower NAV means a cheaper, better fund?" },
+            { "speaker": "asha", "text": "Nope! A low NAV isn't a bargain and a high one isn't expensive. It just tells you the value per unit." }
+          ]
+        },
+        { "type": "lesson", "title": "NAV and units", "lessonId": "mf-basics-3" },
+        {
+          "type": "dialogue",
+          "title": "Meet the zookeepers",
+          "lines": [
+            { "speaker": "asha", "text": "Every animal here has a keeper. In a fund, that's the fund manager and their team." },
+            { "speaker": "kabir", "text": "Do they work for free? Out of love for animals?" },
+            { "speaker": "asha", "text": "Sadly no. Funds charge a yearly fee called the expense ratio. Think of it as the zoo's entry ticket, paid a little every day." },
+            { "speaker": "you", "text": "So I should check the ticket price, not just how cute the animals look." },
+            { "speaker": "asha", "text": "Exactly. Small fees add up over many years, so it's worth reading the label." }
+          ]
+        },
+        { "type": "lesson", "title": "Who runs your fund", "lessonId": "mf-basics-4" },
+        {
+          "type": "game",
+          "title": "Merge into units",
+          "gameId": "merge",
+          "target": 200,
+          "intro": "Small coins merge into bigger ones, like small amounts pooling into a fund. Reach 200!"
+        },
+        {
+          "type": "dialogue",
+          "title": "The animals",
+          "lines": [
+            { "speaker": "asha", "text": "Now the fun part. Meet the residents. That cheetah? An equity fund. Fast, exciting, and very moody." },
+            { "speaker": "kabir", "text": "Cheetah. Mine. Done. Fastest wins." },
+            { "speaker": "asha", "text": "It also has bad days when it just lies in the sun and sulks. Equity can swing a lot in the short term." },
+            { "speaker": "asha", "text": "The tortoise is a debt fund. Slower, steadier, not zero risk, but calmer." },
+            { "speaker": "you", "text": "And the zebra? Black and white stripes?" },
+            { "speaker": "asha", "text": "A hybrid fund, a bit of both. And that elephant just follows the herd. That's an index fund: it simply tracks a market index." }
+          ]
+        },
+        { "type": "lesson", "title": "Equity funds", "lessonId": "fund-types-1" },
+        { "type": "lesson", "title": "Debt funds", "lessonId": "fund-types-2" },
+        {
+          "type": "scenario",
+          "title": "Kabir's bike plan",
+          "question": {
+            "id": "story-zoo-bike",
+            "type": "scenario",
+            "topic": "fund-types",
+            "difficulty": 2,
+            "explanation": "There's no single best animal. Match the fund's temperament to how soon you need the money and how much swing you can sit through.",
+            "payload": {
+              "prompt": "Kabir wants money for a bike in 6 months. He points at the fund with the best return last year. What do you tell him?",
+              "options": [
+                {
+                  "text": "Last year's champion! Can't go wrong.",
+                  "outcome": "Asha: 'Last year's results don't promise next year's. Cheetahs have off seasons too.'"
+                },
+                {
+                  "text": "First think about when you need it and how much ups and downs you can handle.",
+                  "outcome": "Kabir: 'Six months... a moody cheetah might be sulking right when I need my bike.' Growth!"
+                },
+                {
+                  "text": "Pick the one with the coolest animal name.",
+                  "outcome": "Kabir chooses 'Turbo Panther'. It isn't a real fund. It's his gaming username."
+                }
+              ],
+              "correctIndex": 1
+            }
+          }
+        },
+        { "type": "reward", "title": "Zoo Keeper", "xp": 70, "coins": 50 }
+      ]
+    },
+    {
+      "id": "sip-habit",
+      "title": "The SIP Habit",
+      "subtitle": "Start small, stay steady",
+      "emoji": "🌱",
+      "color": "violet",
+      "nodes": [
+        {
+          "type": "dialogue",
+          "title": "Start small",
+          "lines": [
+            { "speaker": "you", "text": "I want to invest, but I don't have a giant pile of money. Do I wait until I'm rich?" },
+            { "speaker": "asha", "text": "Waiting to be rich before investing is like waiting to be fit before joining a gym." },
+            { "speaker": "asha", "text": "A SIP lets you invest a fixed amount every month, even a small one. The habit matters more than the size at the start." },
+            { "speaker": "kabir", "text": "Like my gym membership! Except I would actually use it." },
+            { "speaker": "asha", "text": "Especially that. A SIP shows up every month, even when you don't feel like it." }
+          ]
+        },
+        { "type": "lesson", "title": "What is a SIP", "lessonId": "sip-power-1" },
+        {
+          "type": "dialogue",
+          "title": "The sale season",
+          "lines": [
+            { "speaker": "asha", "text": "Here's a neat side effect. Same amount each month: when the NAV is low, you get more units. When it's high, fewer." },
+            { "speaker": "kabir", "text": "So when prices drop, it's basically a sale? I LOVE a sale." },
+            { "speaker": "asha", "text": "That's rupee cost averaging. It doesn't guarantee a profit, but it means you don't have to guess the perfect day." },
+            { "speaker": "you", "text": "Good, because my track record of guessing things is mostly about cricket. And it's bad." }
+          ]
+        },
+        { "type": "lesson", "title": "Rupee cost averaging", "lessonId": "sip-power-2" },
+        {
+          "type": "game",
+          "title": "Stack your SIPs",
+          "gameId": "stack",
+          "target": 8,
+          "intro": "One block a month, every month. Stack 8 blocks and keep the tower steady!"
+        },
+        {
+          "type": "dialogue",
+          "title": "Red alert",
+          "lines": [
+            { "speaker": "narrator", "text": "Eight months later. Every headline is red. Kabir bursts through the door." },
+            { "speaker": "kabir", "text": "ABORT! ABORT! The market fell! My app is red! My SOUL is red!" },
+            { "speaker": "you", "text": "Mine is down too. My stomach just did a little backflip." },
+            { "speaker": "asha", "text": "Breathe, both of you. Dips are a normal part of investing. I've lived through several." },
+            { "speaker": "asha", "text": "The question isn't 'is it red today?'. It's 'has my goal or timeline changed?'" }
+          ]
+        },
+        {
+          "type": "scenario",
+          "title": "The market falls",
+          "question": {
+            "id": "story-sip-dip",
+            "type": "scenario",
+            "topic": "staying-invested",
+            "difficulty": 2,
+            "explanation": "Markets go up and down. If your goal is years away and your plan still fits, staying the course is often wiser than reacting to one scary month.",
+            "payload": {
+              "prompt": "Your long-term investments are down 15% this month (illustrative). Your goal is 10 years away. Kabir is hovering over the 'Sell all' button. What do you do?",
+              "options": [
+                {
+                  "text": "Stop the SIP and sell everything before it gets worse.",
+                  "outcome": "You lock in the fall, and your SIP habit stops too. If prices bounce back later, you're watching from outside. Kabir quietly uninstalls the app."
+                },
+                {
+                  "text": "Stay the course: keep the SIP going and check the goal still fits.",
+                  "outcome": "Your monthly SIP keeps buying units during the dip. Asha raises her chai cup in salute."
+                },
+                {
+                  "text": "Borrow money to invest more, the dip is a sure thing!",
+                  "outcome": "Nothing about the market is a sure thing, and borrowed money is stressful. Kabir now owes his sister ₹5,000."
+                }
+              ],
+              "correctIndex": 1
+            }
+          }
+        },
+        { "type": "lesson", "title": "Power of compounding", "lessonId": "sip-power-3" },
+        {
+          "type": "dialogue",
+          "title": "One year later",
+          "lines": [
+            { "speaker": "narrator", "text": "One year after that first salary. Same balcony. Same samosas. Slightly more expensive." },
+            { "speaker": "kabir", "text": "I have news. I did NOT sell during the dip. I didn't follow a single hot tip. I'm a changed man." },
+            { "speaker": "asha", "text": "Proud of you, Kabir. And you, {name}, you kept your SIP going through the scary month." },
+            { "speaker": "you", "text": "Turns out the secret was boring: start small, stay steady, keep learning." },
+            { "speaker": "asha", "text": "Boring is underrated. Now enjoy that samosa. You've earned it." }
+          ]
+        },
+        { "type": "reward", "title": "SIP Star", "xp": 80, "coins": 60 }
+      ]
+    }
+  ]
+}
