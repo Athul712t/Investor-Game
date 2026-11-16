@@ -21,7 +21,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(overrides: [prefsProvider.overrideWithValue(prefs)], child: const InvestorGameApp()),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1)); // looping animations never settle
     expect(find.text('Story Mode'), findsOneWidget);
     expect(find.text('Choose your mode'), findsOneWidget);
     expect(find.text('Play'), findsOneWidget); // bottom bar
