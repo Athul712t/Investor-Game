@@ -9,6 +9,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' show KeyEventResult;
 
+import '../../../core/sfx.dart';
 import '../../../domain/game/game_types.dart';
 import '../_shared/arcade_game.dart';
 import 'stack_math.dart';
@@ -178,6 +179,9 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
       _streak = 0;
       _pieces.add(_Piece(_mx, topY, _w, _dir * 0.2, 0.2, _dir * 1.5, color));
       _haptic(HapticFeedback.heavyImpact);
+      Sound.play(Sfx.crash);
+      _kick = 18;
+      _flash = 0.6;
       _deadTimer = 0.7;
       return;
     }
@@ -198,7 +202,10 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
       _streak++;
       coins.value++;
       _flash = 1;
+      _kick = 14;
+      Sound.play(Sfx.perfect);
       _rings.add(_Ring(res.center, topY, res.width, color));
+      _rings.add(_Ring(res.center, topY, res.width * 1.5, ArcadeColors.text));
       _pops.add(_Pop(_streak > 1 ? 'Perfect x$_streak' : 'Perfect', res.center, topY, ArcadeColors.text, true));
       _haptic(HapticFeedback.lightImpact);
       if (_streak % 3 == 0) {
@@ -207,6 +214,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
       }
     } else {
       _streak = 0;
+      Sound.play(Sfx.drop);
       _haptic(HapticFeedback.selectionClick);
     }
     if (placed % 5 == 0) {

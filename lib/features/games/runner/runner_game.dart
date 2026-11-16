@@ -5,14 +5,23 @@ import 'dart:ui';
 
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/animation.dart' show Curves;
 import 'package:flutter/painting.dart' show TextPainter, TextSpan, TextStyle, TextDirection, FontWeight;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' show KeyEventResult;
 
+import '../../../core/sfx.dart';
 import '../../../domain/game/game_types.dart';
 import '../_shared/arcade_game.dart';
 import 'runner_backdrop.dart';
 import 'runner_sim.dart';
+
+/// A coin that flies from where it was collected to the host's coin counter (top right).
+class _Fly {
+  _Fly(this.from);
+  final Offset from;
+  double t = 0;
+}
 
 class _Particle {
   _Particle(this.p, this.v, this.life, this.size, this.color, {this.gravity = 0, this.star = false}) : max = life;
@@ -40,6 +49,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
   final _backdrop = Backdrop();
   final _fx = Random();
   final _particles = <_Particle>[];
+  final _flies = <_Fly>[];
   final _glyphs = <String, TextPainter>{};
   double _t = 0, _shake = 0, _flash = 0, _crashT = -1, _dustT = 0;
   double _squash = 0, _squashV = 0; // spring for squash and stretch
@@ -62,7 +72,10 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     if (paused || sim.crashed) return;
     final before = sim.lane;
     sim.moveLane(d);
-    if (sim.lane != before) _squashV -= 2.5;
+    if (sim.lane != before) {
+      _squashV -= 2.5;
+      Sound.play(Sfx.swipe);
+    }
   }
 
   void _drop() {
@@ -72,6 +85,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
   void _jump() {
     if (paused || !sim.jump()) return;
     _squashV += 7;
+    Sound.play(Sfx.jump);
     HapticFeedback.selectionClick();
   }
 
@@ -210,6 +224,10 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       p.p += p.v * dt;
     }
     _particles.removeWhere((p) => p.life <= 0);
+    for (final f in _flies) {
+      f.t += dt / 0.5;
+    }
+    _flies.removeWhere((f) => f.t >= 1);
   }
 
   void _onEvent(SimEvent e) {
@@ -217,6 +235,8 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     switch (e.type) {
       case SimEventType.coin:
         HapticFeedback.selectionClick();
+        Sound.play(Sfx.coin, volume: 0.7);
+        _flies.add(_Fly(at));
         _burst(at, 10, [ArcadeColors.amber, ArcadeColors.text], 160, star: true);
       case SimEventType.boost:
         HapticFeedback.mediumImpact();
@@ -225,14 +245,16 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
         requestBoost();
       case SimEventType.shieldBreak:
         HapticFeedback.heavyImpact();
-        _shake = 8;
+        Sound.play(Sfx.tick);
+        _shake = 12;
         _burst(at, 30, [ArcadeColors.sky, ArcadeColors.text, ArcadeColors.coral], 320);
       case SimEventType.hit:
         HapticFeedback.heavyImpact();
-        _shake = 18;
+        Sound.play(Sfx.crash);
+        _shake = 26;
         _flash = 1;
         _crashT = 0;
-        _burst(cam.p(sim.x, sim.jumpH + 1, 0), 46, [ArcadeColors.coral, ArcadeColors.amber, ArcadeColors.text], 420);
+        _burst(cam.p(sim.x, sim.jumpH + 1, 0), 64, [ArcadeColors.coral, ArcadeColors.amber, ArcadeColors.text], 420);
       case SimEventType.land:
         _squashV -= 6;
         _burst(cam.p(sim.x, 0, 0), 8, [ArcadeColors.textDim], 120, gravity: 300);
@@ -282,6 +304,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
 
     _drawParticles(c);
     c.restore();
+    _drawFlies(c);
     _speedLines(c);
     _overlays(c);
     _hud(c);
@@ -641,6 +664,22 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
       } else {
         c.drawCircle(q.p, q.size * (0.5 + a * 0.5), p);
       }
+    }
+  }
+
+  void _drawFlies(Canvas c) {
+    final to = Offset(cam.w - 56, 64);
+    final fill = Paint()..color = ArcadeColors.amber;
+    final rim = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = ArcadeColors.ink;
+    for (final f in _flies) {
+      final e = Curves.easeIn.transform(f.t);
+      final at = Offset.lerp(f.from, to, e)! + Offset(0, -sin(e * pi) * 40);
+      final r = 8 * (1 - 0.4 * e);
+      c.drawCircle(at, r, fill);
+      c.drawCircle(at, r, rim);
     }
   }
 
