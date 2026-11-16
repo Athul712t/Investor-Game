@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/cloud.dart';
 import '../../core/profile.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
@@ -12,6 +13,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final p = ref.watch(profileProvider);
+    final cloud = ref.watch(cloudProvider);
     return ListView(
       padding: const EdgeInsets.all(AppSpace.md),
       children: [
@@ -71,6 +73,23 @@ class ProfileScreen extends ConsumerWidget {
                 ),
             ],
           ),
+        ),
+        const SizedBox(height: AppSpace.lg),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              cloud.state == CloudState.synced ? Icons.cloud_done_rounded : Icons.cloud_off_rounded,
+              size: 16,
+              color: cloud.state == CloudState.synced ? AppColors.mint : AppColors.textDim,
+            ),
+            const SizedBox(width: 6),
+            Text(switch (cloud.state) {
+              CloudState.synced => 'Progress backed up',
+              CloudState.offline => 'Offline. Progress is saved on this device',
+              CloudState.idle => 'Progress is saved on this device',
+            }, style: context.text.bodySmall),
+          ],
         ),
       ],
     );

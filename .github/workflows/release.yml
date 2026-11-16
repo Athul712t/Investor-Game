@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    tags: ['v*']
+    branches: ['release/v*']
 permissions:
   contents: write
 jobs:
@@ -21,8 +21,11 @@ jobs:
       - run: flutter test
       # Signed with the debug key: fine for testing, not for the Play Store.
       - run: flutter build apk --release
-      - run: mv build/app/outputs/flutter-apk/app-release.apk investor-game-${{ github.ref_name }}.apk
+      - run: echo "VERSION=${GITHUB_REF_NAME#release/}" >> "$GITHUB_ENV"
+      - run: mv build/app/outputs/flutter-apk/app-release.apk investor-game-${{ env.VERSION }}.apk
       - uses: softprops/action-gh-release@v2
         with:
-          files: investor-game-${{ github.ref_name }}.apk
+          tag_name: ${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
+          files: investor-game-${{ env.VERSION }}.apk
           generate_release_notes: true
