@@ -243,7 +243,7 @@ class _ChestStage extends StatelessWidget {
   Widget build(BuildContext context) {
     final drop = Curves.bounceOut.transform((t / 0.2).clamp(0.0, 1.0));
     final lid = Curves.easeOutBack.transform(((t - _RewardSceneState._lidAt) / 0.18).clamp(0.0, 1.0));
-    final angle = lid * 1.95; // swings past upright to show its inside
+    final angle = lid * 2.2; // swings up and past upright so its inside shows above the chest
     final left = (_size.width - _chest.width) / 2;
     final top = _size.height - _chest.height - 14 - (1 - drop) * 160;
     final mouth = Offset(_size.width / 2, top + 40);
@@ -272,15 +272,15 @@ class _ChestStage extends StatelessWidget {
                 painter: _ChestPainter(open: angle > 0.05),
               ),
             ),
-            // Lid hinged on its bottom edge, swinging back in perspective.
+            // Lid hinged on its top (back) edge: the front edge swings toward the viewer and up over the hinge.
             Positioned(
               left: left - 4,
               top: top - 2,
               child: Transform(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.topCenter,
                 transform: Matrix4.identity()
                   ..setEntry(3, 2, 0.004)
-                  ..rotateX(angle),
+                  ..rotateX(-angle),
                 child: CustomPaint(
                   size: const Size(148, 46),
                   painter: _LidPainter(inside: angle > pi / 2),
@@ -313,10 +313,19 @@ class _ChestPainter extends CustomPainter {
     Path r(double l, double t, double rr, double b, [double rad = 4]) =>
         Path()..addRRect(RRect.fromLTRBR(l, t, rr, b, Radius.circular(rad)));
     if (open) {
-      // The dark inside, with treasure peeking over the rim.
-      piece(canvas, r(4, 30, 136, 50, 4), AppColors.ink);
-      for (final x in [38.0, 58.0, 80.0, 100.0]) {
-        piece(canvas, Path()..addOval(Rect.fromCircle(center: Offset(x, 40), radius: 9)), AppColors.yellow, stroke: 2);
+      // The open mouth seen from slightly above: back rim at the hinge, a heap of coins inside.
+      piece(canvas, r(4, 0, 136, 50, 8), side(_wood));
+      piece(canvas, r(12, 8, 128, 50, 4), AppColors.ink);
+      for (final (x, y) in [
+        (36.0, 30.0),
+        (56.0, 26.0),
+        (78.0, 24.0),
+        (100.0, 28.0),
+        (46.0, 40.0),
+        (68.0, 38.0),
+        (90.0, 40.0),
+      ]) {
+        piece(canvas, Path()..addOval(Rect.fromCircle(center: Offset(x, y), radius: 9)), AppColors.yellow, stroke: 2);
       }
     }
     piece(canvas, r(0, 44, 140, 120, 8), _wood, shadow: 0);
