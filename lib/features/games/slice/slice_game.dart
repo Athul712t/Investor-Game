@@ -28,7 +28,7 @@ const _green = Color(0xFF1FB86B);
 const _blue = Color(0xFF2F8CFF);
 
 const _maxLives = 5;
-const _trailLife = 2.0;
+const _trailLife = 0.35;
 const _labels = ['100% returns!', 'Hot tip', 'Sure shot', 'Double fast', 'Zero risk'];
 
 class _Obj {
@@ -235,7 +235,7 @@ class SliceGame extends ArcadeGame with DragCallbacks {
     if (!res.cleared) {
       _burst(o.x, o.y, _cream, 14, 220);
       _pops.add(_Pop('Defused!', o.x, o.y - 30, _green, 28));
-      Sound.play(Sfx.powerup);
+      Sound.play(Sfx.tick);
       return;
     }
     _lives = res.lives;
