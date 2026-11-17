@@ -7,20 +7,22 @@ Learn how mutual funds work by playing. Three modes share one profile, one econo
 | Mode | What it is |
 |---|---|
 | **Story** | "From Pocket Money to Portfolio": three chapters of dialogue, lessons, games and decisions |
-| **Arcade** | Pure games. Answer a question mid-run for a power-up, or to revive once |
+| **Arcade** | Six games: Bull Run, Sky Stack, Coin Merge, Brick Bank, Candle Hop, Coin Slash. A quiz chip offers a power-up without pausing the run; a second chance after a crash is optional |
 | **Learn** | Pure education: 3 modules, 12 lessons, 60 questions in five formats |
 
 <p>
-<img src="docs/screens/home.png" width="160" alt="Home">
-<img src="docs/screens/story.png" width="160" alt="Story map">
-<img src="docs/screens/dialogue.png" width="160" alt="Story dialogue">
+<img src="docs/screens/home.png" width="160" alt="Home with Portfolio Town">
+<img src="docs/screens/story.png" width="160" alt="Story board map">
 <img src="docs/screens/learn.png" width="160" alt="Learn tab">
-<img src="docs/screens/quiz.png" width="160" alt="Quiz">
+<img src="docs/screens/lesson.png" width="160" alt="Lesson card deck">
+<img src="docs/screens/arcade.png" width="160" alt="Arcade shelf">
 </p>
 <p>
 <img src="docs/screens/runner.png" width="160" alt="Bull Run">
-<img src="docs/screens/stack.png" width="160" alt="Sky Stack">
 <img src="docs/screens/merge.png" width="160" alt="Coin Merge">
+<img src="docs/screens/breaker.png" width="160" alt="Brick Bank">
+<img src="docs/screens/slice.png" width="160" alt="Coin Slash">
+<img src="docs/screens/quizchip.png" width="160" alt="Quiz chip during a run">
 </p>
 
 ## Try it
@@ -37,7 +39,7 @@ flutter run            # or: flutter run -d chrome
 
 ## How it is built
 
-Flutter, Flame (games), Riverpod (state), go_router (navigation). No image or audio assets: every visual is drawn in code.
+Flutter, Flame (games), Riverpod (state), go_router (navigation). Every visual is drawn in code and every sound is synthesised by `tool/gen_sfx.py`. The look is specified in [docs/DESIGN.md](docs/DESIGN.md).
 
 ```
 lib/
@@ -46,7 +48,7 @@ lib/
   features/
     home_hub/  shell, home, daily question
     content/   Learn tab, lesson player, QuestionView (mcq, true/false, myth/fact, match, scenario)
-    games/     _shared (ArcadeGame base, GameHostScreen, registry), runner, stack, merge
+    games/     _shared (ArcadeGame base, GameHostScreen, registry), runner, stack, merge, breaker, flap, slice
     story/     chapter map, chapter steps, dialogue, reward
     profile/
 assets/content/  modules.json (lessons and questions), story.json (chapters)
@@ -65,8 +67,8 @@ Pushing a branch named `release/vX.Y.Z` builds the APK and publishes a GitHub Re
 - The finance content is a draft. It needs review by a subject-matter expert and a compliance reviewer before any public launch.
 - Rewards are computed on the device, so scores are not cheat-proof. Server-side validation needs Cloud Functions.
 - Anonymous accounts only: progress does not move between devices yet.
-- Not yet built: iOS release, sound, Hindi and other languages, light theme.
+- Not yet built: iOS release, music, Hindi and other languages.
 
-Plans: [roadmap](docs/ROADMAP.md), [5-hour execution plan](docs/EXECUTION_PLAN.md).
+Plans: [next versions](docs/ROADMAP_NEXT.md), [design spec](docs/DESIGN.md), [original roadmap](docs/ROADMAP.md).
 
 *For education only. Not investment advice. Mutual fund investments are subject to market risks.*

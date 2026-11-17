@@ -2,61 +2,61 @@
 
 North star: the most replayable investor-education game there is. A player should open it daily because the games are good, and leave knowing more each time. Retention comes from mastery, collection and streaks, never from tricks that cost the player money or sleep.
 
-Status key: ▶ in progress, ○ planned.
+Status key: ✔ shipped, ○ planned.
 
 ---
 
-## v1.1 "Fresh Paint" ▶ (aesthetic only, plus two arcade flow fixes)
+## v1.1 "Fresh Paint" ✔ shipped in v1.2.0 (aesthetic only, plus two arcade flow fixes)
 
 Spec: [DESIGN.md](DESIGN.md).
 
 ### 1.1.1 Design system (`lib/core`)
-- [ ] Replace colour tokens with the Bazaar Board palette. Remove violet. Freeze the old palette as `ArcadeColors` for the three existing game canvases.
-- [ ] Add Baloo 2 as the display face. Rebuild the text theme (display 40/32/26, title 20/17, body 16/14, label 13/11).
-- [ ] Rebuild `Panel`, `ChunkyButton`, `StatPill`, `FatProgress`, `Badge3D` as outlined pieces with hard shadows. Press responds on touch-down.
-- [ ] New pieces: `Pressable`, `Tilt3D`, `PopIn`, `CountUp`, `Coin3D`, `OutlinedText`, `PaperBackground` (dot grid).
-- [ ] `Sound` service and 15 synthesised effects. Mute toggle stored in preferences.
+- [x] Replace colour tokens with the Bazaar Board palette. Remove violet. Freeze the old palette as `ArcadeColors` for the three existing game canvases.
+- [x] Add Baloo 2 as the display face. Rebuild the text theme (display 40/32/26, title 20/17, body 16/14, label 13/11).
+- [x] Rebuild `Panel`, `ChunkyButton`, `StatPill`, `FatProgress`, `Badge3D` as outlined pieces with hard shadows. Press responds on touch-down.
+- [x] New pieces: `Pressable`, `Tilt3D`, `PopIn`, `CountUp`, `Coin3D`, `OutlinedText`, `PaperBackground` (dot grid).
+- [x] `Sound` service and 15 synthesised effects. Mute toggle stored in preferences.
 - Done when: no `Gradient` or blurred shadow remains in `lib/core`, the layout test passes at 360x640 and text scale 1.3.
 
 ### 1.1.2 Home, shell, profile
-- [ ] Hero: an isometric **Portfolio Town** drawn in code. One building per completed module and chapter, height grows with level, small idle animation (windows, a moving cloud, a coin above the newest building). Tilts with the finger.
-- [ ] Header: level medal with roll-up XP, streak flame, spinning `Coin3D` balance.
-- [ ] Mode tiles as three board tiles (Story, Arcade, Learn), each a different colour block with a painted icon, tilt on touch, pop-in on first paint.
-- [ ] Daily question as a ticket stub with a perforated edge.
-- [ ] Custom bottom bar: four ink-outlined tabs, the active one raised and coloured, spring between tabs.
-- [ ] Profile: player card with medal, stat blocks, high-score ladder, sound toggle.
+- [x] Hero: an isometric **Portfolio Town** drawn in code. One building per completed module and chapter, height grows with level, small idle animation (windows, a moving cloud, a coin above the newest building). Tilts with the finger.
+- [x] Header: level medal with roll-up XP, streak flame, spinning `Coin3D` balance.
+- [x] Mode tiles as three board tiles (Story, Arcade, Learn), each a different colour block with a painted icon, tilt on touch, pop-in on first paint.
+- [x] Daily question as a ticket stub with a perforated edge.
+- [x] Custom bottom bar: four ink-outlined tabs, the active one raised and coloured, spring between tabs.
+- [x] Profile: player card with medal, stat blocks, high-score ladder, sound toggle.
 - Done when: a first-time screenshot of Home has one clear hero, zero gradients, zero emoji in chrome.
 
 ### 1.1.3 Learn and quiz
-- [ ] Module cards as book spines or folders with a progress tab. Lesson rows as numbered stepping stones.
-- [ ] Lesson cards flip in 3D between front (idea) and back (example) and stack like a deck with the next card peeking.
-- [ ] Question pieces: option tiles press down, correct tile jumps and turns green, wrong tile shakes and turns red, both with sound.
-- [ ] Myth/fact card gets a rubber stamp that slams down (scale and rotation spring).
-- [ ] Summary: medal drop, XP roll-up, three-star rating by accuracy.
+- [x] Module cards as book spines or folders with a progress tab. Lesson rows as numbered stepping stones.
+- [x] Lesson cards flip in 3D between front (idea) and back (example) and stack like a deck with the next card peeking.
+- [x] Question pieces: option tiles press down, correct tile jumps and turns green, wrong tile shakes and turns red, both with sound.
+- [x] Myth/fact card gets a rubber stamp that slams down (scale and rotation spring).
+- [x] Summary: medal drop, XP roll-up, three-star rating by accuracy.
 
 ### 1.1.4 Story
-- [ ] Map as a board path: tiles to step along, chapter stops as raised buildings, the player token hops to the current stop.
-- [ ] Dialogue: flat illustrated backdrop per chapter (paper cut-out layers with parallax on tilt), comic speech bubbles with ink outline and tail.
-- [ ] Chapter list as a ticket strip. Reward scene: chest opens, coins arc into the balance.
+- [x] Map as a board path: tiles to step along, chapter stops as raised buildings, the player token hops to the current stop.
+- [x] Dialogue: flat illustrated backdrop per chapter (paper cut-out layers with parallax on tilt), comic speech bubbles with ink outline and tail.
+- [x] Chapter list as a ticket strip. Reward scene: chest opens, coins arc into the balance.
 
 ### 1.1.5 Arcade flow
-- [ ] Non-blocking quiz chip (run never pauses).
-- [ ] Optional second chance on the results screen.
-- [ ] "What you learned this run" list on results.
-- [ ] Host HUD, intro, pause and results in the new style. Score in outlined display type.
+- [x] Non-blocking quiz chip (run never pauses).
+- [x] Optional second chance on the results screen.
+- [x] "What you learned this run" list on results.
+- [x] Host HUD, intro, pause and results in the new style. Score in outlined display type.
 
 Release gate: all tests green, screenshots of every screen reviewed against DESIGN.md, APK published as `v1.1.0`.
 
 ---
 
-## v1.2 "Arcade Pack" ▶ (more games, sound everywhere)
+## v1.2 "Arcade Pack" ✔ shipped in v1.2.0 (more games, sound everywhere)
 
-- [ ] **Brick Bank** (breakout): paddle, ball, vault bricks with hit points, falling pickups, multi-ball. Boost orb every 20 bricks.
-- [ ] **Candle Hop** (one-tap flyer): fly a rocket through gaps between red and green candlesticks. Gap narrows with distance. Coins in the gaps.
-- [ ] **Coin Slash** (slicer): swipe to slice flying coins, avoid scam bombs, combo multiplier for multi-slices, three lives.
-- [ ] Sound and haptics wired into all six games and the host (tap, coin, powerup, crash, perfect, merge, win, lose).
-- [ ] Existing games: visual pass so tiles, blocks and pickups share the outlined-piece look where it fits their world.
-- [ ] Arcade tab: game shelf with best score, a "new" tag, and a daily featured game with double coins.
+- [x] **Brick Bank** (breakout): paddle, ball, vault bricks with hit points, falling pickups, multi-ball. Boost orb every 20 bricks.
+- [x] **Candle Hop** (one-tap flyer): fly a rocket through gaps between red and green candlesticks. Gap narrows with distance. Coins in the gaps.
+- [x] **Coin Slash** (slicer): swipe to slice flying coins, avoid scam bombs, combo multiplier for multi-slices, three lives.
+- [x] Sound and haptics wired into all six games and the host (tap, coin, powerup, crash, perfect, merge, win, lose).
+- [x] Existing games: visual pass so tiles, blocks and pickups share the outlined-piece look where it fits their world.
+- [x] Arcade tab: game shelf with best score, a "new" tag, and a daily featured game. (Double coins for the featured game: not built, moved to v1.3.)
 - Release gate: each game has unit tests for its rules and a 600-frame smoke test, is playable one-handed, and holds 60 fps in the web build. APK `v1.2.0`.
 
 ---
