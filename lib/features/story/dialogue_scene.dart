@@ -199,8 +199,8 @@ class _DialogueSceneState extends ConsumerState<DialogueScene> with SingleTicker
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ClipRect(
         child: SizedBox(
-          width: 120,
-          height: 128,
+          width: 150,
+          height: 160,
           child: AnimatedSwitcher(
             duration: calm ? Duration.zero : const Duration(milliseconds: 380),
             switchInCurve: Curves.easeOutBack,
@@ -213,7 +213,7 @@ class _DialogueSceneState extends ConsumerState<DialogueScene> with SingleTicker
               child: AnimatedBuilder(
                 animation: _typing,
                 builder: (_, _) => CustomPaint(
-                  size: const Size(120, 128),
+                  size: const Size(150, 160),
                   painter: BustPainter(who, sp.color, talking: _typing.isAnimating && (_shown ~/ 3).isOdd),
                 ),
               ),
@@ -350,8 +350,8 @@ class _Bubble extends StatelessWidget {
         ),
         Positioned(
           top: -16,
-          left: right ? null : 150,
-          right: right ? 150 : null,
+          left: right ? null : 170,
+          right: right ? 170 : null,
           child: Container(
             constraints: const BoxConstraints(maxWidth: 150),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
@@ -375,8 +375,8 @@ class _BubblePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Tail sits under the bust's chin (bust is 120 wide with 12 padding, so its centre is 72 in).
-    final x = right ? size.width - 72 : 72.0;
+    // Tail sits under the bust's chin (bust is 150 wide with 12 padding, so its centre is 87 in).
+    final x = right ? size.width - 87 : 87.0;
     final body = Path()..addRRect(RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(22)));
     final tail = Path()
       ..moveTo(x - 16, 2)
