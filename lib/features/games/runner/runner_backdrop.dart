@@ -11,8 +11,8 @@ class Cam {
   void resize(double width, double height) {
     w = width;
     h = height;
-    hy = h * 0.40;
-    py = h * 0.81;
+    hy = h * 0.34;
+    py = h * 0.68;
     cx = w / 2;
     ppu = min(w * 0.43, (py - hy) * 0.75) / 4.5;
   }
