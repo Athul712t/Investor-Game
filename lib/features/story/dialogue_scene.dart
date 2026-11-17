@@ -569,6 +569,24 @@ class _LayerPainter extends CustomPainter {
             ..close();
         }
         piece(canvas, path, p.far);
+      case _Layer.near when p.hills:
+        // Zoo: a row of big round trees behind a wooden enclosure fence.
+        for (var x = 10.0; x < w; x += 90 + rng.nextDouble() * 40) {
+          final r = 34 + rng.nextDouble() * 16;
+          final top = horizon - 60 - r - rng.nextDouble() * 40;
+          piece(
+            canvas,
+            Path()..addRect(Rect.fromLTRB(x - 7, top + r * 0.6, x + 7, horizon + 2)),
+            Color.lerp(AppColors.orange, AppColors.ink, 0.5)!,
+          );
+          piece(canvas, Path()..addOval(Rect.fromCircle(center: Offset(x, top), radius: r)), p.near);
+        }
+        final post = AppColors.tint(AppColors.orange, 0.35);
+        piece(canvas, Path()..addRect(Rect.fromLTRB(-4, horizon - 34, w + 4, horizon - 26)), post);
+        piece(canvas, Path()..addRect(Rect.fromLTRB(-4, horizon - 16, w + 4, horizon - 8)), post);
+        for (var x = 8.0; x < w; x += 36) {
+          piece(canvas, _post(x, horizon), post);
+        }
       case _Layer.near:
         final lit = Paint()..color = AppColors.yellow;
         final dark = Paint()..color = Color.lerp(p.near, AppColors.ink, 0.35)!;
@@ -607,6 +625,14 @@ class _LayerPainter extends CustomPainter {
         }
     }
   }
+
+  static Path _post(double x, double base) => Path()
+    ..moveTo(x, base + 2)
+    ..lineTo(x, base - 42)
+    ..lineTo(x + 6, base - 50)
+    ..lineTo(x + 12, base - 42)
+    ..lineTo(x + 12, base + 2)
+    ..close();
 
   @override
   bool shouldRepaint(_LayerPainter old) => old.layer != layer || old.p.sky != p.sky;
