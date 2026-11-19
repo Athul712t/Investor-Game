@@ -38,7 +38,7 @@ class _MatchBodyState extends State<MatchBody> {
     final s = _selected;
     if (s == null || _made.contains(pairIndex) || _done) return;
     if (s == pairIndex) {
-      HapticFeedback.selectionClick();
+      Haptics.select();
       Sound.play(Sfx.coin);
       setState(() {
         _made.add(s);
@@ -46,7 +46,7 @@ class _MatchBodyState extends State<MatchBody> {
       });
       if (_done) widget.onResult(_mistakes == 0);
     } else {
-      HapticFeedback.heavyImpact();
+      Haptics.heavy();
       Sound.play(Sfx.wrong, volume: 0.7);
       setState(() {
         _mistakes++;

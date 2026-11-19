@@ -94,7 +94,7 @@ class _GameHostState extends ConsumerState<GameHostScreen> {
   void _grant(PowerupType p) {
     game.applyPowerup(p);
     Sound.play(Sfx.powerup);
-    HapticFeedback.mediumImpact();
+    Haptics.medium();
     setState(() => _toast = p);
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) setState(() => _toast = null);

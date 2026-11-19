@@ -31,7 +31,7 @@ class _QuestionViewState extends State<QuestionView> {
     if (_result != null) return;
     // Sound and haptic on the same frame as the visual change.
     Sound.play(correct ? Sfx.correct : Sfx.wrong);
-    correct ? HapticFeedback.mediumImpact() : HapticFeedback.heavyImpact();
+    correct ? Haptics.medium() : Haptics.heavy();
     setState(() {
       _result = correct;
       _note = note;

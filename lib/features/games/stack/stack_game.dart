@@ -163,8 +163,6 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
     return KeyEventResult.ignored;
   }
 
-  void _haptic(Future<void> Function() f) => f().catchError((_) {});
-
   void drop() {
     if (isOver || paused || _deadTimer >= 0 || _cooldown > 0 || size.x == 0) return;
     _cooldown = 0.08;
@@ -178,7 +176,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
     if (res.miss) {
       _streak = 0;
       _pieces.add(_Piece(_mx, topY, _w, _dir * 0.2, 0.2, _dir * 1.5, color));
-      _haptic(HapticFeedback.heavyImpact);
+      Haptics.heavy();
       Sound.play(Sfx.crash);
       _kick = 18;
       _flash = 0.6;
@@ -207,7 +205,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
       _rings.add(_Ring(res.center, topY, res.width, color));
       _rings.add(_Ring(res.center, topY, res.width * 1.5, ArcadeColors.text));
       _pops.add(_Pop(_streak > 1 ? 'Perfect x$_streak' : 'Perfect', res.center, topY, ArcadeColors.text, true));
-      _haptic(HapticFeedback.lightImpact);
+      Haptics.light();
       if (_streak % 3 == 0) {
         _w = min(_startW, _w + 0.06);
         _pops.add(_Pop('Block grows!', res.center, topY - 0.11, ArcadeColors.mint, false));
@@ -215,7 +213,7 @@ class StackGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
     } else {
       _streak = 0;
       Sound.play(Sfx.drop);
-      _haptic(HapticFeedback.selectionClick);
+      Haptics.select();
     }
     if (placed % 5 == 0) {
       coins.value++;

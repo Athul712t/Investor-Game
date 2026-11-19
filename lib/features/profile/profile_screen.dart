@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/cloud.dart';
+import '../../core/diagnostics.dart';
 import '../../core/profile.dart';
 import '../../core/sfx.dart';
 import '../../core/theme.dart';
@@ -113,7 +114,20 @@ class ProfileScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpace.lg),
-        const _SoundToggle(),
+        _ToggleRow(
+          label: 'Sound',
+          onIcon: Icons.volume_up_rounded,
+          offIcon: Icons.volume_off_rounded,
+          read: () => !Sound.muted,
+          write: (on) => Sound.setMuted(!on),
+        ),
+        _ToggleRow(
+          label: 'Performance graph',
+          onIcon: Icons.speed_rounded,
+          offIcon: Icons.speed_rounded,
+          read: () => showPerfOverlay.value,
+          write: (on) => showPerfOverlay.value = on,
+        ),
         const SizedBox(height: AppSpace.lg),
         Row(
           children: [
@@ -228,20 +242,31 @@ class _Rung extends StatelessWidget {
   }
 }
 
-class _SoundToggle extends StatefulWidget {
-  const _SoundToggle();
+/// A labelled on/off switch row. [read] and [write] keep it free of any particular setting.
+class _ToggleRow extends StatefulWidget {
+  const _ToggleRow({
+    required this.label,
+    required this.onIcon,
+    required this.offIcon,
+    required this.read,
+    required this.write,
+  });
+  final String label;
+  final IconData onIcon, offIcon;
+  final bool Function() read;
+  final void Function(bool) write;
 
   @override
-  State<_SoundToggle> createState() => _SoundToggleState();
+  State<_ToggleRow> createState() => _ToggleRowState();
 }
 
-class _SoundToggleState extends State<_SoundToggle> {
+class _ToggleRowState extends State<_ToggleRow> {
   @override
   Widget build(BuildContext context) {
-    final on = !Sound.muted;
+    final on = widget.read();
     return Semantics(
       toggled: on,
-      label: 'Sound',
+      label: widget.label,
       excludeSemantics: true,
       onTap: _flip,
       child: Pressable(
@@ -252,9 +277,9 @@ class _SoundToggleState extends State<_SoundToggle> {
           decoration: pieceDecoration(),
           child: Row(
             children: [
-              Icon(on ? Icons.volume_up_rounded : Icons.volume_off_rounded, color: AppColors.ink),
+              Icon(on ? widget.onIcon : widget.offIcon, color: AppColors.ink),
               const SizedBox(width: 10),
-              Expanded(child: Text('Sound', style: context.text.titleMedium)),
+              Expanded(child: Text(widget.label, style: context.text.titleMedium)),
               AnimatedContainer(
                 duration: AppMotion.fast,
                 width: 58,
@@ -271,5 +296,5 @@ class _SoundToggleState extends State<_SoundToggle> {
     );
   }
 
-  void _flip() => setState(() => Sound.setMuted(!Sound.muted));
+  void _flip() => setState(() => widget.write(!widget.read()));
 }

@@ -131,7 +131,7 @@ class MergeGame extends ArcadeGame with DragCallbacks, KeyboardEvents {
       if (v >= 16) coins.value++;
       if (v >= 64) {
         _burst(cell, v);
-        HapticFeedback.mediumImpact();
+        Haptics.medium();
       }
       if (v >= 32 && _seenTier.add(v)) needBoost = true;
     });

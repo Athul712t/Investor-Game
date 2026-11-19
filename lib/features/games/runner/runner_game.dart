@@ -86,7 +86,7 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     if (paused || !sim.jump()) return;
     _squashV += 7;
     Sound.play(Sfx.jump);
-    HapticFeedback.selectionClick();
+    Haptics.select();
   }
 
   @override
@@ -234,22 +234,22 @@ class RunnerGame extends ArcadeGame with TapCallbacks, DragCallbacks, KeyboardEv
     final at = cam.p(e.x, e.y, max(e.z, 0));
     switch (e.type) {
       case SimEventType.coin:
-        HapticFeedback.selectionClick();
+        Haptics.select();
         Sound.play(Sfx.coin, volume: 0.7);
         _flies.add(_Fly(at));
         _burst(at, 10, [ArcadeColors.amber, ArcadeColors.text], 160, star: true);
       case SimEventType.boost:
-        HapticFeedback.mediumImpact();
+        Haptics.medium();
         _burst(at, 26, [ArcadeColors.violet, ArcadeColors.amber, ArcadeColors.text], 260, star: true);
         _flash = 0.35;
         requestBoost();
       case SimEventType.shieldBreak:
-        HapticFeedback.heavyImpact();
+        Haptics.heavy();
         Sound.play(Sfx.tick);
         _shake = 12;
         _burst(at, 30, [ArcadeColors.sky, ArcadeColors.text, ArcadeColors.coral], 320);
       case SimEventType.hit:
-        HapticFeedback.heavyImpact();
+        Haptics.heavy();
         Sound.play(Sfx.crash);
         _shake = 26;
         _flash = 1;

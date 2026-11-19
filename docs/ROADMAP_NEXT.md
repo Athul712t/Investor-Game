@@ -61,6 +61,18 @@ Release gate: all tests green, screenshots of every screen reviewed against DESI
 
 ---
 
+## v1.2.1 "Smooth" ✔ (performance)
+
+Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
+
+- Measured in the Dart VM: a 1,500-move soak reaching ₹512 shows flat frame cost (about 0.4 ms to record) and about 9 MB memory growth, so game logic, particles and the text cache are not the cause. Tile art cost is also flat across tiers (coins and crowns both about 6 to 7 ms on a software rasteriser), so the shape-per-tier theory was wrong.
+- What those tests cannot cover is sound and haptics, which grow with every move. Fixed:
+  - [x] Sound: one preloaded `AudioPool` per effect (was: re-setting the source of one low-latency player on every play), a minimum gap per effect, and no second start while the first is in flight (`lib/core/sfx.dart`).
+  - [x] Haptics: shared 45 ms gap, heavy impacts always pass (`Haptics`).
+  - [x] Profile > Performance graph: shows Flutter's frame graphs on a real phone, to tell a UI-thread problem from a raster-thread problem.
+- Still open: confirm on a phone. Quick test with the old APK: Profile > Sound off, then play to ₹512. If smooth, it was sound. If not, send a screenshot with the performance graph on.
+- Next if it persists: render each tile and the vault backdrop once into cached images, and move the runner's blur glows to sprites.
+
 ## v1.3 "The Loop" ○ (retention)
 
 - [ ] **Daily quests**: three per day from a pool (play 2 games, finish 1 lesson, 3 correct in a row, beat a best). Chest on completing all three.

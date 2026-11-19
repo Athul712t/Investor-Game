@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/cloud.dart';
+import 'core/diagnostics.dart';
 import 'core/profile.dart';
 import 'core/router.dart';
 import 'core/sfx.dart';
@@ -23,10 +24,14 @@ class InvestorGameApp extends StatelessWidget {
   const InvestorGameApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp.router(
-    title: 'Investor Game',
-    debugShowCheckedModeBanner: false,
-    theme: buildTheme(),
-    routerConfig: router,
+  Widget build(BuildContext context) => ValueListenableBuilder(
+    valueListenable: showPerfOverlay,
+    builder: (_, show, _) => MaterialApp.router(
+      title: 'Investor Game',
+      debugShowCheckedModeBanner: false,
+      showPerformanceOverlay: show,
+      theme: buildTheme(),
+      routerConfig: router,
+    ),
   );
 }
