@@ -82,7 +82,14 @@ Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
 - [x] 96 extra reads and 96 extra questions (draft, written fast, to be audited with the rest of the content).
 - [x] Sound: own two-player pool per effect with no per-frame position polling (the cause found for the long-game slowdown). **Not yet confirmed on a phone.**
 
-## v1.4 "The Loop" ○ (retention)
+## v1.4.0 "Quick Games" ✔
+
+- [x] Five games, each over in under a minute: **Pop the Lock** (45 s, 3 lives), **Sort Rush** (30 s), **Scam Whack** (30 s, 3 lives), **Green Candle** (5 rounds), **Piggy Dunk** (45 s, 3 lives). All are in the Arcade shelf and the reel.
+- [x] Word decks for Sort Rush and Scam Whack in `assets/content/quick_games.json` (12 decks, 60 real and 60 scam labels; draft, audited with the rest of the content).
+- [x] Profile > **Reel mode** slider with 5 stops: Games only, Mostly games, Even mix, Mostly learning, Learning only. Games only also removes quiz chips inside games; Learning only serves no games. Applies the next time the reel opens.
+- Not done: a 60 second cap for the older endless games (Bull Run, Candle Hop, Sky Stack) in the reel.
+
+## v1.5 "The Loop" ○ (retention)
 
 - [ ] **Daily quests**: three per day from a pool (play 2 games, finish 1 lesson, 3 correct in a row, beat a best). Chest on completing all three.
 - [ ] **Chests** with visible odds: coins, power-ups, card packs. Opening is a 3D lid animation.
@@ -95,7 +102,7 @@ Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
 - [ ] Local notifications: streak reminder at the player's usual play hour, opt-in.
 - Metrics to watch: D1, D7, sessions per day, quests completed, lessons per session.
 
-## v1.5 "Together" ○ (social and trust)
+## v1.6 "Together" ○ (social and trust)
 
 - [ ] Google sign-in, progress moves between devices. Move to the Firebase SDKs.
 - [ ] Cloud Functions validate game results and own XP and coins.
@@ -103,7 +110,7 @@ Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
 - [ ] Friend codes, friend leaderboard, async challenges with the same seed.
 - [ ] Share cards (image) for chapter completions and bests.
 
-## v1.6 "More to Learn" ○ (content depth)
+## v1.7 "More to Learn" ○ (content depth)
 
 - [ ] Story chapters 4 to 8: reading the label (costs, direct vs regular), storm season (volatility), goal quest (asset allocation), tax basics, the final portfolio.
 - [ ] Five new modules: costs and loads, risk and volatility, goals and allocation, taxation basics, reading a factsheet.

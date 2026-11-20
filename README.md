@@ -7,7 +7,7 @@ Learn how mutual funds work by playing. Three modes share one profile, one econo
 | Mode | What it is |
 |---|---|
 | **Story** | "From Pocket Money to Portfolio": three chapters of dialogue, lessons, games and decisions |
-| **Arcade** | Six games: Bull Run, Sky Stack, Coin Merge, Brick Bank, Candle Hop, Coin Slash. A quiz chip offers a power-up without pausing the run; a second chance after a crash is optional |
+| **Arcade** | Eleven games: Bull Run, Sky Stack, Coin Merge, Brick Bank, Candle Hop, Coin Slash, Pop the Lock, Sort Rush, Scam Whack, Green Candle, Piggy Dunk. A quiz chip offers a power-up without pausing the run; a second chance after a crash is optional |
 | **Learn** | Pure education: 3 modules, 12 lessons, 60 questions in five formats |
 
 <p>
@@ -48,7 +48,7 @@ lib/
   features/
     home_hub/  shell, home, daily question
     content/   Learn tab, lesson player, QuestionView (mcq, true/false, myth/fact, match, scenario)
-    games/     _shared (ArcadeGame base, GameHostScreen, registry), runner, stack, merge, breaker, flap, slice
+    games/     _shared (ArcadeGame base, GameRun, registry), runner, stack, merge, breaker, flap, slice, lock, sort, whack, candle, dunk
     story/     chapter map, chapter steps, dialogue, reward
     profile/
 assets/content/  modules.json (lessons and questions), story.json (chapters)
