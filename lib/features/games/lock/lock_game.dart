@@ -270,6 +270,7 @@ class LockGame extends ArcadeGame with TapCallbacks, KeyboardEvents {
 
   @override
   void render(Canvas canvas) {
+    super.render(canvas);
     final w = size.x, h = size.y;
     _fillP.color = _bg;
     canvas.drawRect(Rect.fromLTWH(0, 0, w, h), _fillP);
