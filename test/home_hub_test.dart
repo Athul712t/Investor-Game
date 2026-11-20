@@ -82,6 +82,12 @@ void main() {
       find.descendant(of: find.byType(ProfileScreen), matching: find.byType(Scrollable)),
       const Offset(0, -200),
     );
+    // The row can sit under the bottom bar right after it scrolls into view, so nudge it clear.
+    await tester.drag(
+      find.descendant(of: find.byType(ProfileScreen), matching: find.byType(Scrollable)),
+      const Offset(0, -160),
+    );
+    await tester.pump();
     await tester.tap(find.text('Sound'));
     await tester.pump();
     expect(Sound.muted, !before);

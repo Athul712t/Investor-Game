@@ -3,11 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../core/theme.dart';
 import '../../../domain/game/game_types.dart';
 import '../breaker/breaker_game.dart';
+import '../candle/candle_game.dart';
+import '../dunk/dunk_game.dart';
 import '../flap/flap_game.dart';
+import '../lock/lock_game.dart';
 import '../merge/merge_game.dart';
 import '../runner/runner_game.dart';
 import '../slice/slice_game.dart';
+import '../sort/sort_game.dart';
 import '../stack/stack_game.dart';
+import '../whack/whack_game.dart';
 import 'arcade_game.dart';
 
 class GameSpec {
@@ -79,6 +84,51 @@ final games = <GameSpec>[
     emoji: '⚔️',
     color: AppColors.orange,
     create: SliceGame.new,
+  ),
+  GameSpec(
+    id: 'lock',
+    title: 'Pop the Lock',
+    tagline: 'Tap the second the pin hits the dot',
+    howTo: 'Tap when the pin lines up with the dot. Every pop reverses it and speeds it up.',
+    emoji: '🔐',
+    color: AppColors.blue,
+    create: LockGame.new,
+  ),
+  GameSpec(
+    id: 'sort',
+    title: 'Sort Rush',
+    tagline: 'Swipe each card into the right bin',
+    howTo: 'Swipe the card left or right into its bin. Build a streak before time runs out.',
+    emoji: '🗂️',
+    color: AppColors.green,
+    create: SortGame.new,
+  ),
+  GameSpec(
+    id: 'whack',
+    title: 'Scam Whack',
+    tagline: 'Grab the real deals, dodge the scams',
+    howTo: 'Tap real coins and offers as they pop up. Never tap a scam.',
+    emoji: '🔨',
+    color: AppColors.red,
+    create: WhackGame.new,
+  ),
+  GameSpec(
+    id: 'candle',
+    title: 'Green Candle',
+    tagline: 'Tap the moment it turns green',
+    howTo: 'Wait for the candle to turn green, then tap as fast as you can. Do not jump the gun.',
+    emoji: '🕯️',
+    color: AppColors.teal,
+    create: CandleGame.new,
+  ),
+  GameSpec(
+    id: 'dunk',
+    title: 'Piggy Dunk',
+    tagline: 'Flick the coin into the piggy bank',
+    howTo: 'Drag back and release to flick the coin into the hoop. Swishes score double.',
+    emoji: '🐷',
+    color: AppColors.orange,
+    create: DunkGame.new,
   ),
 ];
 

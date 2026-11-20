@@ -1,0 +1,30 @@
+{
+  "sort": {
+    "decks": [
+      {"left": "Equity fund", "right": "Debt fund", "items": [
+        {"text": "Mostly invests in company shares", "side": "left"},
+        {"text": "Mostly invests in bonds", "side": "right"},
+        {"text": "Value can swing a lot day to day", "side": "left"},
+        {"text": "Earns mainly through interest", "side": "right"},
+        {"text": "Meant for long horizons", "side": "left"},
+        {"text": "Often used for shorter goals", "side": "right"},
+        {"text": "Higher risk, higher growth potential", "side": "left"},
+        {"text": "Generally steadier, still not risk free", "side": "right"}
+      ]},
+      {"left": "Need", "right": "Want", "items": [
+        {"text": "Rent", "side": "left"},
+        {"text": "Third pair of sneakers", "side": "right"},
+        {"text": "Emergency fund top-up", "side": "left"},
+        {"text": "Latest phone upgrade", "side": "right"},
+        {"text": "Groceries", "side": "left"},
+        {"text": "Weekend shopping spree", "side": "right"},
+        {"text": "Health insurance premium", "side": "left"},
+        {"text": "Streaming subscription number five", "side": "right"}
+      ]}
+    ]
+  },
+  "scam": {
+    "real": ["Check the riskometer", "Read the factsheet", "Start with a small SIP", "Compare expense ratios", "Match money to a goal", "Keep an emergency fund", "Ask a registered adviser", "Diversify your funds"],
+    "scam": ["100% returns!", "Guaranteed profit", "Double in 30 days", "Secret hot tip", "Act now, last chance!", "No risk, big gains", "Send money to join", "Insider stock tip"]
+  }
+}
