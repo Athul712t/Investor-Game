@@ -20,7 +20,8 @@ class Profile {
     this.dailyDoneDay = '',
     this.reelCursor = const {},
     this.reelBestStreak = 0,
-  });
+    int reelMix = 2,
+  }) : _reelMix = reelMix;
 
   final String name;
   final int xp, coins, streak;
@@ -32,6 +33,10 @@ class Profile {
   final String dailyDoneDay;
   final Map<String, Object?> reelCursor; // ReelCursor.toJson(), kept raw so core stays independent of features
   final int reelBestStreak;
+  final int _reelMix;
+
+  /// Reel mode stop, 0 (games only) to 4 (learning only). Clamped on read so a bad save cannot break the reel.
+  int get reelMix => _reelMix.clamp(0, 4);
 
   static const xpPerLevel = 100;
   int get level => xp ~/ xpPerLevel + 1;
@@ -56,6 +61,7 @@ class Profile {
     String? dailyDoneDay,
     Map<String, Object?>? reelCursor,
     int? reelBestStreak,
+    int? reelMix,
   }) => Profile(
     name: name ?? this.name,
     xp: xp ?? this.xp,
@@ -69,6 +75,7 @@ class Profile {
     dailyDoneDay: dailyDoneDay ?? this.dailyDoneDay,
     reelCursor: reelCursor ?? this.reelCursor,
     reelBestStreak: reelBestStreak ?? this.reelBestStreak,
+    reelMix: reelMix ?? this.reelMix,
   );
 
   Map<String, Object?> toJson() => {
@@ -84,6 +91,7 @@ class Profile {
     'dailyDoneDay': dailyDoneDay,
     'reelCursor': reelCursor,
     'reelBestStreak': reelBestStreak,
+    'reelMix': reelMix,
   };
 
   factory Profile.fromJson(Map<String, Object?> j) => Profile(
@@ -99,6 +107,7 @@ class Profile {
     dailyDoneDay: (j['dailyDoneDay'] ?? '') as String,
     reelCursor: Map<String, Object?>.from((j['reelCursor'] as Map?) ?? const {}),
     reelBestStreak: (j['reelBestStreak'] ?? 0) as int,
+    reelMix: (j['reelMix'] ?? 2) as int,
   );
 }
 
@@ -185,6 +194,9 @@ class ProfileController extends Notifier<Profile> {
   /// Saves where the reel's learning sequence resumes and the best streak.
   void saveReel({Map<String, Object?>? cursor, int? bestStreak}) =>
       _set(state.copyWith(reelCursor: cursor, reelBestStreak: bestStreak));
+
+  /// Saves the Reel mode stop (0 games only .. 4 learning only).
+  void saveReelMix(int stop) => _set(state.copyWith(reelMix: stop.clamp(0, 4)));
 
   void markDailyDone() => _set(state.copyWith(dailyDoneDay: dayKey(DateTime.now())));
 }

@@ -34,6 +34,7 @@ class GameRun extends ConsumerStatefulWidget {
     this.active = true,
     this.onFinished,
     this.onLeave,
+    this.chips = true,
   });
   final String gameId;
   final int? targetScore; // set by Story Mode
@@ -49,6 +50,9 @@ class GameRun extends ConsumerStatefulWidget {
 
   /// "Back" and "Done" call it; null hides them.
   final VoidCallback? onLeave;
+
+  /// False (Reel mode "Games only"): no quiz chip, boosts are ignored, no "What you learned".
+  final bool chips;
 
   @override
   ConsumerState<GameRun> createState() => GameRunState();
@@ -160,7 +164,7 @@ class GameRunState extends ConsumerState<GameRun> {
 
   /// The game earned a boost: offer a quiz chip. The run keeps going.
   void _onBoost() {
-    if (_phase != _Phase.playing || _chip != null) return;
+    if (!widget.chips || _phase != _Phase.playing || _chip != null) return;
     final q = _pickChip();
     if (q != null) setState(() => _chip = q);
   }
@@ -471,7 +475,7 @@ class GameRunState extends ConsumerState<GameRun> {
           ChunkyButton(label: 'Done', color: AppColors.card, onPressed: widget.onLeave),
         ],
       ],
-      if (_learned.isNotEmpty) ...[
+      if (widget.chips && _learned.isNotEmpty) ...[
         const SizedBox(height: AppSpace.lg),
         Align(
           alignment: Alignment.centerLeft,
