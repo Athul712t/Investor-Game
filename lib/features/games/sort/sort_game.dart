@@ -400,6 +400,7 @@ class SortGame extends ArcadeGame with DragCallbacks, TapCallbacks, KeyboardEven
 
   @override
   void render(Canvas canvas) {
+    super.render(canvas);
     final r = _r;
     canvas.save();
     if (_shake > 0) canvas.translate(sin(_clock * 70) * 6 * _shake, cos(_clock * 53) * 3 * _shake);
