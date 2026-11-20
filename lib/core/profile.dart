@@ -67,6 +67,8 @@ class Profile {
     powerups: powerups ?? this.powerups,
     storyDone: storyDone ?? this.storyDone,
     dailyDoneDay: dailyDoneDay ?? this.dailyDoneDay,
+    reelCursor: reelCursor ?? this.reelCursor,
+    reelBestStreak: reelBestStreak ?? this.reelBestStreak,
   );
 
   Map<String, Object?> toJson() => {
@@ -80,6 +82,8 @@ class Profile {
     'powerups': powerups,
     'storyDone': storyDone.toList(),
     'dailyDoneDay': dailyDoneDay,
+    'reelCursor': reelCursor,
+    'reelBestStreak': reelBestStreak,
   };
 
   factory Profile.fromJson(Map<String, Object?> j) => Profile(
@@ -93,6 +97,8 @@ class Profile {
     powerups: {...?(j['powerups'] as Map?)?.cast<String, int>()},
     storyDone: {...?(j['storyDone'] as List?)?.cast<String>()},
     dailyDoneDay: (j['dailyDoneDay'] ?? '') as String,
+    reelCursor: Map<String, Object?>.from((j['reelCursor'] as Map?) ?? const {}),
+    reelBestStreak: (j['reelBestStreak'] ?? 0) as int,
   );
 }
 
