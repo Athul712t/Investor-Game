@@ -78,6 +78,8 @@ class _ReelMixSliderState extends ConsumerState<ReelMixSlider> with SingleTicker
       decreasedValue: _stop > 0 ? ReelMix.labels[_stop - 1] : null,
       onIncrease: _stop < _last ? () => _go(_stop + 1) : null,
       onDecrease: _stop > 0 ? () => _go(_stop - 1) : null,
+      focusable: true,
+      focused: _focused,
       excludeSemantics: true,
       child: Focus(
         onFocusChange: (f) => setState(() => _focused = f),
