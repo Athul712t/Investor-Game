@@ -28,8 +28,10 @@ class HomeScreen extends ConsumerWidget {
         const SizedBox(height: AppSpace.lg),
         Text('Choose your mode', style: context.text.titleLarge),
         const SizedBox(height: AppSpace.sm),
+        PopIn.at(1, const _ReelTile()),
+        const SizedBox(height: AppSpace.sm),
         PopIn.at(
-          1,
+          2,
           BoardTile(
             fill: AppColors.teal,
             onTap: () => context.push('/story'),
@@ -75,7 +77,7 @@ class HomeScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: PopIn.at(
-                  2,
+                  3,
                   _MiniMode(
                     pic: Pic.arcade,
                     picColor: AppColors.blue,
@@ -89,7 +91,7 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: PopIn.at(
-                  3,
+                  4,
                   _MiniMode(
                     pic: Pic.learn,
                     picColor: AppColors.red,
@@ -104,7 +106,7 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpace.lg),
-        PopIn.at(4, const DailyCard()),
+        PopIn.at(5, const DailyCard()),
         const SizedBox(height: AppSpace.lg),
         Text(
           'For education only. Not investment advice.\nMutual fund investments are subject to market risks.',
@@ -227,6 +229,38 @@ class _TownHero extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ReelTile extends StatelessWidget {
+  const _ReelTile();
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = AppColors.on(AppColors.orange);
+    return BoardTile(
+      fill: AppColors.orange,
+      onTap: () => context.push('/reel'),
+      label: 'Reel. Play, read, learn. Keep scrolling.',
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.md, AppSpace.md),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('NONSTOP', style: context.text.labelSmall!.copyWith(color: fg, letterSpacing: 1.5)),
+                Text('Reel', style: context.text.headlineMedium!.copyWith(color: fg)),
+                const SizedBox(height: 2),
+                Text('Play, read, learn. Keep scrolling.', style: context.text.bodyMedium!.copyWith(color: fg)),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpace.sm),
+          const Pictogram(Pic.reel, size: 92),
+        ],
       ),
     );
   }

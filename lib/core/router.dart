@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../features/content/lesson_screen.dart';
 import '../features/games/_shared/game_host.dart';
 import '../features/home_hub/shell.dart';
+import '../features/reel/reel_screen.dart';
 import '../features/story/story_map_screen.dart';
 
 /// Pushed routes return a value:
@@ -23,5 +24,6 @@ final router = GoRouter(
       ),
     ),
     GoRoute(path: '/story', builder: (_, _) => const StoryMapScreen()),
+    GoRoute(path: '/reel', builder: (_, _) => const ReelScreen()),
   ],
 );

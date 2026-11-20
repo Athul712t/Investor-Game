@@ -15,14 +15,14 @@ Future<ProviderContainer> _container() async {
 }
 
 void main() {
-  testWidgets('hub loads with story mode and the tab bar', (tester) async {
+  testWidgets('hub loads with the mode tiles and the tab bar', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(
       ProviderScope(overrides: [prefsProvider.overrideWithValue(prefs)], child: const InvestorGameApp()),
     );
     await tester.pump(const Duration(seconds: 1)); // looping animations never settle
-    expect(find.text('Story Mode'), findsOneWidget);
+    expect(find.text('Reel'), findsOneWidget); // first mode tile; Story sits below it
     expect(find.text('Choose your mode'), findsOneWidget);
     expect(find.text('Play'), findsOneWidget); // bottom bar
   });
