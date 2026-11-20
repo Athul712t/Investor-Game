@@ -18,6 +18,8 @@ class Profile {
     this.powerups = const {},
     this.storyDone = const {},
     this.dailyDoneDay = '',
+    this.reelCursor = const {},
+    this.reelBestStreak = 0,
   });
 
   final String name;
@@ -28,6 +30,8 @@ class Profile {
   final Map<String, int> powerups; // PowerupType.name -> count
   final Set<String> storyDone; // completed story node ids ("chapterId/index")
   final String dailyDoneDay;
+  final Map<String, Object?> reelCursor; // ReelCursor.toJson(), kept raw so core stays independent of features
+  final int reelBestStreak;
 
   static const xpPerLevel = 100;
   int get level => xp ~/ xpPerLevel + 1;
@@ -50,6 +54,8 @@ class Profile {
     Map<String, int>? powerups,
     Set<String>? storyDone,
     String? dailyDoneDay,
+    Map<String, Object?>? reelCursor,
+    int? reelBestStreak,
   }) => Profile(
     name: name ?? this.name,
     xp: xp ?? this.xp,
@@ -169,6 +175,10 @@ class ProfileController extends Notifier<Profile> {
     _set(state.copyWith(powerups: {...state.powerups, t.name: have - 1}));
     return true;
   }
+
+  /// Saves where the reel's learning sequence resumes and the best streak.
+  void saveReel({Map<String, Object?>? cursor, int? bestStreak}) =>
+      _set(state.copyWith(reelCursor: cursor, reelBestStreak: bestStreak));
 
   void markDailyDone() => _set(state.copyWith(dailyDoneDay: dayKey(DateTime.now())));
 }

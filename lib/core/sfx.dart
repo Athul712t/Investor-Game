@@ -19,18 +19,18 @@ class Throttle {
 
 /// Fire-and-forget sound effects. Silent until [init] runs (so tests stay silent).
 ///
-/// Every effect has a small pool of preloaded players and a minimum gap between plays. Games
-/// can fire the same effect dozens of times a second (a line of coins, a brick storm), and
-/// each play is a platform-channel round trip, so unthrottled calls pile up and freeze the app
-/// after a long session.
+/// Each effect has two preloaded players used round-robin and a minimum gap between plays.
+/// Players have no position updater: audioplayers' default one polls the platform on every
+/// frame while a player is "playing" and, in low-latency mode (no completion event), a
+/// stuck player polled forever, which grew to tens of milliseconds per frame in a long game.
 abstract final class Sound {
   static const _key = 'sound_muted';
   static const _defaultGapMs = 60;
   static const _gapMs = {Sfx.tick: 90, Sfx.swipe: 120, Sfx.jump: 100, Sfx.drop: 80, Sfx.merge: 80, Sfx.coin: 70};
 
   static SharedPreferences? _prefs;
-  static final _pools = <Sfx, AudioPool>{};
-  static final _busy = <Sfx>{};
+  static final _players = <Sfx, List<AudioPlayer>>{};
+  static final _turn = <Sfx, int>{};
   static final _throttle = Throttle();
   static final _clock = Stopwatch()..start();
   static bool muted = false;
@@ -39,11 +39,23 @@ abstract final class Sound {
     _prefs = prefs;
     muted = prefs.getBool(_key) ?? false;
     for (final s in Sfx.values) {
+      _load(s);
+    }
+  }
+
+  static Future<void> _load(Sfx s) async {
+    try {
+      final ps = <AudioPlayer>[];
+      for (var i = 0; i < 2; i++) {
+        final p = AudioPlayer()..positionUpdater = null; // see the class comment
+        await p.setPlayerMode(PlayerMode.lowLatency);
+        await p.setReleaseMode(ReleaseMode.stop);
+        await p.setSource(AssetSource('sfx/${s.name}.wav'));
+        ps.add(p);
+      }
+      _players[s] = ps;
+    } catch (_) {
       // Audio must never break the app: a failed preload just leaves that effect silent.
-      AudioPool.createFromAsset(
-        path: 'sfx/${s.name}.wav',
-        maxPlayers: 3,
-      ).then<void>((p) => _pools[s] = p, onError: (_) {});
     }
   }
 
@@ -53,11 +65,19 @@ abstract final class Sound {
   }
 
   static void play(Sfx s, {double volume = 1}) {
-    final pool = _pools[s];
-    if (_prefs == null || muted || pool == null || _busy.contains(s)) return;
+    final ps = _players[s];
+    if (_prefs == null || muted || ps == null) return;
     if (!_throttle.allow(s, _clock.elapsedMilliseconds, _gapMs[s] ?? _defaultGapMs)) return;
-    _busy.add(s); // never queue a second start while the first is still in flight
-    pool.start(volume: volume).then<void>((_) {}, onError: (_) {}).whenComplete(() => _busy.remove(s));
+    final turn = _turn[s] = ((_turn[s] ?? -1) + 1) % ps.length;
+    _restart(ps[turn], volume);
+  }
+
+  static Future<void> _restart(AudioPlayer p, double volume) async {
+    try {
+      await p.setVolume(volume);
+      await p.stop();
+      await p.resume();
+    } catch (_) {}
   }
 
   /// Sound and haptic on the same frame, for taps on physical-looking controls.
