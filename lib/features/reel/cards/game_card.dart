@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme.dart';
-import '../../../core/widgets.dart';
+import '../../games/_shared/game_run.dart';
 import '../reel_item.dart';
 
-/// Placeholder. Replaced by the real card; keep this constructor.
-class GameCard extends StatelessWidget {
+/// One game run in the reel. Unlocks scrolling once the run reaches its results.
+class GameCard extends StatefulWidget {
   const GameCard({super.key, required this.item, required this.active, required this.onDone});
   final ReelGame item;
 
@@ -16,14 +15,21 @@ class GameCard extends StatelessWidget {
   final ReelDone onDone;
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(item.id, style: context.text.titleLarge),
-        const SizedBox(height: AppSpace.md),
-        ChunkyButton(label: 'Done', expand: false, onPressed: active ? () => onDone(correct: true) : null),
-      ],
-    ),
+  State<GameCard> createState() => _GameCardState();
+}
+
+class _GameCardState extends State<GameCard> {
+  bool _done = false;
+
+  @override
+  Widget build(BuildContext context) => GameRun(
+    gameId: widget.item.gameId,
+    reel: true,
+    active: widget.active,
+    onFinished: (_) {
+      if (_done) return;
+      _done = true;
+      widget.onDone(correct: true);
+    },
   );
 }
