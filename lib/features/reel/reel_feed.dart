@@ -1,6 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/content_repo.dart';
+import '../../core/profile.dart';
+import '../games/_shared/games_registry.dart';
+import 'reel_extra.dart';
 import 'reel_item.dart';
+import 'reel_sequencer.dart';
 
 /// Produces the endless stream of reel cards.
 ///
@@ -22,7 +29,15 @@ abstract class ReelFeed {
 }
 
 /// Built from content, the reel's extra content and the saved cursor.
-/// TODO(reel-sequencer): replaced by the real provider in reel_sequencer.dart.
 final reelFeedProvider = FutureProvider<ReelFeed>((ref) async {
-  throw UnimplementedError('reelFeedProvider is provided by reel_sequencer.dart');
+  final content = await ref.watch(contentProvider.future);
+  final extra = await ref.watch(reelExtraProvider.future);
+  final saved = ref.read(profileProvider).reelCursor;
+  return ReelSequencer(
+    lessons: content.lessons,
+    extra: extra,
+    gameIds: games.map((g) => g.id).toList(),
+    rng: Random(),
+    cursor: saved.isEmpty ? null : ReelCursor.fromJson(saved),
+  );
 });
