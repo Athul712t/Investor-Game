@@ -106,11 +106,11 @@ class _ReelMixSliderState extends ConsumerState<ReelMixSlider> with SingleTicker
               const SizedBox(height: AppSpace.sm),
               Row(
                 children: [
-                  const _EndIcon(_End.games),
+                  _EndIcon(_End.games, lit: _stop < _last),
                   const SizedBox(width: 6),
                   Expanded(child: _track()),
                   const SizedBox(width: 6),
-                  const _EndIcon(_End.learning),
+                  _EndIcon(_End.learning, lit: _stop > 0),
                 ],
               ),
               const SizedBox(height: AppSpace.sm),
@@ -249,18 +249,20 @@ enum _End { games, learning }
 
 /// Painted end pictograms: a gamepad for games, a mortarboard for learning.
 class _EndIcon extends StatelessWidget {
-  const _EndIcon(this.end);
+  const _EndIcon(this.end, {required this.lit});
   final _End end;
+  final bool lit; // false: this end is switched off at the current stop, so it greys out
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
-    child: CustomPaint(size: const Size.square(40), painter: _EndPainter(end)),
+    child: CustomPaint(size: const Size.square(40), painter: _EndPainter(end, lit)),
   );
 }
 
 class _EndPainter extends CustomPainter {
-  _EndPainter(this.end);
+  _EndPainter(this.end, this.lit);
   final _End end;
+  final bool lit;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -283,6 +285,7 @@ class _EndPainter extends CustomPainter {
       return p..close();
     }
 
+    Color c(Color on) => lit ? on : AppColors.track;
     switch (end) {
       case _End.games:
         // Body with two grips, a d-pad and two buttons.
@@ -297,19 +300,19 @@ class _EndPainter extends CustomPainter {
           ),
         );
         canvas.drawPath(body.shift(const Offset(0, 4)), Paint()..color = AppColors.ink);
-        shape(body, AppColors.yellow);
+        shape(body, c(AppColors.yellow));
         final ink = Paint()..color = AppColors.ink;
         canvas
           ..drawRRect(RRect.fromLTRBR(20, 45, 40, 53, const Radius.circular(2)), ink)
           ..drawRRect(RRect.fromLTRBR(26, 39, 34, 59, const Radius.circular(2)), ink);
-        shape(Path()..addOval(Rect.fromCircle(center: const Offset(64, 52), radius: 6.5)), AppColors.red);
-        shape(Path()..addOval(Rect.fromCircle(center: const Offset(77, 43), radius: 6.5)), AppColors.blue);
+        shape(Path()..addOval(Rect.fromCircle(center: const Offset(64, 52), radius: 6.5)), c(AppColors.red));
+        shape(Path()..addOval(Rect.fromCircle(center: const Offset(77, 43), radius: 6.5)), c(AppColors.blue));
       case _End.learning:
         // Cap under a flat board, with a tassel hanging off the button.
-        shape(poly([28, 50, 72, 50, 72, 74, 50, 82, 28, 74]), AppColors.blue);
+        shape(poly([28, 50, 72, 50, 72, 74, 50, 82, 28, 74]), c(AppColors.blue));
         final board = poly([50, 16, 94, 36, 50, 56, 6, 36]);
         canvas.drawPath(board.shift(const Offset(0, 4)), Paint()..color = AppColors.ink);
-        shape(board, AppColors.blue);
+        shape(board, c(AppColors.blue));
         final cord = Paint()
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
@@ -322,11 +325,11 @@ class _EndPainter extends CustomPainter {
             ..lineTo(84, 70),
           cord,
         );
-        shape(poly([78, 68, 90, 68, 92, 84, 76, 84]), AppColors.yellow);
-        shape(Path()..addOval(Rect.fromCircle(center: const Offset(50, 36), radius: 5)), AppColors.yellow);
+        shape(poly([78, 68, 90, 68, 92, 84, 76, 84]), c(AppColors.yellow));
+        shape(Path()..addOval(Rect.fromCircle(center: const Offset(50, 36), radius: 5)), c(AppColors.yellow));
     }
   }
 
   @override
-  bool shouldRepaint(_EndPainter old) => old.end != end;
+  bool shouldRepaint(_EndPainter old) => old.end != end || old.lit != lit;
 }
