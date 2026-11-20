@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 
 /// Bold, ink-outlined pictograms drawn in code (chrome icons: no emoji, no icon font).
-enum Pic { home, story, arcade, learn, profile, flame }
+enum Pic { home, story, arcade, learn, profile, flame, reel }
 
 class Pictogram extends StatelessWidget {
   const Pictogram(this.pic, {super.key, this.size = 28, this.color = AppColors.yellow});
@@ -119,6 +119,26 @@ class _PicPainter extends CustomPainter {
           ..cubicTo(32, 72, 40, 62, 50, 46)
           ..close();
         shape(inner, AppColors.yellow);
+      case Pic.reel:
+        // Phone with a card on screen, the next card peeking below, and a swipe-up chevron.
+        RRect r(double l, double t, double rt, double b, double rad) =>
+            RRect.fromLTRBR(l, t, rt, b, Radius.circular(rad));
+        shape(Path()..addRRect(r(22, 4, 78, 96, 13)), AppColors.card);
+        shape(Path()..addRRect(r(30, 70, 70, 88, 6)), AppColors.teal);
+        shape(Path()..addRRect(r(30, 14, 70, 62, 7)), color);
+        canvas.drawLine(const Offset(44, 9), const Offset(56, 9), stroke);
+        canvas.drawPath(
+          Path()
+            ..moveTo(39, 45)
+            ..lineTo(50, 33)
+            ..lineTo(61, 45),
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 7
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round
+            ..color = AppColors.ink,
+        );
     }
   }
 
