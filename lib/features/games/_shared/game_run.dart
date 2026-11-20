@@ -395,12 +395,7 @@ class GameRunState extends ConsumerState<GameRun> {
         Text('Reach ${widget.targetScore} to pass', style: context.text.titleMedium),
       ],
       const SizedBox(height: AppSpace.lg),
-      ChunkyButton(
-        label: 'Start',
-        icon: Icons.play_arrow_rounded,
-        color: spec.color,
-        onPressed: on ? _start : null,
-      ),
+      ChunkyButton(label: 'Start', icon: Icons.play_arrow_rounded, color: spec.color, onPressed: on ? _start : null),
       if (on && ref.watch(profileProvider.select((p) => p.coins)) >= _headStartCost) ...[
         const SizedBox(height: AppSpace.sm),
         ChunkyButton(
@@ -506,7 +501,12 @@ class GameRunState extends ConsumerState<GameRun> {
           children: [
             const Icon(Icons.keyboard_arrow_up_rounded, color: AppColors.inkDim),
             const SizedBox(width: 4),
-            Text('Swipe up for the next card', style: context.text.bodyMedium!.copyWith(color: AppColors.inkDim)),
+            Flexible(
+              child: Text(
+                'Swipe up for the next card',
+                style: context.text.bodyMedium!.copyWith(color: AppColors.inkDim),
+              ),
+            ),
           ],
         ),
       ],
