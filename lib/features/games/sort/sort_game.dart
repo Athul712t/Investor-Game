@@ -235,7 +235,7 @@ class SortGame extends ArcadeGame with DragCallbacks, TapCallbacks, KeyboardEven
       _shake = 1;
       Sound.play(Sfx.wrong);
       Haptics.heavy();
-      _pop('-2s', _w / 2, 132, _red, 30, life: 1.0);
+      _pop('-2s', _w / 2, 186, _red, 30, life: 1.0);
     }
     _startCard();
   }
@@ -583,7 +583,7 @@ class SortGame extends ArcadeGame with DragCallbacks, TapCallbacks, KeyboardEven
     c.drawRRect(pill.shift(const Offset(0, 3)), _fill(_ink));
     c.drawRRect(pill, _fill(m > 1 ? _gold : _cream));
     c.drawRRect(pill, _line(2.5));
-    _text(c, 'x$m', Offset(38, rowY), 19, m > 1 ? _white : _ink, outline: true);
+    _text(c, 'x$m', Offset(38, rowY), 19, m > 1 ? _white : _ink, outline: m > 1);
     final into = r.streak % 5;
     for (var i = 0; i < 5; i++) {
       final at = Offset(66 + i * 12.0, rowY);
