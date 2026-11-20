@@ -43,13 +43,24 @@ void main() {
     expect(n.spend(100), isFalse);
     expect(n.spend(7), isTrue);
 
-    n.saveReel(cursor: {'lesson': 2, 'step': 3, 'retry': ['q1']}, bestStreak: 9);
+    n.saveReel(
+      cursor: {
+        'lesson': 2,
+        'step': 3,
+        'retry': ['q1'],
+      },
+      bestStreak: 9,
+    );
 
     // A fresh container reads the same saved state.
     final c2 = ProviderContainer(overrides: [prefsProvider.overrideWithValue(c.read(prefsProvider))]);
     expect(c2.read(profileProvider).highScores['runner'], 40);
     expect(c2.read(profileProvider).completedLessons, {'l1'});
-    expect(c2.read(profileProvider).reelCursor, {'lesson': 2, 'step': 3, 'retry': ['q1']});
+    expect(c2.read(profileProvider).reelCursor, {
+      'lesson': 2,
+      'step': 3,
+      'retry': ['q1'],
+    });
     expect(c2.read(profileProvider).reelBestStreak, 9);
   });
 

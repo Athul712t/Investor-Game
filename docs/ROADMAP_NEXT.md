@@ -73,7 +73,16 @@ Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
 - Still open: confirm on a phone. Quick test with the old APK: Profile > Sound off, then play to ₹512. If smooth, it was sound. If not, send a screenshot with the performance graph on.
 - Next if it persists: render each tile and the vault backdrop once into cached images, and move the runner's blur glows to sprites.
 
-## v1.3 "The Loop" ○ (retention)
+## v1.3.0 "Reel" ✔ (new mode, see [REEL_MODE.md](REEL_MODE.md))
+
+- [x] Vertical reel of games, questions and quick reads. A card must be finished before scrolling on; no way back; the next card is hidden ("?").
+- [x] Dying shows the results screen (score, best score, rewards). No dead screen, no second chance, no replay in the reel.
+- [x] Every game card shows its best score next to the current score, on the intro, the HUD and the results.
+- [x] Questions and reads follow the modules in order; a wrong answer comes back once; the cursor and best streak are saved.
+- [x] 96 extra reads and 96 extra questions (draft, written fast, to be audited with the rest of the content).
+- [x] Sound: own two-player pool per effect with no per-frame position polling (the cause found for the long-game slowdown). **Not yet confirmed on a phone.**
+
+## v1.4 "The Loop" ○ (retention)
 
 - [ ] **Daily quests**: three per day from a pool (play 2 games, finish 1 lesson, 3 correct in a row, beat a best). Chest on completing all three.
 - [ ] **Chests** with visible odds: coins, power-ups, card packs. Opening is a 3D lid animation.
@@ -86,7 +95,7 @@ Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
 - [ ] Local notifications: streak reminder at the player's usual play hour, opt-in.
 - Metrics to watch: D1, D7, sessions per day, quests completed, lessons per session.
 
-## v1.4 "Together" ○ (social and trust)
+## v1.5 "Together" ○ (social and trust)
 
 - [ ] Google sign-in, progress moves between devices. Move to the Firebase SDKs.
 - [ ] Cloud Functions validate game results and own XP and coins.
@@ -94,7 +103,7 @@ Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
 - [ ] Friend codes, friend leaderboard, async challenges with the same seed.
 - [ ] Share cards (image) for chapter completions and bests.
 
-## v1.5 "More to Learn" ○ (content depth)
+## v1.6 "More to Learn" ○ (content depth)
 
 - [ ] Story chapters 4 to 8: reading the label (costs, direct vs regular), storm season (volatility), goal quest (asset allocation), tax basics, the final portfolio.
 - [ ] Five new modules: costs and loads, risk and volatility, goals and allocation, taxation basics, reading a factsheet.
