@@ -18,7 +18,7 @@ class DunkField {
   double get coinR => 16 * k;
   double get rimR => 5 * k;
   double get grabRadius => 80;
-  double get maxDrag => 120 * k;
+  double get maxDrag => 150 * k;
   double get minDrag => 26;
   double get hoopMinY => h * 0.18;
   double get hoopMaxY => h * 0.45;

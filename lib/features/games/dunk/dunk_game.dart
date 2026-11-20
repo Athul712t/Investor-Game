@@ -42,9 +42,10 @@ class _Spark {
 }
 
 class _Pop {
-  _Pop(this.text, this.x, this.y, this.color, this.size, {this.life = 0.95});
+  _Pop(this.text, this.x, this.y, this.color, this.size);
+  static const life = 0.95;
   final String text;
-  final double x, y, size, life;
+  final double x, y, size;
   final Color color;
   double age = 0;
 }
@@ -227,7 +228,7 @@ class DunkGame extends ArcadeGame with DragCallbacks {
     for (final p in _pops) {
       p.age += dt;
     }
-    _pops.removeWhere((p) => p.age > p.life);
+    _pops.removeWhere((p) => p.age > _Pop.life);
   }
 
   void _onEvent(DunkEvent e) {
@@ -620,7 +621,7 @@ class DunkGame extends ArcadeGame with DragCallbacks {
       canvas.drawCircle(p, s.size * (0.4 + f) - 1.6, _fill(s.color));
     }
     for (final p in _pops) {
-      final f = p.age / p.life;
+      final f = p.age / _Pop.life;
       final pop = 1 + 0.3 * sin(min(1, p.age * 7) * pi);
       final at = Offset(p.x.clamp(70, w - 70).toDouble(), p.y - 50 * (1 - (1 - f) * (1 - f)));
       if (f < 0.7 || (p.age * 20).floor().isEven) _text(canvas, p.text, at, p.size * pop, p.color);
