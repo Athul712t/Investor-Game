@@ -46,9 +46,7 @@ class GatedPagePhysics extends ScrollPhysics {
     final tolerance = toleranceFor(position);
     if ((position.pixels - target).abs() < tolerance.distance) return null;
     // Critically damped (no overshoot); a near-instant spring when motion is reduced.
-    final spring = reduceMotion
-        ? SpringDescription.withDampingRatio(mass: 1, stiffness: 20000)
-        : AppMotion.spring;
+    final spring = reduceMotion ? SpringDescription.withDampingRatio(mass: 1, stiffness: 20000) : AppMotion.spring;
     final v = forward ? velocity.clamp(0.0, 4000.0) : 0.0;
     return ScrollSpringSimulation(spring, position.pixels, target, v, tolerance: tolerance);
   }

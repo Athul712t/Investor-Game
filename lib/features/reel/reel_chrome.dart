@@ -33,11 +33,7 @@ class HiddenCard extends StatelessWidget {
               const SizedBox(height: AppSpace.sm),
               Text('Up next', style: context.text.titleLarge),
               const SizedBox(height: 2),
-              Text(
-                'A game, a question or a quick read.',
-                textAlign: TextAlign.center,
-                style: context.text.bodyMedium,
-              ),
+              Text('A game, a question or a quick read.', textAlign: TextAlign.center, style: context.text.bodyMedium),
             ],
           ),
         ),
@@ -206,4 +202,3 @@ class ExitButton extends StatelessWidget {
     ),
   );
 }
-

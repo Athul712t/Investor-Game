@@ -136,7 +136,10 @@ class _ReelScreenState extends ConsumerState<ReelScreen> {
     };
     return Listener(
       onPointerSignal: _onPointerSignal,
-      child: KeyedSubtree(key: ValueKey(item.id), child: PopIn(child: card)),
+      child: KeyedSubtree(
+        key: ValueKey(item.id),
+        child: PopIn(child: card),
+      ),
     );
   }
 
@@ -171,9 +174,8 @@ class _ReelScreenState extends ConsumerState<ReelScreen> {
       scrollDirection: Axis.vertical,
       pageSnapping: false, // GatedPagePhysics snaps
       physics: GatedPagePhysics(page: _current, open: _done, reduceMotion: context.reduceMotion),
-      scrollBehavior: ScrollConfiguration.of(
-        context,
-      ).copyWith(scrollbars: false, overscroll: false, dragDevices: PointerDeviceKind.values.toSet()),
+      scrollBehavior: ScrollConfiguration.of(context)
+          .copyWith(scrollbars: false, overscroll: false, dragDevices: PointerDeviceKind.values.toSet()),
       itemCount: _items.length,
       itemBuilder: _page,
     ),
