@@ -38,8 +38,21 @@ final extra = ReelExtra(
 );
 const ids6 = ['g1', 'g2', 'g3', 'g4', 'g5', 'g6'];
 
-ReelSequencer make({int seed = 1, List<Lesson>? ls, List<String> gameIds = ids6, ReelCursor? cursor, ReelExtra? ex}) =>
-    ReelSequencer(lessons: ls ?? lessons, extra: ex ?? extra, gameIds: gameIds, rng: Random(seed), cursor: cursor);
+ReelSequencer make({
+  int seed = 1,
+  List<Lesson>? ls,
+  List<String> gameIds = ids6,
+  ReelCursor? cursor,
+  ReelExtra? ex,
+  double share = 0.5,
+}) => ReelSequencer(
+  lessons: ls ?? lessons,
+  extra: ex ?? extra,
+  gameIds: gameIds,
+  rng: Random(seed),
+  cursor: cursor,
+  gameShare: share,
+);
 
 String label(ReelItem i) => switch (i) {
   ReelGame() => 'G',
@@ -199,5 +212,59 @@ void main() {
     String types(int seed) => draw(make(seed: seed), 60).map((i) => i is ReelGame ? 'G' : 'L').join();
     expect(types(1), isNot(types(2)));
     expect(types(1), types(1));
+  });
+
+  group('Reel mode share', () {
+    for (var stop = 0; stop <= 4; stop++) {
+      final share = ReelMix.shareOf(stop);
+      test('stop $stop (${ReelMix.labels[stop]}): fraction, run caps, first card, no repeats', () {
+        for (final seed in [1, 2, 3]) {
+          final f = make(seed: seed, share: share);
+          final items = draw(f, 2000);
+          final games = items.whereType<ReelGame>().length;
+          expect(games / items.length, closeTo(share, 0.05), reason: 'seed $seed');
+          if (share == 1) expect(games, items.length);
+          if (share == 0) expect(games, 0);
+          expect(items.first is ReelGame, share > 0);
+          final maxG = share <= 0.5 ? 2 : 4, maxL = share >= 0.5 ? 2 : 4;
+          var g = 0, l = 0;
+          final played = <String>[];
+          for (final it in items) {
+            if (it is ReelGame) {
+              g++;
+              l = 0;
+              if (share < 1) expect(g, lessThanOrEqualTo(maxG));
+              expect(played.reversed.take(2), isNot(contains(it.gameId)));
+              played.add(it.gameId);
+            } else {
+              l++;
+              g = 0;
+              if (share > 0) expect(l, lessThanOrEqualTo(maxL));
+            }
+          }
+        }
+      });
+    }
+
+    test('games only: the learning cursor and queued retries stay put', () {
+      const saved = ReelCursor(lesson: 1, step: 1, retry: ['a-q0']);
+      final f = make(share: 1, cursor: saved);
+      draw(f, 200);
+      expect(f.cursor.toJson(), saved.toJson());
+    });
+
+    test('learning only keeps the lesson order and serves retries', () {
+      final f = make(share: 0);
+      final first = draw(f, 4);
+      expect(first.map(label), ['r:a0', 'r:a1', 'r:a2', 'Q:a-q0']);
+      f.reportWrong(first.last as ReelQuestion);
+      expect(draw(f, 6).map(label), contains('R:a-q0'));
+    });
+
+    test('shareOf clamps out-of-range stops', () {
+      expect(ReelMix.shareOf(-3), 1.0);
+      expect(ReelMix.shareOf(9), 0.0);
+      expect(ReelMix.shareOf(2), 0.5);
+    });
   });
 }

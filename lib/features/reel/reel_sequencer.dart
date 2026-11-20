@@ -5,6 +5,21 @@ import 'reel_extra.dart';
 import 'reel_feed.dart';
 import 'reel_item.dart';
 
+/// Reel mode stops, 0 (games only) to 4 (learning only), as set in Profile.
+abstract final class ReelMix {
+  static const labels = ['Games only', 'Mostly games', 'Even mix', 'Mostly learning', 'Learning only'];
+  static const captions = [
+    'Games only. No lessons.',
+    'Mostly games, with some learning.',
+    'An even mix of games and learning.',
+    'Mostly learning, with a few games.',
+    'Learning only. No games.',
+  ];
+
+  /// The share of cards that are games at [stop].
+  static double shareOf(int stop) => const [1.0, 0.75, 0.5, 0.25, 0.0][stop.clamp(0, 4)];
+}
+
 /// Decides the next reel card: a game or the next learning item, with guard rails.
 class ReelSequencer implements ReelFeed {
   ReelSequencer({
@@ -13,8 +28,13 @@ class ReelSequencer implements ReelFeed {
     required List<String> gameIds,
     required Random rng,
     ReelCursor? cursor,
+    double gameShare = 0.5,
   }) : _gameIds = gameIds,
-       _rng = rng {
+       _rng = rng,
+       _share = gameShare.clamp(0.0, 1.0),
+       _maxGames = gameShare <= 0.5 ? 2 : 4,
+       _maxLearn = gameShare >= 0.5 ? 2 : 4 {
+    _gameChance = _chanceFor(_share, _maxGames, _maxLearn);
     for (final l in lessons) {
       final reads = [...l.cards, ...?extra.reads[l.id]];
       final qs = [...l.questions, ...?extra.questions[l.id]];
@@ -41,7 +61,27 @@ class ReelSequencer implements ReelFeed {
   }
 
   static const _retryDelay = 3;
-  static const _gameChance = 0.45;
+
+  /// The per-draw game chance whose long-run game fraction equals [share] once the run caps bite.
+  /// Runs alternate, so the fraction is E[game run] / (E[game run] + E[learning run]); it rises with
+  /// the chance, so bisect. Drawing at [share] itself would land about 6 points short at 0.25 and 0.75.
+  static double _chanceFor(double share, int maxGames, int maxLearn) {
+    double run(double p, int cap) => [for (var k = 0; k < cap; k++) pow(p, k).toDouble()].reduce((a, b) => a + b);
+    var lo = 0.0, hi = 1.0;
+    for (var i = 0; i < 40; i++) {
+      final p = (lo + hi) / 2, g = run(p, maxGames);
+      if (g / (g + run(1 - p, maxLearn)) < share) {
+        lo = p;
+      } else {
+        hi = p;
+      }
+    }
+    return (lo + hi) / 2;
+  }
+
+  final double _share;
+  final int _maxGames, _maxLearn;
+  late final double _gameChance;
 
   final List<String> _gameIds;
   final Random _rng;
@@ -79,11 +119,15 @@ class ReelSequencer implements ReelFeed {
   @override
   ReelItem next() {
     final bool game;
-    if (!_hasLearning || _serial == 0) {
-      game = true;
-    } else if (_gameRun >= 2) {
+    if (!_hasLearning || _share >= 1) {
+      game = true; // with no learning content even "learning only" falls back to games: next() never fails
+    } else if (_share <= 0) {
       game = false;
-    } else if (_learnRun >= 2) {
+    } else if (_serial == 0) {
+      game = true;
+    } else if (_gameRun >= _maxGames) {
+      game = false;
+    } else if (_learnRun >= _maxLearn) {
       game = true;
     } else {
       game = _rng.nextDouble() < _gameChance;

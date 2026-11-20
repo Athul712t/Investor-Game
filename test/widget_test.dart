@@ -51,6 +51,10 @@ void main() {
       },
       bestStreak: 9,
     );
+    expect(c.read(profileProvider).reelMix, 2); // default: even mix
+    n.saveReelMix(0);
+    n.saveReelMix(7); // clamped
+    expect(c.read(profileProvider).reelMix, 4);
 
     // A fresh container reads the same saved state.
     final c2 = ProviderContainer(overrides: [prefsProvider.overrideWithValue(c.read(prefsProvider))]);
@@ -62,6 +66,8 @@ void main() {
       'retry': ['q1'],
     });
     expect(c2.read(profileProvider).reelBestStreak, 9);
+    expect(c2.read(profileProvider).reelMix, 4);
+    expect(Profile.fromJson(const {'reelMix': -5}).reelMix, 0); // a bad save reads back clamped
   });
 
   test('bundled content parses and every question is well formed', () {

@@ -9,6 +9,7 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../games/_shared/games_registry.dart';
 import '../home_hub/pictograms.dart';
+import 'reel_mix_slider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -114,6 +115,11 @@ class ProfileScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpace.lg),
+        Text('Reel mode', style: context.text.titleLarge),
+        Text('What your reel serves up.', style: context.text.bodyMedium),
+        const SizedBox(height: AppSpace.sm),
+        const ReelMixSlider(),
+        const SizedBox(height: AppSpace.md),
         _ToggleRow(
           label: 'Sound',
           onIcon: Icons.volume_up_rounded,
