@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/profile.dart';
 import '../../core/sfx.dart';
@@ -35,13 +34,9 @@ class ShopScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.lg),
         children: [
-          Row(
-            children: [
-              _BackButton(),
-              const SizedBox(width: AppSpace.sm),
-              Expanded(child: Text('Shop', style: text.headlineMedium)),
-              _Balance(coins: p.coins),
-            ],
+          PageHeader(
+            title: 'Shop',
+            trailing: _Balance(coins: p.coins),
           ),
           section('Boosts', ShopKind.boost),
           section('Town', ShopKind.decor, note: '${equippedDecor(p).length} of $maxDecor equipped in Portfolio Town'),
@@ -50,26 +45,6 @@ class ShopScreen extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _BackButton extends StatelessWidget {
-  void _back(BuildContext context) {
-    final nav = Navigator.of(context);
-    nav.canPop() ? nav.pop() : GoRouter.maybeOf(context)?.go('/');
-  }
-
-  @override
-  Widget build(BuildContext context) => Pressable(
-    label: 'Back',
-    onTap: () => _back(context),
-    builder: (_, down) => Container(
-      width: 48,
-      height: 48,
-      margin: EdgeInsets.only(top: down ? 3 : 0, bottom: down ? 0 : 3),
-      decoration: pieceDecoration(radius: 14, depth: down ? 0 : 3),
-      child: const Icon(Icons.arrow_back_rounded, color: AppColors.ink),
-    ),
-  );
 }
 
 class _Balance extends StatelessWidget {

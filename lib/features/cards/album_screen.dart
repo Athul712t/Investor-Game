@@ -64,10 +64,15 @@ class _AlbumScreenState extends ConsumerState<AlbumScreen> {
       body = _Album(cards: cards, content: content, profile: profile, fresh: _fresh!);
     }
     return AppScaffold(
-      appBar: AppBar(title: const Text('Album')),
-      body: Padding(
-        padding: const EdgeInsets.only(top: kToolbarHeight),
-        child: body,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, 0),
+            child: PageHeader(title: 'Album'),
+          ),
+          Expanded(child: body),
+        ],
       ),
     );
   }

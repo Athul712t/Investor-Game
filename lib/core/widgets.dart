@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'sfx.dart';
 import 'theme.dart';
@@ -32,6 +33,46 @@ class AppScaffold extends StatelessWidget {
         ),
       ],
     ),
+  );
+}
+
+/// Top of a pushed page (chests, album, shop): a back piece, the title and an optional trailing piece.
+class PageHeader extends StatelessWidget {
+  const PageHeader({super.key, required this.title, this.trailing});
+  final String title;
+  final Widget? trailing;
+
+  void _back(BuildContext context) {
+    final nav = Navigator.of(context);
+    nav.canPop() ? nav.pop() : GoRouter.maybeOf(context)?.go('/');
+  }
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      Pressable(
+        label: 'Back',
+        onTap: () => _back(context),
+        builder: (_, down) => Container(
+          width: 48,
+          height: 48,
+          margin: EdgeInsets.only(top: down ? 3 : 0, bottom: down ? 0 : 3),
+          decoration: pieceDecoration(radius: 14, depth: down ? 0 : 3),
+          child: const Icon(Icons.arrow_back_rounded, color: AppColors.ink),
+        ),
+      ),
+      const SizedBox(width: AppSpace.sm),
+      Expanded(
+        child: Text(
+          title,
+          style: context.text.headlineMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          semanticsLabel: title,
+        ),
+      ),
+      ?trailing,
+    ],
   );
 }
 
