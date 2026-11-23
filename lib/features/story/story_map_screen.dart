@@ -9,6 +9,7 @@ import '../../core/profile.dart';
 import '../../core/sfx.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
+import '../shop/shop_catalog.dart';
 import 'chapter_screen.dart';
 import 'story_art.dart';
 import 'story_data.dart';
@@ -589,15 +590,15 @@ class _PlinthPainter extends CustomPainter {
 }
 
 /// The player's pawn. Hops from the previous stop to the current one with a bouncy spring, then bobs.
-class _Pawn extends StatefulWidget {
+class _Pawn extends ConsumerStatefulWidget {
   const _Pawn({required this.from, required this.to});
   final Offset from, to;
 
   @override
-  State<_Pawn> createState() => _PawnState();
+  ConsumerState<_Pawn> createState() => _PawnState();
 }
 
-class _PawnState extends State<_Pawn> with TickerProviderStateMixin {
+class _PawnState extends ConsumerState<_Pawn> with TickerProviderStateMixin {
   static const _size = Size(36, 52);
   // Softer than AppMotion.bouncy so the hop reads as a hop, with a visible landing bounce.
   static const _spring = SpringDescription(mass: 1, stiffness: 90, damping: 9);
@@ -644,7 +645,7 @@ class _PawnState extends State<_Pawn> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final color = Speaker.of('you').color;
+    final color = pawnColor(ref.watch(profileProvider.select((p) => p.pawn)));
     return Positioned.fill(
       child: IgnorePointer(
         child: ExcludeSemantics(

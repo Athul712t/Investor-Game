@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/profile.dart';
 import '../../core/theme.dart';
+import '../shop/shop_art.dart';
+import '../shop/shop_catalog.dart';
 
 /// What the town shows for a given profile. Pure, so it is easy to test.
 class TownPlan {
@@ -40,15 +44,18 @@ class TownPlan {
 
 /// Isometric town on a raised board tile. Idle life: a drifting cloud, blinking
 /// windows, a waving flag and a coin bobbing over the newest building.
-class PortfolioTown extends StatefulWidget {
-  const PortfolioTown({super.key, required this.plan});
+class PortfolioTown extends ConsumerStatefulWidget {
+  const PortfolioTown({super.key, required this.plan, this.decor});
   final TownPlan plan;
 
+  /// Decorations to draw; by default the equipped, owned ones from the profile.
+  final Set<String>? decor;
+
   @override
-  State<PortfolioTown> createState() => _PortfolioTownState();
+  ConsumerState<PortfolioTown> createState() => _PortfolioTownState();
 }
 
-class _PortfolioTownState extends State<PortfolioTown> with SingleTickerProviderStateMixin {
+class _PortfolioTownState extends ConsumerState<PortfolioTown> with SingleTickerProviderStateMixin {
   late final _c = AnimationController(vsync: this, duration: const Duration(seconds: 12), value: 0.2);
 
   @override
@@ -64,25 +71,39 @@ class _PortfolioTownState extends State<PortfolioTown> with SingleTickerProvider
   }
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    label: widget.plan.description,
-    image: true,
-    excludeSemantics: true,
-    child: RepaintBoundary(
-      child: CustomPaint(painter: _TownPainter(widget.plan, _c), size: Size.infinite),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final Set<String> decor = widget.decor ?? equippedDecor(ref.watch(profileProvider));
+    return Semantics(
+      label: decor.isEmpty ? widget.plan.description : '${widget.plan.description} ${decor.length} decorations.',
+      image: true,
+      excludeSemantics: true,
+      child: RepaintBoundary(
+        child: CustomPaint(painter: _TownPainter(widget.plan, decor, _c), size: Size.infinite),
+      ),
+    );
+  }
 }
 
 class _TownPainter extends CustomPainter {
-  _TownPainter(this.plan, this.t) : super(repaint: t);
+  _TownPainter(this.plan, this.decor, this.t) : super(repaint: t);
   final TownPlan plan;
+  final Set<String> decor;
   final Animation<double> t;
 
   // Design space; scaled to fit the widget.
   static const w = 330.0, h = 240.0;
   static const cw = 34.0, ch = 17.0, top = 82.0, thick = 14.0, floorH = 11.0;
   static const palette = [AppColors.blue, AppColors.red, AppColors.teal, AppColors.orange, AppColors.yellow];
+
+  /// Fixed spots on the board edge, in lot coordinates (fractions allowed). Back props draw first.
+  static const decorSpots = {
+    'windmill': (-0.3, 1.5),
+    'statue': (1.5, -0.3),
+    'tree': (0.2, 3.2),
+    'lamp': (3.2, 0.2),
+    'flag': (2.2, 3.3),
+    'fountain': (3.3, 2.2),
+  };
 
   static Color shade(Color c, double k) => Color.lerp(c, AppColors.ink, k)!;
   static Offset lot(int i, int j) => Offset(w / 2 + (i - j) * cw, top + (i + j + 1) * ch);
@@ -117,13 +138,20 @@ class _TownPainter extends CustomPainter {
     _board();
 
     final newest = plan.buildings - 1;
-    final order = [for (var k = 0; k < plan.buildings; k++) k]
-      ..sort((a, b) {
-        final (ai, aj) = TownPlan.lots[a];
-        final (bi, bj) = TownPlan.lots[b];
-        return ai + aj != bi + bj ? (ai + aj) - (bi + bj) : ai - bi;
-      });
-    for (final k in order) {
+    // Buildings and props share one depth order, back to front.
+    final order = <(double, int, String?)>[
+      for (var k = 0; k < plan.buildings; k++)
+        (TownPlan.lots[k].$1 + TownPlan.lots[k].$2 + TownPlan.lots[k].$1 / 10, k, null),
+      for (final d in decorSpots.keys)
+        if (decor.contains(d)) (decorSpots[d]!.$1 + decorSpots[d]!.$2, -1, d),
+    ]..sort((a, b) => a.$1.compareTo(b.$1));
+    final art = DecorArt(canvas, _stroke);
+    for (final (_, k, id) in order) {
+      if (id != null) {
+        final (i, j) = decorSpots[id]!;
+        art.paint(id, Offset(w / 2 + (i - j) * cw, top + (i + j + 1) * ch), 1, v);
+        continue;
+      }
       final (i, j) = TownPlan.lots[k];
       _building(lot(i, j), plan.floors[k], palette[k % palette.length], k, v, flag: k == newest);
     }
@@ -250,5 +278,5 @@ class _TownPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_TownPainter old) => old.plan != plan;
+  bool shouldRepaint(_TownPainter old) => old.plan != plan || !setEquals(old.decor, decor);
 }
