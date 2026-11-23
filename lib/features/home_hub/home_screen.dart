@@ -17,15 +17,26 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final p = ref.watch(profileProvider);
+    // No profile watch here: the header and town select their own fields, so an answer or a coin does not
+    // rebuild the whole Home list.
     void tab(int i) => ref.read(tabProvider.notifier).go(i);
     final onTeal = AppColors.on(AppColors.teal);
     return ListView(
       padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.md, AppSpace.md, AppSpace.xl),
       children: [
-        _Header(p: p),
+        Consumer(
+          builder: (context, ref, _) {
+            ref.watch(profileProvider.select((p) => (p.name, p.xp, p.streak, p.coins)));
+            return _Header(p: ref.read(profileProvider));
+          },
+        ),
         const SizedBox(height: AppSpace.lg),
-        _TownHero(p: p),
+        Consumer(
+          builder: (context, ref, _) {
+            ref.watch(profileProvider.select((p) => (p.completedLessons, p.storyDone, p.level)));
+            return _TownHero(p: ref.read(profileProvider));
+          },
+        ),
         const SizedBox(height: AppSpace.lg),
         Text('Choose your mode', style: context.text.titleLarge),
         const SizedBox(height: AppSpace.sm),

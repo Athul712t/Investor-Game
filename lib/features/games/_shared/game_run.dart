@@ -372,7 +372,7 @@ class GameRunState extends ConsumerState<GameRun> {
           children: [
             const Icon(Icons.favorite_rounded, color: AppColors.red),
             const SizedBox(width: 8),
-            Text('Second chance', style: context.text.titleLarge),
+            Flexible(child: Text('Second chance', style: context.text.titleLarge)),
           ],
         ),
         const SizedBox(height: AppSpace.md),

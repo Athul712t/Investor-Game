@@ -66,7 +66,8 @@ class _QuestsCardState extends ConsumerState<QuestsCard> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    final p = ref.watch(profileProvider);
+    ref.watch(profileProvider.select((p) => (p.quests, p.dayStats)));
+    final p = ref.read(profileProvider);
     final now = DateTime.now();
     final today = dayKey(now);
     final state = rolledQuests(p.quests, today);

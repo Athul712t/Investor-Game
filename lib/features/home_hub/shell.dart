@@ -21,11 +21,17 @@ class TabIndex extends Notifier<int> {
 class Shell extends ConsumerWidget {
   const Shell({super.key});
 
+  static const _screens = [HomeScreen(), LearnScreen(), ArcadeScreen(), ProfileScreen()];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tab = ref.watch(tabProvider);
     return AppScaffold(
-      body: IndexedStack(index: tab, children: const [HomeScreen(), LearnScreen(), ArcadeScreen(), ProfileScreen()]),
+      // Hidden tabs keep their state but not their tickers: IndexedStack alone leaves their animations running.
+      body: IndexedStack(
+        index: tab,
+        children: [for (final (i, screen) in _screens.indexed) TickerMode(enabled: i == tab, child: screen)],
+      ),
       bottom: _BottomBar(selected: tab, onSelect: ref.read(tabProvider.notifier).go),
     );
   }
