@@ -263,7 +263,7 @@ class _ChestStage extends StatelessWidget {
     final pop = ((t - 0.3) / 0.3).clamp(0.0, 1.0);
     final left = (_size.width - _chest.width) / 2 + shake;
     final top = _size.height - _chest.height - 12;
-    final lift = Curves.easeOut.transform(pop) * 96;
+    final lift = Curves.easeOut.transform(pop) * 104;
     return Semantics(
       label: '${_name(type)}, opening',
       child: SizedBox.fromSize(
@@ -288,15 +288,6 @@ class _ChestStage extends StatelessWidget {
                 painter: ChestBodyPainter(type, open: angle > 0.05),
               ),
             ),
-            if (pop > 0)
-              Positioned(
-                left: _size.width / 2 - 32,
-                top: top + 24 - lift,
-                child: Transform.scale(
-                  scale: Curves.elasticOut.transform(pop),
-                  child: _RewardIcon(reward: reward, size: 64),
-                ),
-              ),
             // Lid hinged on its back edge: the front swings toward the viewer and up over the hinge.
             Positioned(
               left: left - 4,
@@ -312,6 +303,15 @@ class _ChestStage extends StatelessWidget {
                 ),
               ),
             ),
+            if (pop > 0)
+              Positioned(
+                left: _size.width / 2 - 32,
+                top: top + 8 - lift,
+                child: Transform.scale(
+                  scale: Curves.elasticOut.transform(pop),
+                  child: _RewardIcon(reward: reward, size: 64),
+                ),
+              ),
           ],
         ),
       ),
