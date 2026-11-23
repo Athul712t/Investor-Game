@@ -42,10 +42,22 @@ class _AlbumScreenState extends ConsumerState<AlbumScreen> {
   @override
   Widget build(BuildContext context) {
     final cards = ref.watch(cardsProvider).value;
-    final content = ref.watch(contentProvider).value;
+    final contentState = ref.watch(contentProvider);
+    final content = contentState.value;
     final profile = ref.watch(profileProvider);
     Widget body;
-    if (cards == null || content == null) {
+    if (contentState.hasError || (cards != null && cards.isEmpty)) {
+      body = Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpace.lg),
+          child: Text(
+            'The album could not load right now. Try again later.',
+            style: context.text.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    } else if (cards == null || content == null) {
       body = const Center(child: CircularProgressIndicator(color: AppColors.ink));
     } else {
       _fresh ??= _freshOnce(cards, profile);

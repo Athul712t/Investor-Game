@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -12,19 +13,27 @@ import 'package:investor_game/core/progress.dart';
 import 'package:investor_game/core/theme.dart';
 import 'package:investor_game/domain/entities/question.dart';
 import 'package:investor_game/domain/game/game_types.dart';
+import 'package:investor_game/features/cards/album_screen.dart';
 import 'package:investor_game/features/cards/cards_data.dart';
 import 'package:investor_game/features/cards/cards_logic.dart';
 import 'package:investor_game/features/chests/chest_logic.dart';
+import 'package:investor_game/features/chests/chests_screen.dart';
 import 'package:investor_game/features/content/question_view.dart';
 import 'package:investor_game/features/games/_shared/arcade_game.dart';
 import 'package:investor_game/features/games/_shared/game_run.dart';
 import 'package:investor_game/features/games/arcade_screen.dart';
+import 'package:investor_game/features/home_hub/home_screen.dart';
+import 'package:investor_game/features/home_hub/shell.dart';
 import 'package:investor_game/features/quests/quest_logic.dart';
 import 'package:investor_game/features/quests/quests_card.dart';
 import 'package:investor_game/features/reel/reel_extra.dart';
 import 'package:investor_game/features/review/review_logic.dart';
 import 'package:investor_game/features/review/review_screen.dart';
 import 'package:investor_game/features/shop/shop_catalog.dart';
+import 'package:investor_game/features/shop/shop_screen.dart';
+import 'package:investor_game/features/shop/shop_tile.dart';
+import 'package:investor_game/features/story/story_data.dart';
+import 'package:investor_game/features/streak/streak_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// How the v1.5 loop pieces work together: answers, mastery, cards, quests, chests, streak, review, games, shop,
@@ -495,5 +504,65 @@ void main() {
       final size = utf8.encode(jsonEncode(p.toJson())).length;
       expect(size, lessThan(25000), reason: '$size bytes');
     });
+  });
+
+  group('content not there', () {
+    /// [content]: a future that fails, or one that never finishes (a fresh install still loading).
+    Future<void> pumpWith(WidgetTester tester, Widget screen, Future<Content> Function() content) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      SharedPreferences.setMockInitialValues({
+        'profile_v1': '{"chests":["wood"],"review":[{"id":"mf-basics-1-q2","due":"2000-01-01","step":0}]}',
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final c = ProviderContainer(
+        overrides: [
+          prefsProvider.overrideWithValue(prefs),
+          contentProvider.overrideWith((_) => content()),
+          cardsProvider.overrideWith((_) => content().then((_) => cards)),
+          reelExtraProvider.overrideWith((_) async => const ReelExtra()),
+          storyProvider.overrideWith((_) => Completer<Story>().future),
+        ],
+      );
+      addTearDown(c.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: c,
+          child: MaterialApp(theme: buildTheme(), home: screen),
+        ),
+      );
+      await settle(tester);
+    }
+
+    Future<Content> failing() async => throw StateError('no content');
+    Future<Content> loading() => Completer<Content>().future;
+
+    for (final (name, content) in [('failed', failing), ('loading', loading)]) {
+      testWidgets('$name: Home loop section, chests, album, review and shop still work', (tester) async {
+        await pumpWith(tester, const Shell(), content);
+        await tester.scrollUntilVisible(
+          find.byType(ShopTile),
+          400,
+          scrollable: find.descendant(of: find.byType(HomeScreen), matching: find.byType(Scrollable)).first,
+        );
+        await settle(tester);
+        expect(find.byType(StreakCard), findsOneWidget);
+        expect(find.text('None yet'), findsNothing); // the chest tile shows the chest
+        await pumpWith(tester, const ChestsScreen(), content);
+        await tester.tap(find.byKey(const Key('open-wood')));
+        await settle(tester);
+        await pumpWith(tester, const AlbumScreen(), content);
+        expect(
+          find.byType(CircularProgressIndicator).evaluate().isNotEmpty ||
+              find.textContaining('could not load').evaluate().isNotEmpty,
+          isTrue,
+        );
+        if (name == 'failed') expect(find.textContaining('could not load'), findsOneWidget);
+        await pumpWith(tester, const ReviewScreen(), content);
+        await pumpWith(tester, const ShopScreen(), content);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
   });
 }
