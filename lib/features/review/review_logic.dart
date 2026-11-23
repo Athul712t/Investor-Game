@@ -1,4 +1,7 @@
 import '../../core/profile.dart' show dayKey;
+import '../../core/streak_rules.dart' show daysBetween;
+
+export '../../core/streak_rules.dart' show daysBetween;
 
 /// Spaced review rules as pure functions over `profile.review` entries
 /// (`{id, due: 'yyyy-mm-dd', step: 0|1|2}`).
@@ -13,8 +16,6 @@ String addDays(String day, int days) {
   final d = DateTime.parse(day);
   return dayKey(DateTime.utc(d.year, d.month, d.day + days));
 }
-
-int daysBetween(String from, String to) => DateTime.parse(to).difference(DateTime.parse(from)).inDays;
 
 /// Entries whose question still exists, in queue order.
 List<Map<String, Object?>> known(List<Map<String, Object?>> review, Set<String> ids) => [

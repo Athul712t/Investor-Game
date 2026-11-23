@@ -120,7 +120,7 @@ class _ItemCardState extends ConsumerState<_ItemCard> with TickerProviderStateMi
 
   void _buy() {
     final c = ref.read(profileProvider.notifier);
-    if (buyItem(c, ref.read(profileProvider), item)) {
+    if (buyItem(c, item)) {
       Sound.play(Sfx.coin);
       setState(() => _tried = false);
       if (!context.reduceMotion) _pop.forward(from: 0);

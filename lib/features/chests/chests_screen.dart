@@ -30,7 +30,6 @@ class _ChestsScreenState extends ConsumerState<ChestsScreen> {
     if (_opening != null) return; // double tap
     final lessons = ref.read(contentProvider).value?.lessons ?? const [];
     final reward = openChest(
-      ref.read(profileProvider),
       ref.read(profileProvider.notifier),
       type,
       _rng,

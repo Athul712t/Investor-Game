@@ -60,17 +60,21 @@ BuyState buyState(Profile p, ShopItem i) {
   return p.coins < i.price ? BuyState.poor : BuyState.available;
 }
 
-/// Buys [i] for the current profile [p]. Returns false and changes nothing unless it was [BuyState.available].
-bool buyItem(ProfileController c, Profile p, ShopItem i) {
-  if (buyState(p, i) != BuyState.available || !c.spend(i.price)) return false;
-  c.mutate(
-    (q) => switch (i.id) {
-      'freeze' => q.copyWith(streakFreezes: 1),
-      'headstart3' => q.copyWith(headStarts: q.headStarts + 3),
-      _ => q.copyWith(owned: {...q.owned, i.id}),
-    },
-  );
-  return true;
+/// Buys [i]: checks, charges and grants on the controller's current profile in one save, so a double tap or a
+/// stale copy can never charge twice. Returns false and changes nothing unless it was [BuyState.available].
+bool buyItem(ProfileController c, ShopItem i) {
+  var bought = false;
+  c.mutate((q) {
+    if (buyState(q, i) != BuyState.available) return q;
+    bought = true;
+    final paid = q.copyWith(coins: q.coins - i.price);
+    return switch (i.id) {
+      'freeze' => paid.copyWith(streakFreezes: 1),
+      'headstart3' => paid.copyWith(headStarts: paid.headStarts + 3),
+      _ => paid.copyWith(owned: {...paid.owned, i.id}),
+    };
+  });
+  return bought;
 }
 
 /// Equipped decorations that are known, owned and within the cap. This is what the town draws.

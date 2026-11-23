@@ -105,7 +105,8 @@ class GameRunState extends ConsumerState<GameRun> {
       ..onBoostRequested = _onBoost
       ..onGameOver = _onGameOver
       ..paused = true; // starts on the intro card
-    _died = _reviveUsed = false;
+    _died = _reviveUsed = _isBest = false;
+    _result = null;
     _paidCoins = _paidXp = 0;
     _prevBest = null;
     _newLevels.clear();
@@ -136,6 +137,7 @@ class GameRunState extends ConsumerState<GameRun> {
 
   /// Begin the run with a random power-up: free with a token, else for coins.
   void _headStart({bool token = false}) {
+    if (_phase != _Phase.intro) return; // a second tap in the same frame
     if (_game == null) _newGame();
     final g = game;
     final c = ref.read(profileProvider.notifier);
@@ -216,7 +218,8 @@ class GameRunState extends ConsumerState<GameRun> {
     // A run can reach results twice (second chance), so pay only what is new.
     final c = ref.read(profileProvider.notifier);
     _prevBest ??= ref.read(profileProvider).highScores[spec.id];
-    _isBest = c.recordGame(
+    final again = _result != null; // finishing again after a second chance
+    final best = c.recordGame(
       GameResult(
         gameId: r.gameId,
         score: r.score,
@@ -224,7 +227,10 @@ class GameRunState extends ConsumerState<GameRun> {
         coinsEarned: r.coinsEarned - _paidCoins,
         xpEarned: r.xpEarned - _paidXp,
       ),
+      again: again,
+      bestCounted: _isBest,
     );
+    _isBest = best || (again && _isBest);
     _paidCoins = r.coinsEarned;
     _paidXp = r.xpEarned;
     final paid = payMastery(c, ref.read(profileProvider).masteryClaimed, spec, score);

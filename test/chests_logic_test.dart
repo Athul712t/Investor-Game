@@ -70,13 +70,7 @@ void main() {
 
   test('opening removes exactly one chest of that type and applies each reward', () async {
     final c = await container(const Profile(chests: ['wood', 'gold', 'wood'], coins: 10));
-    final r = openChest(
-      c.read(profileProvider),
-      c.read(profileProvider.notifier),
-      ChestType.wood,
-      Random(3),
-      lessonIds: ['a-1'],
-    );
+    final r = openChest(c.read(profileProvider.notifier), ChestType.wood, Random(3), lessonIds: ['a-1']);
     expect(r, isNotNull);
     expect(c.read(profileProvider).chests, ['gold', 'wood']);
 
@@ -94,7 +88,7 @@ void main() {
 
   test('an empty list opens nothing and grants nothing', () async {
     final c = await container(const Profile(coins: 3));
-    expect(openChest(c.read(profileProvider), c.read(profileProvider.notifier), ChestType.gold, Random(1)), isNull);
+    expect(openChest(c.read(profileProvider.notifier), ChestType.gold, Random(1)), isNull);
     expect(c.read(profileProvider).coins, 3);
     const p = Profile(chests: ['wood']);
     expect(identical(applyChest(p, ChestType.gold, const ChestReward(RewardKind.coins, coins: 9)), p), isTrue);
