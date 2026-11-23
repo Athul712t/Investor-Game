@@ -302,13 +302,15 @@ class _Btn extends StatelessWidget {
     constraints: const BoxConstraints(minHeight: 44, minWidth: 88),
     margin: EdgeInsets.only(top: down ? 4 : 0, bottom: down ? 0 : 4),
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    alignment: Alignment.center,
     decoration: pieceDecoration(fill: color, radius: 14, depth: down || onTap == null ? 0 : 4),
-    child: Text(
-      label,
-      style: context.text.titleLarge!.copyWith(
-        fontSize: 17,
-        color: onTap == null ? AppColors.inkDim : AppColors.on(color),
+    child: Center(
+      widthFactor: 1,
+      child: Text(
+        label,
+        style: context.text.titleLarge!.copyWith(
+          fontSize: 17,
+          color: onTap == null ? AppColors.inkDim : AppColors.on(color),
+        ),
       ),
     ),
   );

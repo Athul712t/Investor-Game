@@ -151,8 +151,8 @@ class _ItemPainter extends CustomPainter {
     final s = size.width / 64;
     if (id.startsWith('pawn_')) {
       canvas
-        ..translate(size.width * 0.19, size.height * 0.04)
-        ..scale(0.62 * s);
+        ..translate(size.width * 0.22, size.height * 0.1)
+        ..scale(0.9 * s);
       PawnPainter(pawnColor(id)).paint(canvas, const Size(36, 52));
       return;
     }

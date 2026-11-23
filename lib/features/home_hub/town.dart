@@ -102,7 +102,7 @@ class _TownPainter extends CustomPainter {
     'tree': (0.2, 3.2),
     'lamp': (3.2, 0.2),
     'flag': (2.2, 3.3),
-    'fountain': (3.3, 2.2),
+    'fountain': (3.0, 3.0),
   };
 
   static Color shade(Color c, double k) => Color.lerp(c, AppColors.ink, k)!;
@@ -149,7 +149,7 @@ class _TownPainter extends CustomPainter {
     for (final (_, k, id) in order) {
       if (id != null) {
         final (i, j) = decorSpots[id]!;
-        art.paint(id, Offset(w / 2 + (i - j) * cw, top + (i + j + 1) * ch), 1, v);
+        art.paint(id, Offset(w / 2 + (i - j) * cw, top + (i + j + 1) * ch), 1.3, v);
         continue;
       }
       final (i, j) = TownPlan.lots[k];
