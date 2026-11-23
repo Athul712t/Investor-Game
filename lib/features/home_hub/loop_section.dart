@@ -23,21 +23,27 @@ class LoopSection extends StatelessWidget {
       const SizedBox(height: AppSpace.md),
       const StreakCard(),
       const SizedBox(height: AppSpace.md),
-      const Row(
-        children: [
-          Expanded(child: ChestsTile()),
-          SizedBox(width: AppSpace.md),
-          Expanded(child: AlbumTile()),
-        ],
-      ),
+      const _TileRow(ChestsTile(), AlbumTile()),
       const SizedBox(height: AppSpace.md),
-      const Row(
-        children: [
-          Expanded(child: ReviewTile()),
-          SizedBox(width: AppSpace.md),
-          Expanded(child: ShopTile()),
-        ],
-      ),
+      const _TileRow(ReviewTile(), ShopTile()),
     ],
+  );
+}
+
+/// Two loop tiles side by side, always the same height (the taller one's).
+class _TileRow extends StatelessWidget {
+  const _TileRow(this.left, this.right);
+  final Widget left, right;
+
+  @override
+  Widget build(BuildContext context) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(child: left),
+        const SizedBox(width: AppSpace.md),
+        Expanded(child: right),
+      ],
+    ),
   );
 }

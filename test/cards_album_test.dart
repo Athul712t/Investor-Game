@@ -129,6 +129,6 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('1 / 4'), findsOneWidget);
+    expect(find.text('1 of 4'), findsOneWidget);
   });
 }
