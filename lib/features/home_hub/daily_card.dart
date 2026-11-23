@@ -80,7 +80,9 @@ class DailyCard extends ConsumerWidget {
                                   question: question,
                                   compact: true,
                                   onAnswered: (correct) {
-                                    final n = ref.read(profileProvider.notifier)..markDailyDone();
+                                    final n = ref.read(profileProvider.notifier)
+                                      ..markDailyDone()
+                                      ..noteAnswer(question, correct);
                                     // Wrong answers still earn a little: showing up is the habit.
                                     n.reward(xp: correct ? xp : 5, coins: correct ? coins : 0);
                                     Navigator.pop(sheet);

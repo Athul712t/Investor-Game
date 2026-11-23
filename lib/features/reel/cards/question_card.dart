@@ -29,7 +29,9 @@ class _QuestionCardState extends ConsumerState<QuestionCard> {
   void _answered(bool correct) {
     if (_done) return;
     _done = true;
-    ref.read(profileProvider.notifier).reward(xp: correct ? 8 : 3, coins: correct ? 1 : 0);
+    ref.read(profileProvider.notifier)
+      ..noteAnswer(widget.item.question, correct)
+      ..reward(xp: correct ? 8 : 3, coins: correct ? 1 : 0);
     widget.onDone(correct: correct);
   }
 

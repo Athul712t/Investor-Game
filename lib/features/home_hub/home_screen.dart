@@ -7,6 +7,7 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import 'board_tile.dart';
 import 'daily_card.dart';
+import 'loop_section.dart';
 import 'pictograms.dart';
 import 'shell.dart';
 import 'town.dart';
@@ -107,6 +108,8 @@ class HomeScreen extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpace.lg),
         PopIn.at(5, const DailyCard()),
+        const SizedBox(height: AppSpace.lg),
+        const LoopSection(),
         const SizedBox(height: AppSpace.lg),
         Text(
           'For education only. Not investment advice.\nMutual fund investments are subject to market risks.',

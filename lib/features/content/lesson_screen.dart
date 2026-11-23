@@ -92,6 +92,7 @@ class _LessonFlowState extends ConsumerState<_LessonFlow> {
   }
 
   void _answered(bool ok) {
+    ref.read(profileProvider.notifier).noteAnswer(_lesson.questions[_q], ok);
     if (ok) _correct++;
     if (_q < _lesson.questions.length - 1) {
       setState(() => _q++);

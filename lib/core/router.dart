@@ -1,5 +1,10 @@
 import 'package:go_router/go_router.dart';
 
+import '../features/cards/album_screen.dart';
+import '../features/chests/chests_screen.dart';
+import '../features/review/review_screen.dart';
+import '../features/shop/shop_screen.dart';
+
 import '../features/content/lesson_screen.dart';
 import '../features/games/_shared/game_host.dart';
 import '../features/home_hub/shell.dart';
@@ -25,5 +30,9 @@ final router = GoRouter(
     ),
     GoRoute(path: '/story', builder: (_, _) => const StoryMapScreen()),
     GoRoute(path: '/reel', builder: (_, _) => const ReelScreen()),
+    GoRoute(path: '/chests', builder: (_, _) => const ChestsScreen()),
+    GoRoute(path: '/album', builder: (_, _) => const AlbumScreen()),
+    GoRoute(path: '/review', builder: (_, _) => const ReviewScreen()),
+    GoRoute(path: '/shop', builder: (_, _) => const ShopScreen()),
   ],
 );

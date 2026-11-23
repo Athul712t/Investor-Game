@@ -1,0 +1,5 @@
+{"cards":[
+  {"id":"nav","title":"NAV","emoji":"🏷️","lesson":"mf-basics-3","tier":"common","blurb":"The price of one unit of a fund."},
+  {"id":"sip","title":"SIP","emoji":"🔁","lesson":"sip-power-1","tier":"common","blurb":"Investing a fixed amount on a schedule."},
+  {"id":"compounding","title":"Compounding","emoji":"❄️","lesson":"sip-power-3","tier":"rare","blurb":"Growth that earns its own growth."}
+]}

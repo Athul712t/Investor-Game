@@ -170,6 +170,7 @@ class GameRunState extends ConsumerState<GameRun> {
   }
 
   void _chipAnswered(bool correct) {
+    ref.read(profileProvider.notifier).noteAnswer(_chip!, correct);
     _learned.add((_chip!, correct));
     if (correct && game.boosts.isNotEmpty && _phase == _Phase.playing) {
       _grant(game.boosts[_rng.nextInt(game.boosts.length)]);
@@ -229,6 +230,7 @@ class GameRunState extends ConsumerState<GameRun> {
   });
 
   void _reviveAnswered(bool correct) {
+    ref.read(profileProvider.notifier).noteAnswer(_reviveQuestion!, correct);
     _reviveUsed = true;
     _learned.add((_reviveQuestion!, correct));
     if (!correct) return _finish();

@@ -56,6 +56,7 @@ class _ReelScreenState extends ConsumerState<ReelScreen> {
   void _onDone(int index, {required bool correct}) {
     if (index != _current || _done) return;
     final feed = _feed!, item = _items[index], profile = ref.read(profileProvider.notifier);
+    profile.noteReelCard();
     if (item is ReelQuestion && !correct) feed.reportWrong(item);
     final streak = item is ReelQuestion && !correct ? 0 : _streak + 1;
     // Save before drawing the hidden next card, so leaving now replays it rather than skipping it.
