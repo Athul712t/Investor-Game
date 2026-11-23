@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/profile.dart';
 import '../../../core/theme.dart';
 import '../../../domain/game/game_types.dart';
 import '../breaker/breaker_game.dart';
@@ -28,6 +29,64 @@ class GameSpec {
   final String id, title, tagline, howTo, emoji;
   final Color color;
   final ArcadeGame Function(GameConfig) create;
+
+  /// Bronze, silver and gold score targets (ascending).
+  List<int> get levels => masteryTargets[id]!;
+}
+
+/// Mastery score targets per game: the one place to tune them.
+const masteryTargets = <String, List<int>>{
+  'runner': [300, 800, 1500],
+  'stack': [10, 25, 45],
+  'merge': [500, 2000, 6000],
+  'breaker': [400, 1500, 4000],
+  'flap': [8, 20, 40],
+  'slice': [40, 120, 300],
+  'lock': [10, 25, 45],
+  'sort': [15, 30, 50],
+  'whack': [15, 35, 60],
+  'candle': [2000, 3200, 4200],
+  'dunk': [3, 8, 15],
+};
+
+const masteryNames = ['Bronze', 'Silver', 'Gold'];
+const masteryCoins = [25, 50, 100];
+const masteryChests = ['wood', 'silver', 'gold'];
+
+/// Solid medal colours (bronze, silver, gold), shared by the arcade pips and the results card.
+const masteryColors = [Color(0xFFC77B3A), Color(0xFFB8C0CC), AppColors.yellow];
+
+/// Pays every level (1..3) that [score] reaches and [claimed] does not hold yet, in ascending order:
+/// marks it claimed, adds its coins and grants its chest. Returns the levels paid.
+List<int> payMastery(ProfileController c, Set<String> claimed, GameSpec spec, int score) {
+  final paid = <int>[];
+  for (var l = 1; l <= 3; l++) {
+    final key = '${spec.id}:$l';
+    if (score < spec.levels[l - 1] || claimed.contains(key)) continue;
+    c.mutate((p) => p.copyWith(masteryClaimed: {...p.masteryClaimed, key}));
+    c.reward(coins: masteryCoins[l - 1]);
+    c.grantChest(masteryChests[l - 1]);
+    paid.add(l);
+  }
+  return paid;
+}
+
+/// A solid medal disc with an ink outline; an empty outline while [color] is null.
+class MedalPip extends StatelessWidget {
+  const MedalPip({super.key, this.color, this.size = 14});
+  final Color? color;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: color,
+      shape: BoxShape.circle,
+      border: Border.all(color: AppColors.ink, width: 2),
+    ),
+  );
 }
 
 final games = <GameSpec>[

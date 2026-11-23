@@ -13,6 +13,7 @@ import '../../../core/widgets.dart';
 import '../../../domain/entities/question.dart';
 import '../../../domain/game/game_types.dart';
 import '../../content/question_view.dart';
+import '../arcade_screen.dart' show todaysPick;
 import 'arcade_game.dart';
 import 'games_registry.dart';
 
@@ -72,6 +73,8 @@ class GameRunState extends ConsumerState<GameRun> {
   int _paidCoins = 0, _paidXp = 0; // already added to the profile this run
   final _learned = <(Question, bool)>[]; // answered this run, shown on results
   GameResult? _result;
+  int? _prevBest; // best before this run's first finish
+  final _newLevels = <int>[]; // mastery levels paid during this run
 
   /// On the intro or results card, where back means leave rather than pause.
   bool get atRest => _phase == _Phase.intro || _phase == _Phase.results;
@@ -104,6 +107,8 @@ class GameRunState extends ConsumerState<GameRun> {
       ..paused = true; // starts on the intro card
     _died = _reviveUsed = false;
     _paidCoins = _paidXp = 0;
+    _prevBest = null;
+    _newLevels.clear();
     _learned.clear();
     _chip = null;
     _watch.reset();
@@ -126,11 +131,21 @@ class GameRunState extends ConsumerState<GameRun> {
 
   static const _headStartCost = 30;
 
-  /// Spend coins to begin the run with a random power-up.
-  void _headStart() {
+  /// Today's pick pays double coins.
+  bool get _doubleCoins => todaysPick(DateTime.now()).id == spec.id;
+
+  /// Begin the run with a random power-up: free with a token, else for coins.
+  void _headStart({bool token = false}) {
     if (_game == null) _newGame();
     final g = game;
-    if (g.boosts.isEmpty || !ref.read(profileProvider.notifier).spend(_headStartCost)) return;
+    final c = ref.read(profileProvider.notifier);
+    if (g.boosts.isEmpty) return;
+    if (token) {
+      if (ref.read(profileProvider).headStarts <= 0) return;
+      c.mutate((p) => p.copyWith(headStarts: p.headStarts - 1));
+    } else if (!c.spend(_headStartCost)) {
+      return;
+    }
     final p = g.boosts[_rng.nextInt(g.boosts.length)];
     _start();
     // A game built just now has not loaded its world yet.
@@ -193,25 +208,27 @@ class GameRunState extends ConsumerState<GameRun> {
       gameId: spec.id,
       score: score,
       durationMs: _watch.elapsedMilliseconds,
-      coinsEarned: game.coins.value,
+      coinsEarned: game.coins.value * (_doubleCoins ? 2 : 1),
       xpEarned: (score > 0 ? 10 : 0) + 5 * correct, // no base XP for ending an empty run
       questionsAnswered: _learned.length,
       questionsCorrect: correct,
     );
     // A run can reach results twice (second chance), so pay only what is new.
-    _isBest = ref
-        .read(profileProvider.notifier)
-        .recordGame(
-          GameResult(
-            gameId: r.gameId,
-            score: r.score,
-            durationMs: r.durationMs,
-            coinsEarned: r.coinsEarned - _paidCoins,
-            xpEarned: r.xpEarned - _paidXp,
-          ),
-        );
+    final c = ref.read(profileProvider.notifier);
+    _prevBest ??= ref.read(profileProvider).highScores[spec.id];
+    _isBest = c.recordGame(
+      GameResult(
+        gameId: r.gameId,
+        score: r.score,
+        durationMs: r.durationMs,
+        coinsEarned: r.coinsEarned - _paidCoins,
+        xpEarned: r.xpEarned - _paidXp,
+      ),
+    );
     _paidCoins = r.coinsEarned;
     _paidXp = r.xpEarned;
+    final paid = payMastery(c, ref.read(profileProvider).masteryClaimed, spec, score);
+    if (paid.isNotEmpty) _newLevels.addAll(paid);
     final target = widget.targetScore;
     Sound.play(_isBest || (target != null && score >= target) ? Sfx.win : Sfx.lose);
     setState(() {
@@ -396,13 +413,29 @@ class GameRunState extends ConsumerState<GameRun> {
         const SizedBox(height: AppSpace.sm),
         Text(best == null ? 'No best yet' : 'Best $best', style: context.text.titleMedium),
       ],
+      if (_doubleCoins) ...[
+        const SizedBox(height: AppSpace.sm),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+          decoration: pieceDecoration(fill: AppColors.yellow, radius: 999, depth: 0),
+          child: Text('2x coins today', style: context.text.labelMedium!.copyWith(color: AppColors.ink)),
+        ),
+      ],
       if (widget.targetScore != null) ...[
         const SizedBox(height: AppSpace.sm),
         Text('Reach ${widget.targetScore} to pass', style: context.text.titleMedium),
       ],
       const SizedBox(height: AppSpace.lg),
       ChunkyButton(label: 'Start', icon: Icons.play_arrow_rounded, color: spec.color, onPressed: on ? _start : null),
-      if (on && ref.watch(profileProvider.select((p) => p.coins)) >= _headStartCost) ...[
+      if (on && ref.watch(profileProvider.select((p) => p.headStarts)) > 0) ...[
+        const SizedBox(height: AppSpace.sm),
+        ChunkyButton(
+          label: 'Head start (${ref.watch(profileProvider.select((p) => p.headStarts))} left)',
+          icon: Icons.bolt_rounded,
+          color: AppColors.yellow,
+          onPressed: () => _headStart(token: true),
+        ),
+      ] else if (on && ref.watch(profileProvider.select((p) => p.coins)) >= _headStartCost) ...[
         const SizedBox(height: AppSpace.sm),
         ChunkyButton(
           label: 'Head start  ·  $_headStartCost coins',
@@ -418,6 +451,48 @@ class GameRunState extends ConsumerState<GameRun> {
     ]);
   }
 
+  /// Medal for the highest level just paid, near-miss line, and progress toward the next level.
+  List<Widget> _masteryLines(BuildContext context, GameResult r) {
+    final claimed = ref.watch(profileProvider.select((p) => p.masteryClaimed));
+    final prev = _prevBest;
+    final lines = <Widget>[];
+    if (_newLevels.isNotEmpty) {
+      final l = _newLevels.last;
+      lines.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MedalPip(color: masteryColors[l - 1], size: 24),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                '${masteryNames[l - 1]} reached! +${masteryCoins[l - 1]} coins and a ${masteryChests[l - 1]} chest',
+                style: context.text.titleSmall,
+              ),
+            ),
+          ],
+        ),
+      );
+    } else if (prev != null && r.score < prev && r.score * 10 >= prev * 7) {
+      lines.add(Text('${prev - r.score} away from your best', style: context.text.titleSmall));
+    }
+    final next = [
+      for (var l = 1; l <= 3; l++)
+        if (!claimed.contains('${spec.id}:$l')) l,
+    ].firstOrNull;
+    final text = next == null
+        ? 'Gold mastered'
+        : 'Next: ${masteryNames[next - 1]} at ${spec.levels[next - 1]}, ${max(0, spec.levels[next - 1] - r.score)} to go';
+    lines.add(Text(text, style: context.text.bodyMedium, textAlign: TextAlign.center));
+    return [
+      for (final w in lines)
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpace.sm),
+          child: w,
+        ),
+    ];
+  }
+
   Widget _results(BuildContext context) {
     final r = _result!;
     final target = widget.targetScore;
@@ -430,6 +505,7 @@ class GameRunState extends ConsumerState<GameRun> {
       ),
       CountUp(value: r.score, style: context.text.displaySmall!.copyWith(fontSize: 72)),
       Text('Best $best', style: widget.reel ? context.text.titleMedium : context.text.bodyMedium),
+      ..._masteryLines(context, r),
       const SizedBox(height: AppSpace.md),
       Wrap(
         spacing: 8,
@@ -438,7 +514,7 @@ class GameRunState extends ConsumerState<GameRun> {
         children: [
           StatPill(
             icon: Icons.currency_rupee_rounded,
-            value: '+${r.coinsEarned}',
+            value: '+${r.coinsEarned}${_doubleCoins ? ' (2x)' : ''}',
             color: AppColors.yellow,
             semantic: 'Coins earned',
           ),

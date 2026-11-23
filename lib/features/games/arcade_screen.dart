@@ -21,6 +21,7 @@ class ArcadeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scores = ref.watch(profileProvider.select((p) => p.highScores));
+    final claimed = ref.watch(profileProvider.select((p) => p.masteryClaimed));
     final pick = todaysPick(DateTime.now());
     void play(GameSpec g) => context.push('/play/${g.id}');
     return ListView(
@@ -29,7 +30,7 @@ class ArcadeScreen extends ConsumerWidget {
         Text('Arcade', style: context.text.headlineMedium),
         Text('Just play. Answer a question mid-run for a power-up.', style: context.text.bodyMedium),
         const SizedBox(height: AppSpace.md),
-        PopIn.at(0, _Featured(g: pick, best: scores[pick.id] ?? 0, onTap: () => play(pick))),
+        PopIn.at(0, _Featured(g: pick, best: scores[pick.id] ?? 0, claimed: claimed, onTap: () => play(pick))),
         const SizedBox(height: AppSpace.lg),
         Text('All games', style: context.text.titleLarge),
         const SizedBox(height: AppSpace.sm),
@@ -43,7 +44,10 @@ class ArcadeScreen extends ConsumerWidget {
                   for (final (k, g) in games.skip(r).take(2).indexed) ...[
                     if (k > 0) const SizedBox(width: AppSpace.md),
                     Expanded(
-                      child: PopIn.at(r + k + 1, _Cartridge(g: g, best: scores[g.id] ?? 0, onTap: () => play(g))),
+                      child: PopIn.at(
+                        r + k + 1,
+                        _Cartridge(g: g, best: scores[g.id] ?? 0, claimed: claimed, onTap: () => play(g)),
+                      ),
                     ),
                   ],
                 ],
@@ -76,21 +80,46 @@ class _Ridges extends StatelessWidget {
 }
 
 class _BestLabel extends StatelessWidget {
-  const _BestLabel(this.best);
+  const _BestLabel(this.g, this.best, this.claimed);
+  final GameSpec g;
   final int best;
+  final Set<String> claimed;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
-    decoration: pieceDecoration(radius: 999, depth: 0),
-    child: Text(best == 0 ? 'New' : 'Best $best', style: context.text.labelSmall!.copyWith(color: AppColors.ink)),
+  Widget build(BuildContext context) => Wrap(
+    spacing: 6,
+    runSpacing: 4,
+    crossAxisAlignment: WrapCrossAlignment.center,
+    children: [
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+        decoration: pieceDecoration(radius: 999, depth: 0),
+        child: Text(best == 0 ? 'New' : 'Best $best', style: context.text.labelSmall!.copyWith(color: AppColors.ink)),
+      ),
+      Semantics(
+        label:
+            'Mastery ${[for (var l = 1; l <= 3; l++)
+              if (claimed.contains('${g.id}:$l')) l].length} of 3',
+        excludeSemantics: true,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var l = 1; l <= 3; l++) ...[
+              if (l > 1) const SizedBox(width: 3),
+              MedalPip(color: claimed.contains('${g.id}:$l') ? masteryColors[l - 1] : null),
+            ],
+          ],
+        ),
+      ),
+    ],
   );
 }
 
 class _Cartridge extends StatelessWidget {
-  const _Cartridge({required this.g, required this.best, required this.onTap});
+  const _Cartridge({required this.g, required this.best, required this.claimed, required this.onTap});
   final GameSpec g;
   final int best;
+  final Set<String> claimed;
   final VoidCallback onTap;
 
   @override
@@ -109,16 +138,17 @@ class _Cartridge extends StatelessWidget {
         Text(g.title, style: context.text.titleLarge!.copyWith(color: AppColors.on(g.color))),
         const Spacer(),
         const SizedBox(height: 8),
-        _BestLabel(best),
+        _BestLabel(g, best, claimed),
       ],
     ),
   );
 }
 
 class _Featured extends StatelessWidget {
-  const _Featured({required this.g, required this.best, required this.onTap});
+  const _Featured({required this.g, required this.best, required this.claimed, required this.onTap});
   final GameSpec g;
   final int best;
+  final Set<String> claimed;
   final VoidCallback onTap;
 
   @override
@@ -160,7 +190,7 @@ class _Featured extends StatelessWidget {
                     Text(g.title, style: context.text.headlineMedium!.copyWith(color: fg)),
                     Text(g.tagline, style: context.text.bodyMedium!.copyWith(color: fg)),
                     const SizedBox(height: 6),
-                    _BestLabel(best),
+                    _BestLabel(g, best, claimed),
                   ],
                 ),
               ),
