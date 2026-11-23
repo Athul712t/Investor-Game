@@ -125,17 +125,16 @@ Profile applyChest(Profile p, ChestType type, ChestReward r) {
   }
 }
 
-/// Opens the first chest of [type]: rolls, then removes the chest and grants the reward in one save.
-/// Null when the player has none.
-ChestReward? openChest(
-  Profile p,
-  ProfileController ctl,
-  ChestType type,
-  Random rng, {
-  List<String> lessonIds = const [],
-}) {
-  if (!p.chests.contains(type.name)) return null;
-  final r = rollChest(type, rng, holdsFreeze: p.streakFreezes > 0, lessonIds: lessonIds, credits: p.credits);
-  ctl.mutate((cur) => applyChest(cur, type, r));
+/// Opens the first chest of [type]: rolls on the current profile, then removes the chest and grants the reward
+/// in one save. Null (and nothing changes) when the player has none, so a repeated tap can never show a reward
+/// that was not granted.
+ChestReward? openChest(ProfileController ctl, ChestType type, Random rng, {List<String> lessonIds = const []}) {
+  ChestReward? r;
+  ctl.mutate((cur) {
+    if (!cur.chests.contains(type.name)) return cur;
+    final roll = rollChest(type, rng, holdsFreeze: cur.streakFreezes > 0, lessonIds: lessonIds, credits: cur.credits);
+    r = roll;
+    return applyChest(cur, type, roll);
+  });
   return r;
 }

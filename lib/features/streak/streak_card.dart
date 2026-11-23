@@ -10,9 +10,10 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../../domain/entities/question.dart';
 import '../content/question_view.dart';
+import '../shop/shop_catalog.dart';
 import 'streak_logic.dart';
 
-const freezePrice = 60;
+final freezePrice = shopItem('freeze')!.price; // one price, set in the shop catalog
 const _repairAnswers = 3;
 const _pips = 5;
 
@@ -22,8 +23,14 @@ class StreakCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final p = ref.watch(profileProvider);
-    final open = repairOpen(p, dayKey(DateTime.now()));
+    final today = dayKey(DateTime.now());
+    ref.watch(
+      profileProvider.select(
+        (p) => (p.streak, p.lostStreak, repairOpen(p, today), p.milestonesDone, p.coins, p.streakFreezes),
+      ),
+    );
+    final p = ref.read(profileProvider);
+    final open = repairOpen(p, today);
     final next = nextMilestone(p.streak, p.milestonesDone);
     return PopIn(
       child: Panel(
@@ -152,9 +159,8 @@ class _FreezeRow extends ConsumerWidget {
           color: AppColors.yellow,
           onPressed: canBuy
               ? () {
-                  final n = ref.read(profileProvider.notifier);
-                  if (!n.spend(freezePrice)) return;
-                  n.mutate((p) => p.copyWith(streakFreezes: 1));
+                  // The shop's buy: checked and charged on the current profile, so a double tap pays once.
+                  if (!buyItem(ref.read(profileProvider.notifier), shopItem('freeze')!)) return;
                   Sound.play(Sfx.powerup);
                   Haptics.medium();
                 }

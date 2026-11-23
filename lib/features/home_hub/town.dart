@@ -72,7 +72,8 @@ class _PortfolioTownState extends ConsumerState<PortfolioTown> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    final Set<String> decor = widget.decor ?? equippedDecor(ref.watch(profileProvider));
+    if (widget.decor == null) ref.watch(profileProvider.select((p) => (p.townDecor, p.owned)));
+    final Set<String> decor = widget.decor ?? equippedDecor(ref.read(profileProvider));
     return Semantics(
       label: decor.isEmpty ? widget.plan.description : '${widget.plan.description} ${decor.length} decorations.',
       image: true,

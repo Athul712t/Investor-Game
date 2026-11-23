@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/entities/question.dart';
 import '../domain/game/game_types.dart';
-import '../features/streak/streak_logic.dart';
 import 'progress.dart';
+import 'streak_rules.dart';
 
 /// Everything the player owns. Stored locally as one JSON blob; cloud sync mirrors it.
 class Profile {
@@ -220,6 +220,25 @@ class Profile {
 
 String dayKey(DateTime d) => d.toIso8601String().substring(0, 10);
 
+/// Most review entries kept, so the saved profile stays far below the cloud document limit.
+const reviewCap = 200;
+
+/// [review] with at most [reviewCap] entries: the newest entry (the last) always stays, then the earliest due
+/// (older first on a tie). Queue order is kept.
+List<Map<String, Object?>> capReview(List<Map<String, Object?>> review) {
+  if (review.length <= reviewCap) return review;
+  final rest = [for (var i = 0; i < review.length - 1; i++) i]
+    ..sort((a, b) {
+      final c = '${review[a]['due']}'.compareTo('${review[b]['due']}');
+      return c != 0 ? c : a.compareTo(b);
+    });
+  final keep = {...rest.take(reviewCap - 1), review.length - 1};
+  return [
+    for (var i = 0; i < review.length; i++)
+      if (keep.contains(i)) review[i],
+  ];
+}
+
 /// Overridden in main() with the instance loaded before runApp.
 final prefsProvider = Provider<SharedPreferences>((ref) => throw UnimplementedError());
 
@@ -302,12 +321,21 @@ class ProfileController extends Notifier<Profile> {
   }
 
   /// Stores rewards from a run. Returns true on a new high score.
-  bool recordGame(GameResult r) {
+  /// [again]: the same run finishing a second time (after a second chance). It pays what [r] carries but is not
+  /// counted as another game, and its best counts for quests only when the first finish ([bestCounted]) set none.
+  bool recordGame(GameResult r, {bool again = false, bool bestCounted = false}) {
     final best = state.highScores[r.gameId] ?? 0;
     final isBest = r.score > best;
     if (isBest) _set(state.copyWith(highScores: {...state.highScores, r.gameId: r.score}));
     reward(xp: r.xpEarned, coins: r.coinsEarned);
-    _note((s) => s.copyWith(games: s.games + 1, bests: s.bests + (isBest ? 1 : 0), gameIds: {...s.gameIds, r.gameId}));
+    final newBest = isBest && !(again && bestCounted);
+    _note(
+      (s) => s.copyWith(
+        games: s.games + (again ? 0 : 1),
+        bests: s.bests + (newBest ? 1 : 0),
+        gameIds: {...s.gameIds, r.gameId},
+      ),
+    );
     return isBest;
   }
 
@@ -331,11 +359,11 @@ class ProfileController extends Notifier<Profile> {
     var review = state.review;
     if (!correct && !fromReview) {
       final due = dayKey(at.add(const Duration(days: 1)));
-      review = [
+      review = capReview([
         for (final r in review)
           if (r['id'] != q.id) r,
         {'id': q.id, 'due': due, 'step': 0},
-      ];
+      ]);
     }
     _set(state.copyWith(credits: credits, review: review));
     _note(

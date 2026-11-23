@@ -30,7 +30,6 @@ class _ChestsScreenState extends ConsumerState<ChestsScreen> {
     if (_opening != null) return; // double tap
     final lessons = ref.read(contentProvider).value?.lessons ?? const [];
     final reward = openChest(
-      ref.read(profileProvider),
       ref.read(profileProvider.notifier),
       type,
       _rng,
@@ -45,39 +44,50 @@ class _ChestsScreenState extends ConsumerState<ChestsScreen> {
     ref.watch(contentProvider); // keep the lessons loading for study boosts
     final stage = _opening;
     return AppScaffold(
-      appBar: AppBar(title: const Text('Chests')),
-      body: Padding(
-        padding: const EdgeInsets.only(top: kToolbarHeight),
-        child: stage != null
-            ? _OpenStage(type: stage.type, reward: stage.reward, onDone: () => setState(() => _opening = null))
-            : SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.xl),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (chests.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpace.md),
-                        child: Panel(
-                          accent: AppColors.yellow,
-                          child: Text(
-                            'No chests yet. Finish all three daily quests, hit a streak milestone or level up a '
-                            'game mastery to earn one. Here is what each kind can hold.',
-                            style: context.text.bodyLarge,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, 0),
+            child: PageHeader(title: 'Chests'),
+          ),
+          Expanded(
+            child: stage != null
+                ? _OpenStage(type: stage.type, reward: stage.reward, onDone: () => setState(() => _opening = null))
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.xl),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (chests.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpace.md),
+                            child: Panel(
+                              accent: AppColors.yellow,
+                              child: Text(
+                                'No chests yet. Finish all three daily quests, hit a streak milestone or level up a '
+                                'game mastery to earn one. Here is what each kind can hold.',
+                                style: context.text.bodyLarge,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    for (final (i, t) in ChestType.values.indexed)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpace.md),
-                        child: PopIn.at(
-                          i,
-                          _TypeCard(type: t, count: chests.where((c) => c == t.name).length, onOpen: () => _open(t)),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+                        for (final (i, t) in ChestType.values.indexed)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpace.md),
+                            child: PopIn.at(
+                              i,
+                              _TypeCard(
+                                type: t,
+                                count: chests.where((c) => c == t.name).length,
+                                onOpen: () => _open(t),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }

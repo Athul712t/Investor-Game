@@ -37,3 +37,14 @@ Retention through mastery, collection and streaks. No real money, no paid random
 - Education content stays draft; correctness of finance facts is not the priority yet, keep copy plain and never advice.
 - Tests: pure logic in plain Dart files with unit tests; widget tests for the screens; keep test/layout_test.dart pattern (360x640, text scale 1.3) for new screens. `flutter analyze --no-fatal-infos` clean, `dart format lib test`, full `flutter test` green.
 - Home screenshots: the shot tool cannot scroll Flutter lists. Copy tool/shot.mjs to your scratchpad and add a step that does `await page.mouse.move(195, 400); await page.mouse.wheel(0, N);`. Seed state by writing localStorage key `flutter.profile_v1` (a JSON string of `Profile.toJson()`, JSON-encoded again as a string) with `page.addInitScript` in your scratch copy; never commit seeding hacks. Keep screenshot rounds to three.
+
+## Integration pass (what changed after the merge)
+- Home loop tiles share one `LoopTile` (lib/features/home_hub/loop_tile.dart): pictogram left, title and status right, equal-height rows, one tint each (chests orange, album teal, review blue, shop yellow), pulse only for chests to open or reviews due. Chests, Album and Shop share `PageHeader` (lib/core/widgets.dart).
+- Atomic grants: `buyItem(controller, item)` and `openChest(controller, type, rng)` check and apply on the current profile in one save; the streak card buys its freeze through `buyItem`.
+- `recordGame(again:)`: a second-chance finish is not counted as another game or best for quests. Head start ignores a repeated tap.
+- `noteAnswer` caps the review queue at `reviewCap` (200) entries, keeping the newest and the earliest due. Worst-case blob is tested under 25 kB.
+- Streak rules live in lib/core/streak_rules.dart (core no longer imports features); review uses the same DST-safe `daysBetween`.
+- Chest opening does not touch the streak: chests come from earlier activity, and opening a hoard must not keep a streak alive.
+- Shell wraps each tab in `TickerMode`, so hidden tabs stop ticking; Home header, town, quests and streak cards `select` only what they draw; `Coin3D` caches its glyph and paints.
+- Album shows a message when content fails; Learn trail step fits at text scale 1.3.
+- Tests: test/loop_integration_test.dart (cross-feature flows, reload, limits, missing content), test/home_tickers_test.dart, new screens in test/layout_test.dart.

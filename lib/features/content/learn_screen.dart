@@ -423,17 +423,17 @@ class _StepState extends State<_Step> with SingleTickerProviderStateMixin {
           children: [
             Text(
               lesson.title,
-              maxLines: 3,
+              maxLines: 2, // three lines plus the Start pill overflow the stone's row at text scale 1.3
               overflow: TextOverflow.ellipsis,
               style: context.text.titleSmall!.copyWith(
                 fontSize: 15,
                 color: widget.locked ? AppColors.inkDim : AppColors.ink,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Wrap(
               spacing: 8,
-              runSpacing: 4,
+              runSpacing: 2,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text('${lesson.minutes} min', style: context.text.bodySmall),

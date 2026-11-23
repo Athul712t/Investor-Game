@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'sfx.dart';
 import 'theme.dart';
@@ -32,6 +33,46 @@ class AppScaffold extends StatelessWidget {
         ),
       ],
     ),
+  );
+}
+
+/// Top of a pushed page (chests, album, shop): a back piece, the title and an optional trailing piece.
+class PageHeader extends StatelessWidget {
+  const PageHeader({super.key, required this.title, this.trailing});
+  final String title;
+  final Widget? trailing;
+
+  void _back(BuildContext context) {
+    final nav = Navigator.of(context);
+    nav.canPop() ? nav.pop() : GoRouter.maybeOf(context)?.go('/');
+  }
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      Pressable(
+        label: 'Back',
+        onTap: () => _back(context),
+        builder: (_, down) => Container(
+          width: 48,
+          height: 48,
+          margin: EdgeInsets.only(top: down ? 3 : 0, bottom: down ? 0 : 3),
+          decoration: pieceDecoration(radius: 14, depth: down ? 0 : 3),
+          child: const Icon(Icons.arrow_back_rounded, color: AppColors.ink),
+        ),
+      ),
+      const SizedBox(width: AppSpace.sm),
+      Expanded(
+        child: Text(
+          title,
+          style: context.text.headlineMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          semanticsLabel: title,
+        ),
+      ),
+      ?trailing,
+    ],
   );
 }
 
@@ -502,6 +543,13 @@ class _Coin3DState extends State<Coin3D> with SingleTickerProviderStateMixin {
 class _CoinPainter extends CustomPainter {
   _CoinPainter(this.angle);
   final double angle;
+  static final _glyphs = <double, TextPainter>{};
+  static final _ink = Paint()..color = AppColors.ink;
+  static final _rim = Paint()..color = const Color(0xFFD99A00);
+  static final _gold = Paint()..color = AppColors.yellow;
+  static final _ring = Paint()
+    ..style = PaintingStyle.stroke
+    ..color = const Color(0xFFD99A00);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -510,24 +558,19 @@ class _CoinPainter extends CustomPainter {
     final face = cos(angle).abs().clamp(0.08, 1.0); // visible width of the face
     final edge = r * 0.22 * sin(angle).abs(); // visible thickness
     final dir = sin(angle) * cos(angle) >= 0 ? 1.0 : -1.0;
-    final ink = Paint()..color = AppColors.ink;
+    final ink = _ink;
     Rect oval(double dx, double grow) =>
         Rect.fromCenter(center: c.translate(dx, 0), width: 2 * r * face + grow, height: 2 * r + grow);
 
     // Rim (the coin's thickness), then the face on top.
     canvas.drawOval(oval(-dir * edge, 3), ink);
     canvas.drawRect(Rect.fromLTRB(c.dx - edge - 1, c.dy - r * 0.92, c.dx + edge + 1, c.dy + r * 0.92), ink);
-    canvas.drawOval(oval(-dir * edge, 0), Paint()..color = const Color(0xFFD99A00));
+    canvas.drawOval(oval(-dir * edge, 0), _rim);
     canvas.drawOval(oval(dir * edge, 3), ink);
-    canvas.drawOval(oval(dir * edge, 0), Paint()..color = AppColors.yellow);
-    canvas.drawOval(
-      oval(dir * edge, -r * 0.5),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = r * 0.1
-        ..color = const Color(0xFFD99A00),
-    );
-    final tp = TextPainter(
+    canvas.drawOval(oval(dir * edge, 0), _gold);
+    canvas.drawOval(oval(dir * edge, -r * 0.5), _ring..strokeWidth = r * 0.1);
+    // Laid out once per coin size, not on every frame of the spin.
+    final tp = _glyphs[r] ??= TextPainter(
       text: TextSpan(
         text: '₹',
         style: TextStyle(fontFamily: 'Baloo2', fontWeight: FontWeight.w800, fontSize: r * 1.15, color: AppColors.ink),

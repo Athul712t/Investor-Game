@@ -4,37 +4,24 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/profile.dart';
 import '../../core/theme.dart';
-import '../../core/widgets.dart';
+import '../home_hub/loop_tile.dart';
 import 'cards_data.dart';
 import 'cards_logic.dart';
 
-/// Home tile: a painted stack of cards, "Album" and "x / N".
+/// Home tile: a painted stack of cards, "Album" and how many are collected.
 class AlbumTile extends ConsumerWidget {
   const AlbumTile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cards = ref.watch(cardsProvider).value ?? const <CardDef>[];
-    final got = unlockedIds(cards, ref.watch(profileProvider)).length;
-    return Panel(
+    final cards = ref.watch(cardsProvider).value;
+    final got = ref.watch(profileProvider.select((p) => cards == null ? 0 : unlockedIds(cards, p).length));
+    return LoopTile(
+      color: AppColors.teal,
+      picto: const CustomPaint(painter: _StackPainter()),
+      title: 'Album',
+      status: cards == null ? 'Loading' : '$got of ${cards.length}',
       onTap: () => context.push('/album'),
-      child: Row(
-        children: [
-          ExcludeSemantics(
-            child: CustomPaint(size: const Size(44, 48), painter: const _StackPainter()),
-          ),
-          const SizedBox(width: AppSpace.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Album', style: context.text.titleLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
-                Text('$got / ${cards.length}', style: context.text.bodyMedium),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -54,10 +41,10 @@ class _StackPainter extends CustomPainter {
       ..color = AppColors.ink;
     for (var i = 0; i < 3; i++) {
       canvas.save();
-      canvas.translate(size.width / 2, size.height * 0.56);
+      canvas.translate(size.width / 2, size.height * 0.54);
       canvas.rotate((i - 1) * 0.3);
       final r = RRect.fromRectAndRadius(
-        Rect.fromCenter(center: Offset.zero, width: 26, height: 36),
+        Rect.fromCenter(center: Offset.zero, width: size.width * 0.56, height: size.height * 0.78),
         const Radius.circular(5),
       );
       canvas.drawRRect(r, Paint()..color = _fills[i]);

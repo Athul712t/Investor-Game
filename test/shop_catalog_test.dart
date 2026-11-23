@@ -15,8 +15,7 @@ Future<ProviderContainer> boot(Profile p) async {
 }
 
 void main() {
-  bool buy(ProviderContainer c, String id) =>
-      buyItem(c.read(profileProvider.notifier), c.read(profileProvider), shopItem(id)!);
+  bool buy(ProviderContainer c, String id) => buyItem(c.read(profileProvider.notifier), shopItem(id)!);
 
   test('catalog has the agreed ids and prices', () {
     expect(

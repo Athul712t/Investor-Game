@@ -6,67 +6,25 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/profile.dart';
 import '../../core/theme.dart';
-import '../../core/widgets.dart';
+import '../home_hub/loop_tile.dart';
 import 'review_logic.dart';
 import 'review_screen.dart';
 
-/// Home tile: a clock with a loop arrow, how many reviews are due. Pulses when something is due.
-class ReviewTile extends ConsumerStatefulWidget {
+/// Home tile: a clock with a loop arrow, how many reviews are due. Pulses while something is due.
+class ReviewTile extends ConsumerWidget {
   const ReviewTile({super.key});
 
   @override
-  ConsumerState<ReviewTile> createState() => _ReviewTileState();
-}
-
-class _ReviewTileState extends ConsumerState<ReviewTile> with SingleTickerProviderStateMixin {
-  late final _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
-
-  @override
-  void dispose() {
-    _pulse.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ids = ref.watch(reviewQuestionsProvider).keys.toSet();
-    final review = ref.watch(profileProvider.select((p) => p.review));
-    final due = dueCount(review, ids, dayKey(DateTime.now()));
-    final pulsing = due > 0 && !context.reduceMotion;
-    if (pulsing && !_pulse.isAnimating) {
-      _pulse.repeat(reverse: true);
-    } else if (!pulsing && _pulse.isAnimating) {
-      _pulse
-        ..stop()
-        ..value = 0;
-    }
-    final label = due > 0 ? '$due due' : 'All caught up';
-    return Semantics(
-      label: 'Review, $label',
-      button: true,
-      excludeSemantics: true,
-      child: ScaleTransition(
-        scale: Tween(begin: 1.0, end: 1.035).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut)),
-        child: Panel(
-          onTap: () => context.push('/review'),
-          fill: due > 0 ? AppColors.tint(AppColors.blue) : AppColors.card,
-          child: Row(
-            children: [
-              const ReviewPicto(size: 44),
-              const SizedBox(width: AppSpace.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Review', style: context.text.titleLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    Text(label, style: context.text.bodyMedium),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    final due = ref.watch(profileProvider.select((p) => dueCount(p.review, ids, dayKey(DateTime.now()))));
+    return LoopTile(
+      color: AppColors.blue,
+      picto: const ReviewPicto(size: 40),
+      title: 'Review',
+      status: due > 0 ? '$due due' : 'All caught up',
+      pulse: due > 0,
+      onTap: () => context.push('/review'),
     );
   }
 }
