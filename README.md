@@ -8,6 +8,7 @@ Learn how mutual funds work by playing. Three modes share one profile, one econo
 |---|---|
 | **Story** | "From Pocket Money to Portfolio": three chapters of dialogue, lessons, games and decisions |
 | **Arcade** | Eleven games: Bull Run, Sky Stack, Coin Merge, Brick Bank, Candle Hop, Coin Slash, Pop the Lock, Sort Rush, Scam Whack, Green Candle, Piggy Dunk. A quiz chip offers a power-up without pausing the run; a second chance after a crash is optional |
+| **Loop** | Daily quests, chests, a 40-card concept album, streak freeze and repair, spaced review, a coin shop and game mastery medals |
 | **Learn** | Pure education: 3 modules, 12 lessons, 60 questions in five formats |
 
 <p>

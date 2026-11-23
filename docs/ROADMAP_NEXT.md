@@ -89,18 +89,18 @@ Report: Coin Merge slowed down from about ₹256 and nearly stopped at ₹512.
 - [x] Profile > **Reel mode** slider with 5 stops: Games only, Mostly games, Even mix, Mostly learning, Learning only. Games only also removes quiz chips inside games; Learning only serves no games. Applies the next time the reel opens.
 - Not done: a 60 second cap for the older endless games (Bull Run, Candle Hop, Sky Stack) in the reel.
 
-## v1.5 "The Loop" ○ (retention)
+## v1.5.0 "The Loop" ✔ (spec: [V15_LOOP.md](V15_LOOP.md))
 
-- [ ] **Daily quests**: three per day from a pool (play 2 games, finish 1 lesson, 3 correct in a row, beat a best). Chest on completing all three.
-- [ ] **Chests** with visible odds: coins, power-ups, card packs. Opening is a 3D lid animation.
-- [ ] **Collectible cards**: 40 concept cards (NAV, SIP, Expense Ratio, the Fund Zoo animals) in common, rare and gold. Album screen. A card unlocks by mastering its concept, not by luck alone.
-- [ ] **Streak**: streak freeze (bought with coins, one held at a time), milestone rewards at 3, 7, 14, 30 days, streak repair by a review quiz.
-- [ ] **Spaced review**: questions answered wrong come back after 1, 3 and 7 days in a two-minute "Review" session.
-- [ ] **Shop**: power-up loadouts before a run, town decorations, player tokens. Coins only, no real money.
-- [ ] **Mastery levels per game**: bronze to gold score targets with one-time rewards.
-- [ ] **Near-miss and progress messages** on results ("12 metres from your best").
-- [ ] Local notifications: streak reminder at the player's usual play hour, opt-in.
-- Metrics to watch: D1, D7, sessions per day, quests completed, lessons per session.
+- [x] **Daily quests**: three a day (easy, medium, hard) from today's counters; claiming all three grants a silver chest.
+- [x] **Chests** (wood, silver, gold) with visible odds and a 3D lid opening; rewards are coins, head-start tokens, study boosts, power-ups and a streak freeze.
+- [x] **40 collectible concept cards** (24 common, 12 rare, 4 gold). Unlocked by learning: common = lesson done, rare = 6 correct answers in the lesson, gold = 15. Chest study boosts add credits.
+- [x] **Streak**: freeze (60 coins, hold one), milestones at 3, 7, 14, 30 days (chests), repair after a break by answering 3 questions.
+- [x] **Spaced review**: wrong answers return after 1, 3 and 7 days in a short session.
+- [x] **Coin shop**: freeze, head-start x3, six town decorations drawn in Portfolio Town, four pawn colours for the Story map.
+- [x] **Per-game mastery** (bronze, silver, gold with coin and chest rewards), near-miss and next-level messages on results, **2x coins on Today's pick**, head-start tokens.
+- [x] **Opt-in daily reminder** at the player's usual play hour (Android local notification). **Delivery not yet confirmed on a phone.**
+- Fixes from the integration pass: double-tap double-charge in the shop and streak freeze, chest reveal without a grant, second chance counted as two games, hidden tabs still animating, Learn layout at large text.
+- Known gaps: the repair offer appears after the first activity of the day, not on app open; the "Fund Manager" card emoji is blank on the web build only (a font gap); 60 second cap for the older endless games in the reel is still not built.
 
 ## v1.6 "Together" ○ (social and trust)
 
