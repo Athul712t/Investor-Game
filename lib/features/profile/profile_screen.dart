@@ -9,6 +9,7 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../games/_shared/games_registry.dart';
 import '../home_hub/pictograms.dart';
+import 'notify_section.dart';
 import 'reel_mix_slider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -134,6 +135,7 @@ class ProfileScreen extends ConsumerWidget {
           read: () => showPerfOverlay.value,
           write: (on) => showPerfOverlay.value = on,
         ),
+        const NotifySection(),
         const SizedBox(height: AppSpace.lg),
         Row(
           children: [

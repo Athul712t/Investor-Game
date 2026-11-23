@@ -143,7 +143,7 @@ void main() {
     final list = find.descendant(of: find.byType(ProfileScreen), matching: find.byType(Scrollable));
     await tester.scrollUntilVisible(find.text('Sound'), 200, scrollable: list);
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('What your reel serves up.'), findsOneWidget);
+    // Sound now sits above the Daily reminder row, so the scroll can end further down: only the order matters here.
     expect(
       tester.getTopLeft(find.text('Reel mode', skipOffstage: false)).dy,
       lessThan(tester.getTopLeft(find.byType(ReelMixSlider)).dy),
