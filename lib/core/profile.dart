@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/entities/question.dart';
 import '../domain/game/game_types.dart';
+import '../features/streak/streak_logic.dart';
 import 'progress.dart';
 
 /// Everything the player owns. Stored locally as one JSON blob; cloud sync mirrors it.
@@ -248,13 +249,42 @@ class ProfileController extends Notifier<Profile> {
 
   void rename(String name) => _set(state.copyWith(name: name.trim().isEmpty ? state.name : name.trim()));
 
-  /// Call on any meaningful activity. Extends or resets the daily streak.
+  /// Call on any meaningful activity. Extends the daily streak; a held freeze forgives one missed day, a longer
+  /// gap breaks it (a streak of 2+ is then offered for repair, see [repairStreak]).
   void touchStreak([DateTime? now]) {
-    final today = now ?? DateTime.now();
-    final key = dayKey(today);
-    if (state.lastActiveDay == key) return;
-    final yesterday = dayKey(today.subtract(const Duration(days: 1)));
-    _set(state.copyWith(streak: state.lastActiveDay == yesterday ? state.streak + 1 : 1, lastActiveDay: key));
+    final key = dayKey(now ?? DateTime.now());
+    final s = state;
+    final first = s.lastActiveDay.isEmpty;
+    final gap = first ? 0 : daysBetween(s.lastActiveDay, key);
+    if (!first && gap <= 0) return; // same day, or the clock went back
+    // An offer whose window has closed is cleared here.
+    var p = repairOpen(s, key) ? s : s.copyWith(lostStreak: 0, lostDay: '');
+    if (first) {
+      p = p.copyWith(streak: 1);
+    } else if (gap == 1 || (gap == 2 && s.streakFreezes > 0)) {
+      p = p.copyWith(streak: s.streak + 1, streakFreezes: gap == 2 ? 0 : s.streakFreezes);
+    } else if (s.streak >= 2) {
+      p = p.copyWith(streak: 1, lostStreak: s.streak, lostDay: key);
+    } else {
+      p = p.copyWith(streak: 1);
+    }
+    _set(grantMilestone(p.copyWith(lastActiveDay: key)));
+  }
+
+  /// Restores the lost streak plus today while the repair window is open. Returns false when it is closed.
+  bool repairStreak([DateTime? now]) {
+    final key = dayKey(now ?? DateTime.now());
+    final s = state;
+    if (!repairOpen(s, key)) return false;
+    final restored = s.lostStreak + 1;
+    final p = s.copyWith(
+      streak: restored > s.streak ? restored : s.streak,
+      lastActiveDay: key,
+      lostStreak: 0,
+      lostDay: '',
+    );
+    _set(grantMilestone(p));
+    return true;
   }
 
   void reward({int xp = 0, int coins = 0}) {
